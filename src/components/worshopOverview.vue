@@ -68,7 +68,7 @@
       </div>
     </q-form>
   </div> -->
-   <div class="col-6" style="overflow: auto" v-for="item in workshops" :key="item.id">
+   <div class="col-6" style="overflow: auto" v-for="item in getWorkshops" :key="item.id">
        <h3> Show imputed data</h3>
        <h4>Workshop name: {{item.name}}</h4>
        <p>Workshop duration: {{ item.duration}} weeks</p>
@@ -83,24 +83,30 @@
 </template>
 
 <script>
+
+import { mapGetters, mapActions } from 'vuex'
+
 export default {
     data() {
         return {
-
-
         }
     },
     beforeCreate() {
-        this.$store.dispatch('fetchWorkshops');
-
-    },
+        this.fetchWorkshops();
+      },
+      
     computed: {
-        workshops() {
-            return this.$store.getters.getWorkshops;
-        }
-    }, 
+      ...mapGetters (['getWorkshops'])
+        // workshops() {
+        //     return this.$store.getWorkshops;
+        // }
+        },
+    methods: {
+      ...mapActions(['fetchWorkshops'])
+    } 
+      
+    }
 
-}
 </script>
 
 <style>

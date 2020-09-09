@@ -1,6 +1,6 @@
-export default function () {
-  return {
-    //
-    workshops: [],
-  }
-}
+// export default function () {
+//   return {
+//     //
+//     workshops: [],
+//   }
+// }
