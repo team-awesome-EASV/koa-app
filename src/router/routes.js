@@ -8,6 +8,11 @@ const routes = [
     ]
   },
 
+  {
+    path: '/admin',
+    component: () => import('pages/Admin.vue')
+  },
+
   // Always leave this as last one,
   // but you can also remove it
   {
