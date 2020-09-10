@@ -68,7 +68,11 @@
       </div>
     </q-form>
   </div> -->
-   <div class="col-6" style="overflow: auto" v-for="item in getWorkshops" :key="item.id">
+
+    <h1>overview
+
+    </h1>
+   <div class="col-6" style="overflow: auto" v-for="item in workshops" :key="item.id">
        <h3> Show imputed data</h3>
        <h4>Workshop name: {{item.name}}</h4>
        <p>Workshop duration: {{ item.duration}} weeks</p>
@@ -78,6 +82,8 @@
        <p>workshop status: <span v-if="item.active"> active </span> <span v-else> Inactive</span></p>
 
     </div>
+    
+
 </div>
   
 </template>
@@ -89,20 +95,25 @@ import { mapGetters, mapActions } from 'vuex'
 export default {
     data() {
         return {
+        
+          // str: this.getStr,
         }
     },
     beforeCreate() {
-        this.fetchWorkshops();
+        this.$store.dispatch("fetchWorkshops")
+      
       },
       
     computed: {
-      ...mapGetters (['getWorkshops'])
-        // workshops() {
-        //     return this.$store.getWorkshops;
-        // }
+      ...mapGetters (['getWorkshops' ]),
+        workshops() {
+            return this.getWorkshops;
+        },
+    
+
         },
     methods: {
-      ...mapActions(['fetchWorkshops'])
+      ...mapActions(['fetchWorkshops']),
     } 
       
     }
