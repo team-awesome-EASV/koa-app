@@ -10,68 +10,46 @@ let store = null;
 Vue.use( Vuex )
 
 
-
-
-
-
-
 export default function () {
 
   const Store = new Vuex.Store( {
     state: {
-      workshops: null,
 
-      stringA: "this is true",
+      allWorkshops: null,
+
     },
 
     getters: {
-      getWorkshops: state => state.workshops,
-      getstringA: state => state.stringA,
+
+      getAllWorkshops: state => state.allWorkshops,
     },
     actions: {
-      fetchWorkshops: ( context ) => context.commit( 'setWorkshops' ),
-    },
-    mutations: {
-      setWorkshops ( state ) {
 
-        var workshopList = [ { name: 'gggg' } ];
-        workshopList = [];
+      async setWorkshops ( state ) {
 
+        var workshopList = [];
+        var content = null;
         workshop.onSnapshot( workshopItems => {
-          // self = this;
-          console.log( 'onstap' );
-
-          // self.workshopList = [];
-
           workshopItems.forEach( doc => {
-
             var workShopData = doc.data();
-
             workshopList.push( {
               ...workShopData,
-
-              // id: doc.id
+              id: doc.id
             } );
-            console.log( "THIS IS WORKSHOP_DATA", workShopData );
-
-
+            // console.log( "THIS IS WORKSHOP_DATA", workShopData );
           } );
-          console.log( "THIS IS WORKSHOP_LIST", workshopList );
-
-
-
-
+          // console.log( "THIS IS WORKSHOP_LIST", workshopList );
+          content = workshopList;
+          // console.log( "THIS IS PAYLOAD", content );
+          state.commit( 'setAllWorkshops', content );
         }
         );
-
-
-        this.state.workshops = workshopList;
-
-        console.log( "THIS IS WORKSHOPS", this.state.workshops );
       },
-
-      setString: state => state.stringA = "this is false",
-
+    },
+    mutations: {
+      setAllWorkshops ( state, value ) {
+        state.allWorkshops = value;
+      },
     },
   } );
 

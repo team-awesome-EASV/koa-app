@@ -72,7 +72,7 @@
     <h1>overview
 
     </h1>
-   <div class="col-6" style="overflow: auto" v-for="item in workshops" :key="item.id">
+   <div class="col-6" style="overflow: auto" v-for="item in allWorkshops" :key="item.id">
        <h3> Show imputed data</h3>
        <h4>Workshop name: {{item.name}}</h4>
        <p>Workshop duration: {{ item.duration}} weeks</p>
@@ -99,21 +99,19 @@ export default {
           // str: this.getStr,
         }
     },
-    beforeCreate() {
-        this.$store.dispatch("fetchWorkshops")
+    beforeMount() {
+        this.setWorkshops();
       
       },
       
     computed: {
-      ...mapGetters (['getWorkshops' ]),
-        workshops() {
-            return this.getWorkshops;
-        },
+      ...mapGetters ({allWorkshops:'getAllWorkshops'}),
+     
     
 
         },
     methods: {
-      ...mapActions(['fetchWorkshops']),
+      ...mapActions(['setWorkshops']),
     } 
       
     }
