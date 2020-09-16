@@ -1,6 +1,6 @@
 <template>
 <q-layout view="lHh Lpr lFf">
-    
+
         <q-header he elevated>
             <q-toolbar>
                 <q-btn flat round dense icon="menu" class="q-mr-sm" @click="leftDrawerOpen = !leftDrawerOpen" />
@@ -9,8 +9,8 @@
             </q-toolbar>
                 <q-toolbar inset>
                 <q-tabs class="absolute-bottom-left">
-                    <q-route-tab 
-                    style="font-size:2vh;"
+                    <q-route-tab
+
                     v-for="(link, index,) in TabNavLinks"
                     v-bind:key='index'
                     :to="link.path"
@@ -107,9 +107,5 @@ export default {
 </script>
 
 <style lang="css">
-a{
-    color: whitesmoke;
-    font-size:3vh;
-    
-}
+
 </style>

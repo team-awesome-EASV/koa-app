@@ -4,6 +4,12 @@
       <div style=" color:pink; font-size: 20vh">
         Groups page
       </div>
+      <q-calendar
+        v-model="selectedDate"
+        view="day"
+        locale="en-us"
+        style="height: 400px;"
+      />
       <q-btn
         class="q-mt-xl"
         color="white"
