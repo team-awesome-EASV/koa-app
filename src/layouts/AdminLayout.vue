@@ -8,12 +8,15 @@
                 <q-item class="fixed-right" to="/admin">Admin</q-item>
             </q-toolbar>
                 <q-toolbar inset>
-                <q-tabs class="absolute-bottom-left" v-model="tab">
-                    <q-tab name="Home" label="Home" />
-                    <q-tab name="Groups" label="Groups" />
-                    <q-tab name="Workshops" label="Workshops" />
-                    <q-tab name="Participants" label="Participants" />
-                    <q-tab name="Users" label="Usersl/ms"/>
+                <q-tabs class="absolute-bottom-left">
+                    <q-route-tab 
+                    style="font-size:2vh;"
+                    v-for="(link, index,) in TabNavLinks"
+                    v-bind:key='index'
+                    :to="link.path"
+                    >
+                        {{link.name}}
+                    </q-route-tab>
                 </q-tabs>
             </q-toolbar>
         </q-header>
@@ -82,15 +85,31 @@ const linksData = [{
 ];
 
 export default {
-    name: 'MainLayout',
+    name: 'AdminLayout',
     components: {
         EssentialLink
     },
     data() {
         return {
             leftDrawerOpen: false,
-            essentialLinks: linksData
+            essentialLinks: linksData,
+
+             TabNavLinks: [
+                    { name: "HOME", path: "/" },
+                    { name: "GROUPS", path: "/groups"},
+                    { name: "WORKSHOPS", path: "/workshops"},
+                    { name: "PARTICIPANTS", path: "/participants"},
+                    { name: "USERS", path: "/users"}
+                ],
         }
     }
 }
 </script>
+
+<style lang="css">
+a{
+    color: whitesmoke;
+    font-size:3vh;
+    
+}
+</style>
