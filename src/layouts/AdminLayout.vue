@@ -4,8 +4,10 @@
         <q-header he elevated>
             <q-toolbar>
                 <q-btn flat round dense icon="menu" class="q-mr-sm" @click="leftDrawerOpen = !leftDrawerOpen" />
+              <q-btn @click="$q.dark.toggle()">DARK</q-btn>
                 <q-space />
                 <q-item class="fixed-right" to="/admin">Admin</q-item>
+
             </q-toolbar>
                 <q-toolbar inset>
                 <q-tabs class="absolute-bottom-left">
@@ -21,9 +23,9 @@
             </q-toolbar>
         </q-header>
 
-        <q-drawer v-model="leftDrawerOpen" show-if-above bordered content-class="bg-grey-1">
+        <q-drawer v-model="leftDrawerOpen" show-if-above bordered >
             <q-list>
-                <q-item-label header class="text-grey-8">
+                <q-item-label header >
                     Essential Links
                 </q-item-label>
                 <EssentialLink v-for="link in essentialLinks" :key="link.title" v-bind="link" />
