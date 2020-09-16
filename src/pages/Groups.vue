@@ -6,7 +6,7 @@
       </div>
       <q-calendar
         v-model="selectedDate"
-        view="day"
+        view="month"
         locale="en-us"
         style="height: 400px;"
       />
@@ -25,6 +25,11 @@
 
 <script>
 export default {
-  name: 'Groups'
+  name: 'Groups',
+  data () {
+    return {
+      selectedDate: ''
+    }
+  }
 }
 </script>
