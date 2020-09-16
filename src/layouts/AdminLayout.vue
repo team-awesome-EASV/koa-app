@@ -1,25 +1,28 @@
 <template>
 <q-layout view="lHh Lpr lFf">
-    <q-header elevated>
-        <q-toolbar>
-            <q-btn flat dense round icon="menu" aria-label="Menu" @click="leftDrawerOpen = !leftDrawerOpen" />
+    
 
-            <q-toolbar-title>
-                Quasar App
-            </q-toolbar-title>
-            <q-item to="/admin" exact>
-                <q-item-section avatar>
-                    <q-icon name="admin" />
-                 </q-item-section>
+ 
+        <q-header he elevated>
+            <q-toolbar>
+                <q-btn flat round dense icon="menu" class="q-mr-sm" @click="leftDrawerOpen = !leftDrawerOpen" />
+                <q-space />
+                <q-item class="fixed-right" to="/admin">Admin</q-item>
+            </q-toolbar>
+                <q-toolbar inset>
+                <q-tabs class="absolute-bottom-left" v-model="tab">
+                    <q-tab name="images" label="Images" />
+                    <q-tab name="videos" label="Videos" />
+                    <q-tab name="articles" label="Articles" />
+                </q-tabs>
+            </q-toolbar>
+            
+        </q-header>
 
-                <q-item-section>
-                    Admin page
-                </q-item-section>
-            </q-item>
 
-            <div>Quasar v{{ $q.version }}</div>
-        </q-toolbar>
-    </q-header>
+ 
+        
+    
 
     <q-drawer v-model="leftDrawerOpen" show-if-above bordered content-class="bg-grey-1">
         <q-list>
@@ -31,8 +34,9 @@
     </q-drawer>
 
     <q-page-container>
-        <router-view />
+        <router-view/>
     </q-page-container>
+
 </q-layout>
 </template>
 
