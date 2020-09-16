@@ -1,6 +1,6 @@
 <template>
   <div class="full-width row wrap justify-start items-start content-start">
-  <!-- <div class="q-pa-md col-6" style="overflow: auto">
+    <!-- <div class="q-pa-md col-6" style="overflow: auto">
     <h3>Input data</h3>
 
     <q-form
@@ -69,55 +69,47 @@
     </q-form>
   </div> -->
 
-    <h1>overview
-
-    </h1>
-   <div class="col-6" style="overflow: auto" v-for="item in allWorkshops" :key="item.id">
-       <h3> Show imputed data</h3>
-       <h4>Workshop name: {{item.name}}</h4>
-       <p>Workshop duration: {{ item.duration}} weeks</p>
-       <p>Workshop no modules: {{ item.modulesNo}} modules</p>
-       <p>Workshop description: {{ item.textDescription}}</p>
-       <p>Workshop keywords: {{ item.keyWords}}</p>
-       <p>workshop status: <span v-if="item.active"> active </span> <span v-else> Inactive</span></p>
-
+    <h1>overview</h1>
+    <div
+      class="col-6"
+      style="overflow: auto"
+      v-for="item in allWorkshops"
+      :key="item.id"
+    >
+      <h3>Show imputed data</h3>
+      <h4>Workshop name: {{ item.name }}</h4>
+      <p>Workshop duration: {{ item.duration }} weeks</p>
+      <p>Workshop no modules: {{ item.modulesNo }} modules</p>
+      <p>Workshop description: {{ item.textDescription }}</p>
+      <p>Workshop keywords: {{ item.keyWords }}</p>
+      <p>
+        workshop status: <span v-if="item.active"> active </span>
+        <span v-else> Inactive</span>
+      </p>
     </div>
-    
-
-</div>
-  
+  </div>
 </template>
 
 <script>
-
-import { mapGetters, mapActions } from 'vuex'
+import { mapGetters, mapActions } from "vuex";
 
 export default {
-    data() {
-        return {
-        
-          // str: this.getStr,
-        }
-    },
-    beforeMount() {
-        this.setWorkshops();
-      
-      },
-      
-    computed: {
-      ...mapGetters ({allWorkshops:'getAllWorkshops'}),
-     
-    
+  data() {
+    return {
+      // str: this.getStr,
+    };
+  },
+  beforeMount() {
+    this.setWorkshopsA();
+  },
 
-        },
-    methods: {
-      ...mapActions(['setWorkshops']),
-    } 
-      
-    }
-
+  computed: {
+    ...mapGetters({ allWorkshops: "getAllWorkshops" })
+  },
+  methods: {
+    ...mapActions({ setWorkshopsA: "setWorkshops" })
+  }
+};
 </script>
 
-<style>
-
-</style>
+<style></style>
