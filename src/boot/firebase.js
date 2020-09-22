@@ -8,6 +8,8 @@ import "firebase/analytics";
 import "firebase/auth";
 import "firebase/firestore";
 
+import store from "../store/auth/index";
+
 const firebaseConfig = {
   apiKey: "AIzaSyCBvo4vT8fX3FVbpmTz2gundo8XNvvB_n8",
   authDomain: "koa-app-koa.firebaseapp.com",
@@ -26,4 +28,14 @@ let workshop = db.collection("Workshops");
 
 firebase.analytics();
 
+
+firebase.auth().onAuthStateChanged(user => {
+  if (user) {
+    this.$store.dispatch("autoSignIn", user);
+  }
+});
+
+
 export { firebaseApp, auth, db, workshop };
+
+

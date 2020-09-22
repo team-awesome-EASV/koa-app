@@ -1,9 +1,8 @@
 <template>
   <q-item
     clickable
-    tag="a"
     target="_blank"
-    :href="link"
+    @click="$router.push($props.path)"
   >
     <q-item-section
       v-if="icon"
@@ -23,8 +22,9 @@
 
 <script>
 export default {
-  name: 'EssentialLink',
+  name: 'navShortcuts',
   props: {
+
     title: {
       type: String,
       required: true
@@ -35,15 +35,16 @@ export default {
       default: ''
     },
 
-    link: {
+    path: {
       type: String,
-      default: '#'
+      default: ''
     },
 
     icon: {
       type: String,
       default: ''
     }
+
   }
 }
 </script>

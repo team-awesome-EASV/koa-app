@@ -4,7 +4,7 @@
     <q-header he elevated>
       <q-toolbar>
         <q-btn flat round dense icon="menu" class="q-mr-sm" @click="leftDrawerOpen = !leftDrawerOpen"/>
-        <q-btn @click="$q.dark.toggle()"><span v-if="$q.dark.isActive"><q-icon name="wb_sunny"></q-icon></span> <span
+        <q-btn @click="$q.dark.toggle"><span v-if="$q.dark.isActive"><q-icon name="wb_sunny"></q-icon></span> <span
           v-else><q-icon name="nights_stay"></q-icon></span></q-btn>
         <q-space/>
         <q-item class="fixed-right" to="/admin">Admin</q-item>
@@ -27,9 +27,9 @@
     <q-drawer v-model="leftDrawerOpen" show-if-above bordered>
       <q-list>
         <q-item-label header>
-          Essential Links
+          Admin Shortcuts
         </q-item-label>
-        <EssentialLink v-for="link in essentialLinks" :key="link.title" v-bind="link"/>
+        <navShortcuts v-for="link in navShortcuts" :path="link.path" :key="link.path" v-bind="link"/>
       </q-list>
     </q-drawer>
 
@@ -41,61 +41,44 @@
 </template>
 
 <script>
-import EssentialLink from 'components/EssentialLink.vue'
+import navShortcuts from 'components/navShortcuts.vue'
 
-const linksData = [{
-  title: 'Docs',
-  caption: 'quasar.dev',
-  icon: 'school',
-  link: 'https://quasar.dev'
-},
+const routesData = [
   {
-    title: 'Github',
-    caption: 'github.com/quasarframework',
-    icon: 'code',
-    link: 'https://github.com/quasarframework'
+    title: 'Create Workshop',
+    caption: 'Create new workshop from scratch',
+    icon: 'library_add',
+    path: '/create-workshop'
   },
   {
-    title: 'Discord Chat Channel',
-    caption: 'chat.quasar.dev',
-    icon: 'chat',
-    link: 'https://chat.quasar.dev'
+    title: 'Create Group',
+    caption: 'Assign new group to existing workshop',
+    icon: 'supervisor_account',
+    path: '/create-group'
   },
   {
-    title: 'Forum',
-    caption: 'forum.quasar.dev',
-    icon: 'record_voice_over',
-    link: 'https://forum.quasar.dev'
+    title: 'Find Group',
+    caption: 'Filter groups, and find what you need',
+    icon: 'search',
+    path: '/group-finder'
   },
   {
-    title: 'Twitter',
-    caption: '@quasarframework',
-    icon: 'rss_feed',
-    link: 'https://twitter.quasar.dev'
-  },
-  {
-    title: 'Facebook',
-    caption: '@QuasarFramework',
-    icon: 'public',
-    link: 'https://facebook.quasar.dev'
-  },
-  {
-    title: 'Quasar Awesome',
-    caption: 'Community Quasar projects',
-    icon: 'favorite',
-    link: 'https://awesome.quasar.dev'
+    title: 'Workshops Overview',
+    caption: 'See all available workshops',
+    icon: 'analytics',
+    path: '/workshops-overview'
   }
 ];
 
 export default {
   name: 'AdminLayout',
   components: {
-    EssentialLink
+    navShortcuts
   },
   data() {
     return {
       leftDrawerOpen: false,
-      essentialLinks: linksData,
+      navShortcuts: routesData,
 
       TabNavLinks: [
         {name: "HOME", path: "/"},

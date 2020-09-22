@@ -1,4 +1,5 @@
 import { auth, db } from "boot/firebase";
+import router from '../../router/index';
 
 export default {
   namespaced: true,
@@ -8,7 +9,7 @@ export default {
   },
 
   getters: {
-    getUser: state => state.currentUser
+    user: state => state.currentUser
   },
 
   actions: {
@@ -46,13 +47,16 @@ export default {
       auth
         .signInWithEmailAndPassword(payload.email, payload.password)
         .then(response => {
-          console.log(response);
           let user = auth.currentUser;
+          console.log(user);
           db.collection("Users")
             .doc(user.uid)
             .get()
             .then(doc => {
-              commit("userStatus", doc.data());
+              console.log(doc.data());
+              // commit("userStatus", doc.data());
+              commit("setUser", doc.data())
+              router.push('/adminPage')
             });
         })
         .catch(function(error) {
@@ -76,6 +80,9 @@ export default {
       } else {
         state.currentUser = null;
       }
-    }
+    },
+    // setUser(state, payload) {
+    //   state.currentUser = payload;
+    // },
   }
 };
