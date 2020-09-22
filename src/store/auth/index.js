@@ -7,7 +7,9 @@ export default {
     currentUser: null
   },
 
-  getters: {},
+  getters: {
+    getUser: state => state.currentUser
+  },
 
   actions: {
     registerUser({}, payload) {
@@ -40,9 +42,40 @@ export default {
           // ...
         });
     },
-    loginUser({}, payload) {
+    loginUser({ commit }, payload) {
+      auth
+        .signInWithEmailAndPassword(payload.email, payload.password)
+        .then(response => {
+          console.log(response);
+          let user = auth.currentUser;
+          db.collection("Users")
+            .doc(user.uid)
+            .get()
+            .then(doc => {
+              commit("userStatus", doc.data());
+            });
+        })
+        .catch(function(error) {
+          // Handle Errors here.
+          var errorCode = error.code;
+          var errorMessage = error.message;
+          if (errorCode === "auth/wrong-password") {
+            alert("Wrong password.");
+          } else {
+            alert(errorMessage);
+          }
+          console.log(error);
+        });
       console.log("store-loginuser");
     }
   },
-  mutations: {}
+  mutations: {
+    userStatus: (state, user) => {
+      if (user) {
+        state.currentUser = user;
+      } else {
+        state.currentUser = null;
+      }
+    }
+  }
 };
