@@ -25,7 +25,7 @@
         lazy-rules
         :rules="[ val => val && val.length > 0 || 'Please type something']"
       />
-      
+
       <q-input
         filled
         type="number"
@@ -64,7 +64,7 @@
 
       <div>
         <q-btn label="Submit" type="submit" color="primary"/>
-        <q-btn label="Reset" type="reset" color="primary" flat class="q-ml-sm" />   
+        <q-btn label="Reset" type="reset" color="primary" flat class="q-ml-sm" />
       </div>
     </q-form>
   </div> -->
@@ -88,6 +88,7 @@
       </p>
     </div>
   </div>
+
 </template>
 
 <script>
@@ -104,10 +105,10 @@ export default {
   },
 
   computed: {
-    ...mapGetters({ allWorkshops: "getAllWorkshops" })
+    ...mapGetters('workshops',{ allWorkshops: "getAllWorkshops" })
   },
   methods: {
-    ...mapActions({ setWorkshopsA: "setWorkshops" })
+    ...mapActions('workshops', { setWorkshopsA: "setWorkshops" })
   }
 };
 </script>

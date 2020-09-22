@@ -1,5 +1,5 @@
 <template>
-<div class="full-width row wrap justify-start items-start content-start">
+<div class="full-width row wsplitify-start items-start content-start">
   <div class="q-pa-md col-6" style="overflow: auto">
     <h3>Input data</h3>
 
@@ -13,7 +13,7 @@
         v-model="name"
         label="Name of workshop"
         hint="enter the name of the workshop"
-        lazy-rules
+        :lazy-rules="true"
         :rules="[ val => val && val.length > 0 || 'Please type something']"
       />
       <q-input
@@ -22,17 +22,17 @@
         v-model="textDescription"
         label="Large description of Workshop"
         hint="this descrition wll be used to display information about the workshop on the webpage as a large paragraph"
-        lazy-rules
+        :lazy-rules="true"
         :rules="[ val => val && val.length > 0 || 'Please type something']"
       />
-      
+
       <q-input
         filled
         type="number"
         v-model="modulesNo"
         label="Number of modules"
         hint="enter the number of modules the worshop has"
-        lazy-rules
+        :lazy-rules="true"
         :rules="[
           val => val !== null && val !== '' || 'Please type your age',
           val => val > 0 && val < 100 || 'Please type a real age'
@@ -45,7 +45,7 @@
         v-model="duration"
         label="Number of weeks"
         hint="enter the duration of the workshop in weeks"
-        lazy-rules
+        :lazy-rules="true"
         :rules="[
           val => val !== null && val !== '' || 'Please type your age',
           val => val > 0 && val < 100 || 'Please type a real age'
@@ -56,7 +56,7 @@
         v-model="keyWords"
         label="Key Words"
         hint="Name up to 10 key words that best describe the Workshop, use comma and space ', ' to seaprate them"
-        lazy-rules
+        :lazy-rules="true"
         :rules="[ val => val && val.length > 0 || 'Please type something']"
       />
 
@@ -64,7 +64,7 @@
 
       <div>
         <q-btn label="Submit" type="submit" color="primary"/>
-        <q-btn label="Reset" type="reset" color="primary" flat class="q-ml-sm" />   
+        <q-btn label="Reset" type="reset" color="primary" flat class="q-ml-sm" />
       </div>
     </q-form>
   </div>
@@ -77,20 +77,20 @@
        <p>Workshop keywords: {{ keyWords}}</p>
        <p>workshop status: <span v-if="active"> active </span> <span v-else> Inactive</span></p>
     </div>
-    
+
   <div class="full-width row wrap justify-start items-start content-start">
     <workshopOverview />
   </div>
 
 
 </div>
-  
+
 </template>
 
 <script>
 
-import firebase from 'firebase';
-import {workshop} from '../../firebase';
+
+import {workshop} from 'src/boot/firebase.js';
 import workshopOverview from '../components/worshopOverview'
 export default {
   data () {
@@ -112,7 +112,7 @@ export default {
   methods: {
     onSubmit () {
       this.keyWordsArray = this.keyWords.split(', ');
-      workshop.add({ 
+      workshop.add({
         name: this.name,
         textDescription: this.textDescription,
         modulesNo: this.modulesNo,
@@ -127,7 +127,7 @@ export default {
       this.name = null;
       this.textDescription = null;
       this.duration = null;
-      this.modulesNo = null;;
+      this.modulesNo = null;
       this.keyWords = null;
       this.keyWordsArray = [];
       this.active = false;
