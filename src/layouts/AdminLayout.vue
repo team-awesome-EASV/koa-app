@@ -95,7 +95,7 @@ export default {
       navShortcuts: routesData,
 
       TabNavLinks: [
-        { name: "HOME", path: "/" },
+        { name: "HOME", path: "/adminPage" },
         { name: "GROUPS", path: "/groups" },
         { name: "WORKSHOPS", path: "/workshops" },
         { name: "PARTICIPANTS", path: "/participants" },
