@@ -21,19 +21,19 @@ const firebaseConfig = {
   measurementId: "G-9YSJNDPKYN"
 };
 // Initialize Firebase
-let firebaseApp = firebase.initializeApp(firebaseConfig);
+let firebaseApp = firebase.initializeApp( firebaseConfig );
 let auth = firebaseApp.auth();
 let db = firebaseApp.firestore();
-let workshop = db.collection("Workshops");
+let workshop = db.collection( "Workshops" );
 
 firebase.analytics();
 
 
-firebase.auth().onAuthStateChanged(user => {
-  if (user) {
-    this.$store.dispatch("autoSignIn", user);
+firebase.auth().onAuthStateChanged( user => {
+  if ( user ) {
+    store.$store.dispatch( "autoSignIn", user );
   }
-});
+} );
 
 
 export { firebaseApp, auth, db, workshop };
