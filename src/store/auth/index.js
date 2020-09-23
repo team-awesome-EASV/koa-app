@@ -5,11 +5,11 @@ export default {
   namespaced: true,
 
   state: {
-    currentUser: null
+    loggedInUser: null
   },
 
   getters: {
-    user: state => state.currentUser
+    user: state => state.loggedInUser
   },
 
   actions: {
@@ -50,7 +50,7 @@ export default {
           let user = auth.currentUser.uid;
           dispatch("getUserData", user);
 
-          this.$router.replace("/adminPage");
+          this.$router.push("/adminPage");
         })
         .catch(error => {
           // Handle Errors here.
@@ -71,27 +71,30 @@ export default {
         .then(() => {
           commit("userStatus", null);
           console.log("user logged out");
+          this.$router.replace("/");
         })
         .catch(error => {
           console.log(error);
         });
     },
     getUserData({ commit }, uid) {
-      db.collection("Users")
-        .doc(uid)
-        .get()
-        .then(doc => {
-          console.log("getuserdata action", doc.data());
-          commit("userStatus", doc.data());
-        });
+      if (uid) {
+        db.collection("Users")
+          .doc(uid)
+          .get()
+          .then(doc => {
+            console.log("getuserdata action", doc.data());
+            commit("userStatus", doc.data());
+          });
+      } else commit("userStatus", null);
     }
   },
   mutations: {
     userStatus: (state, user) => {
       if (user) {
-        state.currentUser = user;
+        state.loggedInUser = user;
       } else {
-        state.currentUser = null;
+        state.loggedInUser = null;
       }
       console.log("currentUser MUTATED", user);
     }

@@ -2,6 +2,7 @@ import Vue from "vue";
 import VueI18n from "vue-i18n";
 import messages from "src/i18n";
 import { auth } from "./firebase";
+import store from "../store/index";
 
 Vue.use(VueI18n);
 
@@ -23,6 +24,12 @@ export default ({ app }) => {
   // authentication state has changed
   auth.onAuthStateChanged(
     currentUser => {
+      if (currentUser) {
+        store.dispatch("auth/getUserData", currentUser.uid);
+      } else {
+        store.dispatch("auth/getUserData", null);
+      }
+
       console.log("listener working", currentUser);
     },
     error => {

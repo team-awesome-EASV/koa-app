@@ -1,4 +1,4 @@
-import authGuard from "./authGuard";
+// import authGuard from "./authGuard";
 const routes = [
   {
     path: "/adminPage",
@@ -36,14 +36,16 @@ const routes = [
       }
     ],
     props: true,
-    beforeEnter: authGuard
+    meta: {
+      requiresAuth: true
+    }
+    // beforeEnter: authGuard
   },
 
   {
     path: "/",
     name: "Login",
-    component: () => import("../pages/Authenticate"),
-    beforeEnter: authGuard
+    component: () => import("../pages/Authenticate")
   },
 
   // Always leave this as last one,

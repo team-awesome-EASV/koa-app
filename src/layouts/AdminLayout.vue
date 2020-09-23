@@ -18,7 +18,7 @@
         ></q-btn>
         <q-btn label="Sign out" @click="logOut"></q-btn>
         <q-space />
-        <q-item class="fixed-right" to="/admin">Admin</q-item>
+        <q-item class="fixed-right" v-if="user">{{ user.name }}</q-item>
       </q-toolbar>
       <q-toolbar inset class="gt-xs">
         <q-tabs class="absolute-bottom-left">
