@@ -1,5 +1,5 @@
 import { auth, db } from "boot/firebase";
-import router from "../../router/index";
+import Router from "../../router/index";
 
 export default {
   namespaced: true,
@@ -18,7 +18,7 @@ export default {
         .createUserWithEmailAndPassword(payload.email, payload.password)
         .then(response => {
           let user = auth.currentUser;
-          user.updateProfile({ displayName: payload.name }).then(function() {
+          user.updateProfile({ displayName: payload.name }).then(() => {
             let registeredUser = {
               id: user.uid,
               email: user.email,
@@ -29,7 +29,7 @@ export default {
             db.collection("Users")
               .doc(registeredUser.id)
               .set(registeredUser)
-              .catch(function(error) {
+              .catch(error => {
                 console.log(error);
               });
           });
@@ -43,23 +43,16 @@ export default {
           // ...
         });
     },
-    loginUser({ commit }, payload) {
+    loginUser({ commit, dispatch }, payload) {
       auth
         .signInWithEmailAndPassword(payload.email, payload.password)
-        .then(response => {
-          let user = auth.currentUser;
+        .then(() => {
+          let user = auth.currentUser.uid;
+          dispatch("getUserData", user);
 
-          db.collection("Users")
-            .doc(user.uid)
-            .get()
-            .then(doc => {
-              console.log(doc.data());
-              commit("userStatus", doc.data());
-
-              this.$router.push("/adminPage");
-            });
+          this.$router.replace("/adminPage");
         })
-        .catch(function(error) {
+        .catch(error => {
           // Handle Errors here.
           var errorCode = error.code;
           var errorMessage = error.message;
@@ -75,12 +68,21 @@ export default {
     logOut({ commit }) {
       auth
         .signOut()
-        .then(function() {
+        .then(() => {
           commit("userStatus", null);
           console.log("user logged out");
         })
         .catch(error => {
           console.log(error);
+        });
+    },
+    getUserData({ commit }, uid) {
+      db.collection("Users")
+        .doc(uid)
+        .get()
+        .then(doc => {
+          console.log("getuserdata action", doc.data());
+          commit("userStatus", doc.data());
         });
     }
   },
