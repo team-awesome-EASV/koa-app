@@ -26,7 +26,7 @@ export default {
         });
         // console.log( "THIS IS WORKSHOP_LIST", workshopList );
         content = workshopList;
-        console.log("THIS IS PAYLOAD", content);
+        // console.log("THIS IS PAYLOAD", content);
         state.commit("setAllWorkshops", content);
       });
     }

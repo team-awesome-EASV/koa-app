@@ -1,5 +1,5 @@
 import { auth, db } from "boot/firebase";
-import router from '../../router/index';
+import router from "../../router/index";
 
 export default {
   namespaced: true,
@@ -13,12 +13,12 @@ export default {
   },
 
   actions: {
-    registerUser ( { }, payload ) {
+    registerUser({}, payload) {
       auth
-        .createUserWithEmailAndPassword( payload.email, payload.password )
-        .then( response => {
+        .createUserWithEmailAndPassword(payload.email, payload.password)
+        .then(response => {
           let user = auth.currentUser;
-          user.updateProfile( { displayName: payload.name } ).then( function () {
+          user.updateProfile({ displayName: payload.name }).then(function() {
             let registeredUser = {
               id: user.uid,
               email: user.email,
@@ -26,63 +26,72 @@ export default {
               phone: user.phoneNumber,
               photo: user.photoURL
             };
-            db.collection( "Users" )
-              .doc( registeredUser.id )
-              .set( registeredUser )
-              .catch( function ( error ) {
-                console.log( error );
-              } );
-          } );
-          console.log( "user registered and added to db", response );
-        } )
-        .catch( function ( error ) {
+            db.collection("Users")
+              .doc(registeredUser.id)
+              .set(registeredUser)
+              .catch(function(error) {
+                console.log(error);
+              });
+          });
+          console.log("user registered and added to db", response);
+        })
+        .catch(function(error) {
           // Handle Errors here.
           var errorCode = error.code;
           var errorMessage = error.message;
-          console.log( error.code, error.message );
+          console.log(error.code, error.message);
           // ...
-        } );
+        });
     },
-    loginUser ( { commit }, payload ) {
+    loginUser({ commit }, payload) {
       auth
-        .signInWithEmailAndPassword( payload.email, payload.password )
-        .then( response => {
+        .signInWithEmailAndPassword(payload.email, payload.password)
+        .then(response => {
           let user = auth.currentUser;
-          console.log( user );
-          db.collection( "Users" )
-            .doc( user.uid )
+
+          db.collection("Users")
+            .doc(user.uid)
             .get()
-            .then( doc => {
-              console.log( doc.data() );
-              // commit("userStatus", doc.data());
-              commit( "setUser", doc.data() )
-              this.$router.push( '/adminPage' )
-            } );
-        } )
-        .catch( function ( error ) {
+            .then(doc => {
+              console.log(doc.data());
+              commit("userStatus", doc.data());
+
+              this.$router.push("/adminPage");
+            });
+        })
+        .catch(function(error) {
           // Handle Errors here.
           var errorCode = error.code;
           var errorMessage = error.message;
-          if ( errorCode === "auth/wrong-password" ) {
-            alert( "Wrong password." );
+          if (errorCode === "auth/wrong-password") {
+            alert("Wrong password.");
           } else {
-            alert( errorMessage );
+            alert(errorMessage);
           }
-          console.log( error );
-        } );
-      console.log( "store-loginuser" );
+          console.log(error);
+        });
+      console.log("store-loginuser");
+    },
+    logOut({ commit }) {
+      auth
+        .signOut()
+        .then(function() {
+          commit("userStatus", null);
+          console.log("user logged out");
+        })
+        .catch(error => {
+          console.log(error);
+        });
     }
   },
   mutations: {
-    userStatus: ( state, user ) => {
-      if ( user ) {
+    userStatus: (state, user) => {
+      if (user) {
         state.currentUser = user;
       } else {
         state.currentUser = null;
       }
-    },
-    setUser ( state, payload ) {
-      state.currentUser = payload;
-    },
+      console.log("currentUser MUTATED", user);
+    }
   }
 };
