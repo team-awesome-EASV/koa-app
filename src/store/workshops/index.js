@@ -1,4 +1,4 @@
-import { workshop } from "boot/firebase";
+import { workshop } from 'src/boot/firebase.js'
 
 export default {
   namespaced: true,
@@ -8,32 +8,34 @@ export default {
   },
 
   getters: {
-    getAllWorkshops: state => state.allWorkshops
+    allWorkshops: state => state.allWorkshops
   },
 
   actions: {
-    async setWorkshops(state) {
+    async setWorkshops ( state ) {
       var workshopList = [];
       var content = null;
-      workshop.onSnapshot(workshopItems => {
-        workshopItems.forEach(doc => {
+      workshop.onSnapshot( workshopItems => {
+        workshopItems.forEach( doc => {
           var workShopData = doc.data();
-          workshopList.push({
+          workshopList.push( {
             ...workShopData,
             id: doc.id
-          });
-          // console.log( "THIS IS WORKSHOP_DATA", workShopData );
-        });
-        // console.log( "THIS IS WORKSHOP_LIST", workshopList );
+          } );
+          console.log( "THIS IS WORKSHOP_DATA", workShopData );
+        } );
+        console.log( "THIS IS WORKSHOP_LIST", workshopList );
         content = workshopList;
-        // console.log("THIS IS PAYLOAD", content);
-        state.commit("setAllWorkshops", content);
-      });
+        console.log( "THIS IS PAYLOAD", content );
+        state.commit( "setAllWorkshops", content );
+      } );
     }
   },
   mutations: {
-    setAllWorkshops(state, value) {
+    setAllWorkshops ( state, value ) {
+      console.log( "THIS IS content", value );
       state.allWorkshops = value;
+      console.log( "THIS IS Worksop", state.allWorkshops );
     }
   }
 };
