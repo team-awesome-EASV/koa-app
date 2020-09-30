@@ -12,6 +12,29 @@ export default {
   },
 
   actions: {
+
+    async addNewWorkshopToDatabase ( { }, payload ) {
+      workshop.add( {
+        ...payload
+      } )
+        .then( workshopElement => {
+          workshop.doc( workshopElement.id ).update( {
+            workshopId: workshopElement.id,
+            workshopPath: workshopElement.path,
+          } )
+            .then( () => {
+              workshop.doc( workshopElement.id ).onSnapshot( workshopElementTwo => {
+                console.log( "display value of worshop after update", workshopElementTwo.data() )
+              } )
+            } ),
+            console.log( "Document successfully written!", workshopElement );
+        } )
+        .catch( function ( error ) {
+          console.error( "Error writing document: ", error );
+        } );
+    },
+
+
     async setWorkshops ( state ) {
       var workshopList = [];
       var content = null;

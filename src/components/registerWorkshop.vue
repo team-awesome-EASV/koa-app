@@ -58,6 +58,9 @@
 
 <script>
 import {
+    mapActions
+} from 'vuex';
+import {
     workshop
 } from 'src/boot/firebase.js';
 
@@ -67,7 +70,7 @@ export default {
         return {
             tab: "Workshop",
             workshopInfo: {
-                name: "name the workshop",
+                name: "",
                 teacher: {},
                 introduction: "",
                 editor: "",
@@ -91,24 +94,18 @@ export default {
     },
 
     methods: {
+        ...mapActions('workshops', [
+            'addNewWorkshopToDatabase'
+        ]),
 
         onSubmit() {
-            this.workshopInfo.keyWordsArray = this.keyWords.split(', ');
-            var workshopValue = this.workshopInfo;
-            workshop.add({
-                workshopValue
-                // name: this.name,
-                // introduction: this.introduction,
-                // body: this.editor,
-                // conclusion: this.conclusion,
-                // teacher: this.teacher.label,
-                // modulesNo: this.modulesNo,
-                // duration: this.duration,
-                // keyWordsArray: this.keyWordsArray,
-                // active: this.active
-            });
-            console.log(`this in the WorkshopWalue`, this.workshopValue);
-            this.onReset();
+            this.workshopInfo.keyWordsArray = this.keyWords.split(', ')
+            // var workshopValue = this.workshopInfo;
+            console.log('this is workshopInfo ', this.workshopInfo)
+
+            this.addNewWorkshopToDatabase(this.workshopInfo),
+
+                this.onReset();
         },
 
         onReset() {
@@ -148,3 +145,15 @@ export default {
 <style>
 
 </style>
+        // workshop.add({
+                //     workshopValue
+                //     // name: this.name,
+                //     // introduction: this.introduction,
+                //     // body: this.editor,
+                //     // conclusion: this.conclusion,
+                //     // teacher: this.teacher.label,
+                //     // modulesNo: this.modulesNo,
+                //     // duration: this.duration,
+                //     // keyWordsArray: this.keyWordsArray,
+                //     // active: this.active
+                // });
