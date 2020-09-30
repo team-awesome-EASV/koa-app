@@ -24,7 +24,9 @@
                 </q-card-section>
                 <q-card-actions>
                     <q-btn flat>Edit</q-btn>
-                    <q-btn flat>Delete</q-btn>
+
+                    <q-btn label="Delete" color="primary" @click.prevent="confirm(item.id)" />
+
                 </q-card-actions>
             </q-card>
 
@@ -57,8 +59,27 @@ export default {
     },
     methods: {
         ...mapActions('workshops', {
-            setWorkshopsA: "setWorkshops"
-        })
+            setWorkshopsA: "setWorkshops",
+            deleteWorkshop: "deleteWorkshopFromDatabase"
+        }),
+        confirm(workshopId) {
+            this.$q.dialog({
+                dark: true,
+                title: 'Confirm',
+                message: 'Are you sure you want to delete this Workshop?',
+                cancel: true,
+                persistent: true
+            }).onOk(() => {
+                this.deleteWorkshop(workshopId);
+
+            }).onOk(() => {
+                console.log('>>>> second OK catcher')
+            }).onCancel(() => {
+                console.log('>>>> Cancel')
+            }).onDismiss(() => {
+                // console.log('I am triggered on both OK and Cancel')
+            })
+        },
     }
 };
 </script>
