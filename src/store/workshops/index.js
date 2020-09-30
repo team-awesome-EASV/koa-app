@@ -22,20 +22,20 @@ export default {
             ...workShopData,
             id: doc.id
           } );
-          console.log( "THIS IS WORKSHOP_DATA", workShopData );
+          // console.log( "THIS IS WORKSHOP_DATA", workShopData );
         } );
-        console.log( "THIS IS WORKSHOP_LIST", workshopList );
+        // console.log( "THIS IS WORKSHOP_LIST", workshopList );
         content = workshopList;
-        console.log( "THIS IS PAYLOAD", content );
+        // console.log( "THIS IS PAYLOAD", content );
         state.commit( "setAllWorkshops", content );
       } );
     }
   },
   mutations: {
     setAllWorkshops ( state, value ) {
-      console.log( "THIS IS content", value );
+      // console.log( "THIS IS content", value );
       state.allWorkshops = value;
-      console.log( "THIS IS Worksop", state.allWorkshops );
+      // console.log( "THIS IS Workshop", state.allWorkshops );
     }
   }
 };
