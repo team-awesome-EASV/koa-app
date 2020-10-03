@@ -37,27 +37,29 @@ export default {
 
     async setWorkshops ( state ) {
       var workshopList = [];
+
       var content = null;
+
       workshop.onSnapshot( workshopItems => {
+        workshopList = [];
         workshopItems.forEach( doc => {
+
           var workShopData = doc.data();
           workshopList.push( {
             ...workShopData,
             id: doc.id
           } );
-          // console.log( "THIS IS WORKSHOP_DATA", workShopData );
         } );
-        // console.log( "THIS IS WORKSHOP_LIST", workshopList );
+
         content = workshopList;
-        console.log( "THIS IS PAYLOAD", content );
+
         state.commit( "setAllWorkshops", content );
       } );
     },
 
-    deleteWorkshopFromDatabase ( { dispatch }, payload ) {
+    deleteWorkshopFromDatabase ( { }, payload ) {
       workshop.doc( payload ).delete().then( () => {
         console.log( "deleted item with ID", payload );
-        dispatch( this.setWorkshops, state );
       } ).catch( error => {
         console.log( "there was an error", error.message )
       } )
@@ -66,10 +68,9 @@ export default {
 
   mutations: {
     setAllWorkshops ( state, content ) {
-      // console.log( "THIS IS content", content );
-      // console.log( "this should be full", state.allWorkshops );
+
       state.allWorkshops = [];
-      // console.log( "this should be empty", state.allWorkshops );
+      console.log( "this should be empty", state.allWorkshops );
       state.allWorkshops = content;
       console.log( "THIS IS Workshop", state.allWorkshops );
     }

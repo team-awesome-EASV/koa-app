@@ -28,6 +28,8 @@ import {
 import {
     registerVersion
 } from 'firebase';
+
+import{mapActions} from 'vuex';
 import registerWorkshop from 'src/components/registerWorkshop.vue';
 import registerModules from 'src/components/registerModules';
 
@@ -66,6 +68,8 @@ export default {
         }
     },
     methods: {
+
+    
         // onSubmit() {
         //     this.keyWordsArray = this.keyWords.split(', ');
         //     workshop.add({

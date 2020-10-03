@@ -48,8 +48,11 @@ export default {
             // str: this.getStr,
         };
     },
+
     beforeMount() {
+
         this.setWorkshopsA();
+
     },
 
     computed: {
@@ -72,8 +75,6 @@ export default {
             }).onOk(() => {
                 this.deleteWorkshop(workshopId);
 
-            }).onOk(() => {
-                console.log('>>>> second OK catcher')
             }).onCancel(() => {
                 console.log('>>>> Cancel')
             }).onDismiss(() => {
