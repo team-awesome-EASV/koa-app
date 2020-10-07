@@ -7,10 +7,7 @@ const routes = [
       { path: "", component: () => import("../pages/Home.vue") },
       { path: "/groups", component: () => import("../pages/Groups.vue") },
       { path: "/workshops", component: () => import("../pages/Workshops.vue") },
-      {
-        path: "/participants",
-        component: () => import("../pages/Participants.vue")
-      },
+      { path: "/participants", component: () => import("../pages/Participants.vue") },
       { path: "/users", component: () => import("../pages/Users.vue") },
 
       //adminShortcuts
@@ -33,7 +30,11 @@ const routes = [
         path: "/workshops-overview",
         props: true,
         component: () => import("../pages/WorkshopsOverview.vue")
-      }
+      },
+
+      //adminSettings
+      { path: "/admin-settings", component: () => import("../pages/adminSettings.vue") },
+
     ],
     props: true,
     meta: {
