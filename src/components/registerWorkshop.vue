@@ -10,8 +10,9 @@
 
             <q-form @submit.prevent="onSubmit" @reset="onReset" class="q-gutter-md">
                 <q-input filled v-model="workshopInfo.name" label="Name of workshop" hint="enter the name of the workshop" :lazy-rules="true" :rules="[ val => val && val.length > 0 || 'Please type something']" />
-                <p class="caption"> select a teacher</p>
-                <q-select v-model="workshopInfo.teacher" :options="selectOptions" hint="select a teacher" :placeholder="selectOptions[0].label" />
+
+                <q-select v-model="workshopInfo.teacher" :options="selectOptions" label="select a teacher" />
+
                 <q-input filled type="textarea" v-model="workshopInfo.introduction" label="Introduction" hint="this is the introduction, it will apear as a small description" :lazy-rules="true" :rules="[ val => val && val.length > 0 || 'Please type something']" />
 
                 <q-editor ref="editor_ref" @paste.native="evt => pasteCapture(evt)" v-model="workshopInfo.editor" toolbar-text-color="white" toolbar-toggle-color="yellow-8" toolbar-bg="primary" placeholder="this is the description, it will be used as an aricle that describes the workshop, and it will be inserted between the intoduction and the conclusion." />
@@ -39,7 +40,7 @@
         <div class="col-4" style="overflow: auto">
             <h3> Show imputed data</h3>
             <p>Workshop name: {{workshopInfo.name}}</p>
-            <p>Teacher name: {{workshopInfo.teacher.label}}</p>
+            <p>Teacher name: {{workshopInfo.teacher.teacherName}}</p>
 
             <p>Workshop duration: {{ workshopInfo.duration}} weeks</p>
             <p>Workshop no modules: {{ workshopInfo.modulesNo}} modules</p>
@@ -71,7 +72,7 @@ export default {
             tab: "Workshop",
             workshopInfo: {
                 name: "",
-                teacher: {},
+                teacher: "",
                 introduction: "",
                 editor: "",
                 conclusion: "",
@@ -82,11 +83,11 @@ export default {
             },
             keyWords: "",
             selectOptions: [{
-                    label: "Teacher Name One",
+                    teacherName: "Teacher Name One",
                     value: "teacher-one"
                 },
                 {
-                    label: "Teacher Name Two",
+                    teacherName: "Teacher Name Two",
                     value: "teacher-two"
                 }
             ]

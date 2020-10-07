@@ -5,6 +5,7 @@ export default {
 
   state: {
     allWorkshops: [],
+    activeWorkshop: {}
   },
 
   getters: {
