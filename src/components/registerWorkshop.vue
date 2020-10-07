@@ -83,14 +83,14 @@ export default {
             },
             keyWords: "",
             selectOptions: [{
-                    teacherName: "Teacher Name One",
+                    label: "Teacher Name One",
                     value: "teacher-one"
                 },
                 {
-                    teacherName: "Teacher Name Two",
+                    label: "Teacher Name Two",
                     value: "teacher-two"
                 }
-            ]
+            ],
         }
     },
 

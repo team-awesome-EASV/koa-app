@@ -10,8 +10,7 @@
 
             <q-form @submit.prevent="onModuleSubmit" @reset="onReset" class="q-gutter-md">
                 <q-input filled v-model="moduleInfo.name" label="Name of module" hint="enter the name of the module" :lazy-rules="true" :rules="[ val => val && val.length > 0 || 'Please type something']" />
-                <p class="caption"> select a teacher</p>
-                <q-select v-model="moduleInfo.teacher" :options="selectOptions" hint="select a teacher" :placeholder="selectOptions[0].label" />
+                <q-select v-model="moduleInfo.teacher" :options="selectOptions" label="select a teacher" />
                 <q-input filled type="textarea" v-model="moduleInfo.introduction" label="Introduction" hint="this is the introduction, it will apear as a small description" :lazy-rules="true" :rules="[ val => val && val.length > 0 || 'Please type something']" />
 
                 <q-editor ref="editor_ref" @paste.native="evt => pasteCapture(evt)" v-model="moduleInfo.moduleDescription" toolbar-text-color="white" toolbar-toggle-color="yellow-8" toolbar-bg="primary" placeholder="this is the description, it will be used as an article that describes the module, and it will be inserted between the intoduction and the conclusion." />
