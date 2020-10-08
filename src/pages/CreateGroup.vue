@@ -1,5 +1,5 @@
 <template>
-  <div class=" text-white text-center q-pa-md flex flex-center">
+  <div class="q-pa-md">
     <stepper-groups />
   </div>
 </template>
