@@ -11,7 +11,6 @@
           @click="leftDrawerOpen = !leftDrawerOpen"
         />
         <q-space />
-          
       </q-toolbar>
       <q-toolbar inset class="gt-xs">
         <q-tabs class="absolute-bottom-left">
@@ -27,14 +26,13 @@
     </q-header>
 
     <q-drawer v-model="leftDrawerOpen" show-if-above bordered>
-
       <q-img src="../assets/koas-bg.jpg" style="height: 150px">
-          <div class="absolute-bottom bg-transparent">
-            <q-avatar size="56px" class="q-mb-sm">
-              <img src="../assets/avatar.jpg">
-            </q-avatar>
-          <div class="text-weight-bold" v-if="user"> Hello {{user.name}}</div>
-          <div v-if="user"> {{user.email}}</div>
+        <div class="absolute-bottom bg-transparent">
+          <q-avatar size="56px" class="q-mb-sm">
+            <img src="../assets/avatar.jpg" />
+          </q-avatar>
+          <div class="text-weight-bold" v-if="user">Hello {{ user.name }}</div>
+          <div v-if="user">{{ user.email }}</div>
         </div>
       </q-img>
 
@@ -50,8 +48,8 @@
         />
       </q-list>
 
-      <q-row class="absolute-bottom q-ma-sm">
-        <q-btn class="q-ma-xs"  @click="$q.dark.toggle">
+      <div class=" row absolute-bottom q-ma-sm">
+        <q-btn class="q-ma-xs" @click="$q.dark.toggle">
           <span v-if="$q.dark.isActive">
             <q-icon name="wb_sunny"></q-icon>
           </span>
@@ -59,16 +57,21 @@
             <q-icon name="nights_stay"></q-icon>
           </span>
         </q-btn>
-        <router-link style="text-decoration: none; color: inherit;" to="/admin-settings">
+        <router-link
+          style="text-decoration: none; color: inherit;"
+          to="/admin-settings"
+        >
           <q-btn class="q-ma-xs">
             <q-icon name="settings"></q-icon>
           </q-btn>
         </router-link>
-        <q-btn class="q-ml-xl" color="negative" label="Sign out" @click="logOut"></q-btn>
-      </q-row>
-
-      
-
+        <q-btn
+          class="q-ml-xl"
+          color="negative"
+          label="Sign out"
+          @click="logOut"
+        ></q-btn>
+      </div>
     </q-drawer>
 
     <q-page-container>
@@ -139,8 +142,7 @@ export default {
 </script>
 
 <style lang="css">
-  li a{
-    text-decoration: none !important;
-  }
-
+li a {
+  text-decoration: none !important;
+}
 </style>

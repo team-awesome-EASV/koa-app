@@ -1,24 +1,13 @@
 <template>
   <div class=" text-white text-center q-pa-md flex flex-center">
-    <div>
-      <div style="color:pink; font-size: 20vh">
-        Create Group
-      </div>
-      <q-btn
-        class="q-mt-xl"
-        color="white"
-        text-color="blue"
-        unelevated
-        to="/"
-        label="Go Home"
-        no-caps
-      />
-    </div>
+    <stepper-groups />
   </div>
 </template>
 
 <script>
+import StepperGroups from "components/groups/StepperGroups";
 export default {
-  name: 'CreateGroup'
-}
+  name: "CreateGroup",
+  components: { "stepper-groups": StepperGroups }
+};
 </script>
