@@ -9,8 +9,18 @@
             <q-card class="my-card bg-secondary text-white">
                 <q-card-section>
                     <h6>Workshop name: {{item.name}}</h6>
-                    <p>Teacher name: {{item.teacher.label}}</p>
+                    <p>Teacher name: {{item.teacher}}</p>
                     <q-icon slot="right" name="alarm" />
+                </q-card-section>
+                <q-card-section>
+                    <p>Description introduction: {{ item.introduction}}</p>
+                    <span>Body description:</span>
+                    <div v-html="allWorkshops.body"></div>
+                    <p>Description conclusion: {{ item.conclusion}}</p>
+                    <p>Workshop duration: {{ item.duration}} weeks</p>
+                    <p>Workshop no modules: {{ item.modulesNo}} modules</p>
+                    <p>Workshop keywords: {{ item.keyWords}}</p>
+                    <p>workshop status: <span v-if="item.active"> active </span> <span v-else> Inactive</span></p>
                 </q-card-section>
                 <q-card-section>
                     <p>Description introduction: {{ item.introduction}}</p>

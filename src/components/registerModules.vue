@@ -9,14 +9,23 @@
             <h3>Input data</h3>
 
             <q-form @submit.prevent="onModuleSubmit" @reset="onReset" class="q-gutter-md">
-                <q-input filled v-model="moduleInfo.name" label="Name of module" hint="enter the name of the module" :lazy-rules="true" :rules="[ val => val && val.length > 0 || 'Please type something']" />
-                <q-select v-model="moduleInfo.teacher" :options="selectOptions" label="select a teacher" />
-                <q-input filled type="textarea" v-model="moduleInfo.introduction" label="Introduction" hint="this is the introduction, it will apear as a small description" :lazy-rules="true" :rules="[ val => val && val.length > 0 || 'Please type something']" />
+                <p>workshop info</p>
+                <div>
+                    <p>you are now adding a new module for the following workshop:</p>
+                    <p>name: {{activeWorkshop.name}}</p>
+                    <p v-if="activeWorkshop.teacher">teacher: {{activeWorkshop.teacher.label}}</p>
+                    <p>introduction: {{activeWorkshop.introduction}}</p>
+                    <p v-for="keyWord in activeWorkshop.keyWordsArray" :key="keyWord.index">key words: {{keyWord}}</p>
+                </div>
+
+                <q-input filled v-model="moduleInfo.moduleName" label="Name of module" hint="enter the name of the module" :lazy-rules="true" :rules="[ val => val && val.length > 0 || 'Please type something']" />
+                <q-select v-model="moduleInfo.moduleTeacher" :options="selectOptions" label="select a teacher" />
+                <q-input filled type="textarea" v-model="moduleInfo.moduleIntroduction" label="Introduction" hint="this is the introduction, it will apear as a small description" :lazy-rules="true" :rules="[ val => val && val.length > 0 || 'Please type something']" />
 
                 <q-editor ref="editor_ref" @paste.native="evt => pasteCapture(evt)" v-model="moduleInfo.moduleDescription" toolbar-text-color="white" toolbar-toggle-color="yellow-8" toolbar-bg="primary" placeholder="this is the description, it will be used as an article that describes the module, and it will be inserted between the intoduction and the conclusion." />
-                <q-input filled type="textarea" v-model="moduleInfo.conclusion" label="Conclusion" hint="this is the conclusion, it can be used as a punch-line" :lazy-rules="true" :rules="[ val => val && val.length > 0 || 'Please type something']" />
+                <q-input filled type="textarea" v-model="moduleInfo.moduleConclusion" label="Conclusion" hint="this is the conclusion, it can be used as a punch-line" :lazy-rules="true" :rules="[ val => val && val.length > 0 || 'Please type something']" />
 
-                <q-input filled type="number" v-model="moduleInfo.duration" label="Number of weeks" hint="enter the duration of the workshop in weeks" :lazy-rules="true" :rules="[
+                <q-input filled type="number" v-model="moduleInfo.moduleDuration" label="Number of weeks" hint="enter the duration of the workshop in weeks" :lazy-rules="true" :rules="[
           val => val !== null && val !== '' || 'Please type your age',
           val => val > 0 && val < 100 || 'Please type a real age'
         ]" />
@@ -33,7 +42,7 @@
         <div class="col-4" style="overflow: auto">
             <h3> Show imputed data</h3>
             <p>Workshop name: {{moduleInfo.moduleName}}</p>
-            <p>Teacher name: {{moduleInfo.moduleTeacher.label}}</p>
+            <p v-if="moduleInfo.moduleTeacher">Teacher name: {{moduleInfo.moduleTeacher}}</p>
 
             <p>Workshop duration: {{ moduleInfo.moduleDuration}} weeks</p>
             <p>Description introduction: {{ moduleInfo.moduleIntroduction}}</p>
@@ -43,12 +52,18 @@
             <p>Description conclusion: {{ moduleInfo.moduleConclusion}}</p>
             <p>Workshop keywords: {{ moduleKeyWordsInput}}</p>
         </div>
+
     </div>
 
 </div>
 </template>
 
 <script>
+import {
+    mapGetters,
+    mapActions
+} from 'vuex';
+
 export default {
 
     data() {
@@ -68,25 +83,39 @@ export default {
             ],
 
             moduleInfo: {
-                moduleName: "module name",
-                moduleTeacher: {},
-                moduleIntroduction: "short introduction",
-                moduleDescription: "module description",
-                moduleConclusion: "module conclusion",
-                moduleDuration: 2,
+                moduleTeacher: "",
+                moduleName: "name",
+                moduleIntroduction: "intro",
+                moduleDescription: "",
+                moduleConclusion: "",
+                moduleDuration: 1,
                 moduleKeyWordsArray: [],
 
             }
         }
     },
+
+    computed: {
+        ...mapGetters('workshops', {
+            activeWorkshop: 'activeWorkshop'
+        })
+    },
     methods: {
-
-        addNewModule() {
-
-        },
+        ...mapActions('workshops', ['addNewModuleToWorkshop']),
 
         onModuleSubmit() {
             this.moduleInfo.moduleKeyWordsArray = this.moduleKeyWordsInput.split(', ');
+            console.log("this is the module info", this.moduleInfo);
+            console.log("this is the id info", this.activeWorkshop.workshopId);
+            this.addNewModuleToWorkshop({
+                info: this.moduleInfo,
+                id: this.activeWorkshop.workshopId
+            });
+        },
+
+        addNewModule() {
+            this.onModuleSubmit();
+            this.onReset();
 
         },
         onReset() {

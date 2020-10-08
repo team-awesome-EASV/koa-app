@@ -40,7 +40,7 @@
         <div class="col-4" style="overflow: auto">
             <h3> Show imputed data</h3>
             <p>Workshop name: {{workshopInfo.name}}</p>
-            <p>Teacher name: {{workshopInfo.teacher.teacherName}}</p>
+            <p v-if="workshopInfo.teacher">Teacher name: {{workshopInfo.teacher.label}}</p>
 
             <p>Workshop duration: {{ workshopInfo.duration}} weeks</p>
             <p>Workshop no modules: {{ workshopInfo.modulesNo}} modules</p>
@@ -96,7 +96,8 @@ export default {
 
     methods: {
         ...mapActions('workshops', [
-            'addNewWorkshopToDatabase'
+            'addNewWorkshopToDatabase',
+
         ]),
 
         onSubmit() {
@@ -104,9 +105,8 @@ export default {
             // var workshopValue = this.workshopInfo;
             console.log('this is workshopInfo ', this.workshopInfo)
 
-            this.addNewWorkshopToDatabase(this.workshopInfo),
+            this.addNewWorkshopToDatabase(this.workshopInfo)
 
-                this.onReset();
         },
 
         onReset() {
