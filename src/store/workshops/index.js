@@ -45,16 +45,7 @@ export default {
                   commit("setActiveWorkshop", this.content);
                 });
             });
-          // console.log( "Document successfully written!", workshopElement )
-          // .then( () => {
-          //   if ( content ) {
-          //     console.log( "this is the content sent for update", this.content )
-
-          //   }
-
-          // } )
         })
-
         .catch(function(error) {
           console.error("Error writing document: ", error);
         });
@@ -69,14 +60,15 @@ export default {
         .add({
           ...info
         })
+
         .then(moduleElement => {
           workshop
             .doc(id)
             .collection("Modules")
             .doc(moduleElement.id)
             .update({
-              workshopId: moduleElement.id,
-              workshopPath: moduleElement.path
+              moduleId: moduleElement.id,
+              modulePath: moduleElement.path
             });
         })
         .catch(error => {
@@ -86,19 +78,46 @@ export default {
 
     async setWorkshops(state) {
       var workshopList = [];
+      var moduleList = [];
+
       var content = null;
       workshop.onSnapshot(workshopItems => {
         workshopList = [];
         workshopItems.forEach(doc => {
-          console.log("this is the workshop", workshopItems);
+          // console.log("this is the workshop", workshopItems);
           var workShopData = doc.data();
-          workshopList.push({
-            ...workShopData,
-            id: doc.id
-          });
+
+          workshop
+            .doc(doc.id)
+            .collection("Modules")
+            .onSnapshot(moduleItems => {
+              moduleList = [];
+              moduleItems.forEach(doc => {
+                console.log("this is the id", doc.id);
+                // console.log("this are the modules", moduleItems);
+                var moduleData = doc.data();
+                var moduleElement = {};
+                // console.log("this is the module data", moduleData);
+                moduleElement = {
+                  ...moduleData,
+                  id: doc.id
+                };
+
+                moduleList.push(moduleElement);
+                console.log("this is module element", moduleElement);
+              });
+              console.log("this is the moduleList", moduleList);
+              workshopList.push({
+                ...workShopData,
+                moduleList,
+                id: doc.id
+              });
+            });
         });
+
         content = workshopList;
         state.commit("setAllWorkshops", content);
+        // console.log("this is workshop vuex content", content);
       });
     },
 
@@ -118,13 +137,13 @@ export default {
   mutations: {
     setAllWorkshops(state, content) {
       state.allWorkshops = [];
-      console.log("this should be empty", state.allWorkshops);
+      // console.log("this should be empty", state.allWorkshops);
       state.allWorkshops = content;
-      console.log("THIS IS Workshop", state.allWorkshops);
+      // console.log("THIS IS Workshop", state.allWorkshops);
     },
 
     setActiveWorkshop(state, content) {
-      console.log("this is the content of activeworkshop mutation", content);
+      // console.log("this is the content of activeworkshop mutation", content);
       state.activeWorkshop = content;
     }
   }
