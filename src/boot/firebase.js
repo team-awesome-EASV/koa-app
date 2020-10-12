@@ -28,12 +28,6 @@ let workshop = db.collection("Workshops");
 
 firebase.analytics();
 
-// auth.onAuthStateChanged(user => {
-//   const uid = user ? user.uid : null;
-//   store.dispatch("auth/handleAuthChange", uid);
-//   console.log("listener working", user);
-// });
-
 const ensureAuthIsInitialized = async store => {
   if (store.state.auth.isReady) return true;
   // Create the observer only once on init

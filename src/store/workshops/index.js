@@ -1,4 +1,5 @@
 import { workshop } from "src/boot/firebase.js";
+import { Notify } from "quasar";
 
 export default {
   namespaced: true,
@@ -126,6 +127,7 @@ export default {
         .doc(payload)
         .delete()
         .then(() => {
+          Notify.create("Workshop deleted");
           console.log("deleted item with ID", payload);
         })
         .catch(error => {

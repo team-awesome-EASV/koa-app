@@ -27,25 +27,6 @@ const router = new VueRouter({
   base: process.env.VUE_ROUTER_BASE
 });
 
-// router.beforeResolve(async (to, from, next) => {
-//   const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
-//
-//   const user = store.getters["auth/isAuthenticated"];
-//   // const user = await new Promise((resolve, reject) => {
-//   //   auth.onAuthStateChanged(user => {
-//   //     store.dispatch("auth/handleAuthChange");
-//   //     resolve(user);
-//   //   });
-//   // });
-//
-//   console.log(" router nav guard isauthenticated", user);
-//   if (requiresAuth && !user) {
-//     next("/login");
-//   } else {
-//     next();
-//   }
-// });
-
 router.beforeEach(async (to, from, next) => {
   try {
     // Force the app to wait until Firebase has
@@ -59,7 +40,6 @@ router.beforeEach(async (to, from, next) => {
         next("/login");
       }
     }
-
     // else if (
     //   (to.path === "/auth/register" && isAuthenticated(store)) ||
     //   (to.path === "/auth/login" && isAuthenticated(store))
@@ -70,11 +50,10 @@ router.beforeEach(async (to, from, next) => {
       next();
     }
   } catch (err) {
-    console.log("error");
-    // Notify.create({
-    //   message: `${err}`,
-    //   color: "negative"
-    // });
+    Notify.create({
+      message: `${err}`,
+      color: "negative"
+    });
   }
 });
 
