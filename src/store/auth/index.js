@@ -6,11 +6,21 @@ export default {
   namespaced: true,
 
   state: {
-    loggedInUser: null
+    loggedInUser: {
+      email: "",
+      id: "",
+      name: "",
+      phone: "",
+      photo: ""
+    },
+    isAuthenticated: false,
+    isReady: false,
+    authenticated: false
   },
 
   getters: {
-    user: state => state.loggedInUser
+    user: state => state.loggedInUser,
+    isAuthenticated: state => state.isAuthenticated
   },
 
   actions: {
@@ -45,17 +55,20 @@ export default {
         });
     },
     loginUser({ commit, dispatch }, payload) {
+      console.log("login");
       auth
         .setPersistence(firebase.auth.Auth.Persistence.LOCAL)
         .then(() =>
           auth
             .signInWithEmailAndPassword(payload.email, payload.password)
             .then(() => {
-              let user = auth.currentUser.uid;
-              dispatch("getUserData", user);
-              console.log(user);
+              // const uid = auth.currentUser.uid;
+              // dispatch("getUserData", uid);
+              console.log(auth.currentUser);
 
-              router.push("/");
+              router
+                .push("/")
+                .catch(error => console.log(error, "error glupiego routera"));
             })
             .catch(error => {
               // Handle Errors here.
@@ -75,34 +88,60 @@ export default {
       auth
         .signOut()
         .then(() => {
-          commit("userStatus", null);
+          // commit("userStatus", null);
           console.log("user logged out");
-          router.replace("/login");
+          // router.replace("/login").catch(e => console.log(e, "error"));
         })
         .catch(error => {
           console.log(error);
         });
     },
+
     getUserData({ commit }, uid) {
-      if (uid) {
-        db.collection("Users")
-          .doc(uid)
-          .get()
-          .then(doc => {
-            console.log("getuserdata action", doc.data());
-            commit("userStatus", doc.data());
-          });
-      } else commit("userStatus", null);
+      db.collection("Users")
+        .doc(uid)
+        .get()
+        .then(doc => {
+          console.log("getuserdata action", doc.data());
+          commit("userStatus", doc.data());
+        });
+    },
+
+    // handleAuthChange({ dispatch, commit, getters }, uid) {
+    //   // const fbUser = auth.currentUser;
+    //   // const uid = user ? auth.currentUser.uid : null;
+    //   // const localId = getters.user.id;
+    //   // console.log(
+    //   //   `  TRIGGERED: handleAuthChange,
+    //   //   vuex uid ${localId}
+    //   //    fb uid ${uid ? uid : "null"}`
+    //   // );
+    //
+    //   if (!uid) commit("userStatus");
+    //   else dispatch("getUserData", uid);
+    // },
+
+    routeUserToAuth: () => {
+      router.push({
+        path: "/login"
+      });
     }
   },
   mutations: {
-    userStatus: (state, user) => {
-      if (user) {
-        state.loggedInUser = user;
+    userStatus: (state, payload) => {
+      if (payload) {
+        state.loggedInUser = payload;
+        state.authenticated = true;
       } else {
         state.loggedInUser = null;
+        state.authenticated = false;
       }
-      console.log("currentUser MUTATED", user);
+      console.log(`"currentUser MUTATED", ${payload ? payload : "empty"}`);
+    },
+
+    setAuthState: (state, data) => {
+      state.isAuthenticated = data.isAuthenticated;
+      state.isReady = data.isReady;
     }
   }
 };

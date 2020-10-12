@@ -1,8 +1,9 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
-import { auth } from "boot/firebase";
+import { ensureAuthIsInitialized, isAuthenticated } from "boot/firebase";
 import routes from "./routes";
 import store from "../store/index";
+import { Notify } from "quasar";
 
 Vue.use(VueRouter);
 
@@ -26,27 +27,54 @@ const router = new VueRouter({
   base: process.env.VUE_ROUTER_BASE
 });
 
+// router.beforeResolve(async (to, from, next) => {
+//   const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
+//
+//   const user = store.getters["auth/isAuthenticated"];
+//   // const user = await new Promise((resolve, reject) => {
+//   //   auth.onAuthStateChanged(user => {
+//   //     store.dispatch("auth/handleAuthChange");
+//   //     resolve(user);
+//   //   });
+//   // });
+//
+//   console.log(" router nav guard isauthenticated", user);
+//   if (requiresAuth && !user) {
+//     next("/login");
+//   } else {
+//     next();
+//   }
+// });
+
 router.beforeEach(async (to, from, next) => {
-  const requiresAuth = to.matched.some(record => record.meta.requiresAuth);
-
-  const user = await new Promise((resolve, reject) => {
-    auth.onAuthStateChanged(user => {
-      if (user) {
-        store.dispatch("auth/getUserData", user.uid);
-        console.log("listener working", user.displayName);
+  try {
+    // Force the app to wait until Firebase has
+    // finished its initialization, and handle the
+    // authentication state of the user properly
+    await ensureAuthIsInitialized(store);
+    if (to.matched.some(record => record.meta.requiresAuth)) {
+      if (isAuthenticated(store)) {
+        next();
       } else {
-        store.dispatch("auth/getUserData", null);
-        console.log("listener working");
+        next("/login");
       }
-      resolve(user);
-    });
-  });
+    }
 
-  console.log(" router nav guard isauthenticated", user);
-  if (requiresAuth && !user) {
-    next("/login");
-  } else {
-    next();
+    // else if (
+    //   (to.path === "/auth/register" && isAuthenticated(store)) ||
+    //   (to.path === "/auth/login" && isAuthenticated(store))
+    // ) {
+    //   next("/user");
+    // }
+    else {
+      next();
+    }
+  } catch (err) {
+    console.log("error");
+    // Notify.create({
+    //   message: `${err}`,
+    //   color: "negative"
+    // });
   }
 });
 
