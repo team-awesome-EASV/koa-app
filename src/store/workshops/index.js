@@ -93,7 +93,7 @@ export default {
             .onSnapshot(moduleItems => {
               moduleList = [];
               moduleItems.forEach(doc => {
-                console.log("this is the id", doc.id);
+                // console.log("this is the id", doc.id);
                 // console.log("this are the modules", moduleItems);
                 var moduleData = doc.data();
                 var moduleElement = {};
@@ -104,9 +104,9 @@ export default {
                 };
 
                 moduleList.push(moduleElement);
-                console.log("this is module element", moduleElement);
+                // console.log("this is module element", moduleElement);
               });
-              console.log("this is the moduleList", moduleList);
+              // console.log("this is the moduleList", moduleList);
               workshopList.push({
                 ...workShopData,
                 moduleList,

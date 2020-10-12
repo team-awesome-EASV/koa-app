@@ -1,13 +1,16 @@
 // import authGuard from "./authGuard";
 const routes = [
   {
-    path: "/adminPage",
+    path: "/",
     component: () => import("../layouts/AdminLayout.vue"),
     children: [
       { path: "", component: () => import("../pages/Home.vue") },
       { path: "/groups", component: () => import("../pages/Groups.vue") },
       { path: "/workshops", component: () => import("../pages/Workshops.vue") },
-      { path: "/participants", component: () => import("../pages/Participants.vue") },
+      {
+        path: "/participants",
+        component: () => import("../pages/Participants.vue")
+      },
       { path: "/users", component: () => import("../pages/Users.vue") },
 
       //adminShortcuts
@@ -33,8 +36,10 @@ const routes = [
       },
 
       //adminSettings
-      { path: "/admin-settings", component: () => import("../pages/adminSettings.vue") },
-
+      {
+        path: "/admin-settings",
+        component: () => import("../pages/adminSettings.vue")
+      }
     ],
     props: true,
     meta: {
@@ -44,7 +49,7 @@ const routes = [
   },
 
   {
-    path: "/",
+    path: "/login",
     name: "Login",
     component: () => import("../pages/Authenticate")
   },

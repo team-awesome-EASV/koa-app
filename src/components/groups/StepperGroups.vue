@@ -11,16 +11,12 @@
       <q-step
         :name="1"
         title="Create group"
-        icon="settings"
+        icon="groups"
+        caption="Pick name, workshop and module."
         :done="done1"
-        class="row justify-center"
+        class="row justify-center fit"
       >
-        <q-form
-          @submit="onSubmit"
-          @reset="onReset"
-          class="q-gutter-md"
-          style="max-width: 600px"
-        >
+        <q-form @submit="onSubmit" @reset="onReset" class="q-gutter-md  col-12">
           <q-input
             rounded
             outlined
@@ -87,7 +83,6 @@
           </q-toggle>
           <div class="row items-center">
             <div class="col">
-              <span class="text-caption">Pick group color</span>
               <q-color
                 v-model="newGroup.color"
                 no-header
@@ -107,6 +102,9 @@
                 ]"
                 class="my-picker"
               />
+              <span class="text-caption text-weight-light"
+                >Pick group color</span
+              >
             </div>
             <q-avatar
               :style="`background-color: ${newGroup.color}`"
@@ -135,8 +133,8 @@
       <q-step
         :name="2"
         title="Set dates and time"
-        caption="Optional"
-        icon="create_new_folder"
+        caption="Pick start date and days of the week."
+        icon="schedule"
         :done="done2"
       >
         STEP 2
@@ -166,8 +164,9 @@
       <q-step
         :name="3"
         title="Review and submit"
-        icon="add_comment"
+        icon="preview"
         :done="done3"
+        caption="Make sure all is correct."
       >
         STEP 3
         <!--        <q-stepper-navigation>-->

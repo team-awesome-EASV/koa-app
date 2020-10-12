@@ -1,5 +1,6 @@
+import firebase from "firebase/app";
 import { auth, db } from "boot/firebase";
-import Router from "../../router/index";
+import router from "../../router/index";
 
 export default {
   namespaced: true,
@@ -45,25 +46,30 @@ export default {
     },
     loginUser({ commit, dispatch }, payload) {
       auth
-        .signInWithEmailAndPassword(payload.email, payload.password)
-        .then(() => {
-          let user = auth.currentUser.uid;
-          dispatch("getUserData", user);
+        .setPersistence(firebase.auth.Auth.Persistence.LOCAL)
+        .then(() =>
+          auth
+            .signInWithEmailAndPassword(payload.email, payload.password)
+            .then(() => {
+              let user = auth.currentUser.uid;
+              dispatch("getUserData", user);
+              console.log(user);
 
-          this.$router.push("/adminPage");
-        })
-        .catch(error => {
-          // Handle Errors here.
-          var errorCode = error.code;
-          var errorMessage = error.message;
-          if (errorCode === "auth/wrong-password") {
-            alert("Wrong password.");
-          } else {
-            alert(errorMessage);
-          }
-          console.log(error);
-        });
-      console.log("store-loginuser");
+              router.push("/");
+            })
+            .catch(error => {
+              // Handle Errors here.
+              var errorCode = error.code;
+              var errorMessage = error.message;
+              if (errorCode === "auth/wrong-password") {
+                alert("Wrong password.");
+              } else {
+                alert(errorMessage);
+              }
+              console.log(error);
+            })
+        )
+        .catch(e => console.log(e));
     },
     logOut({ commit }) {
       auth
@@ -71,7 +77,7 @@ export default {
         .then(() => {
           commit("userStatus", null);
           console.log("user logged out");
-          this.$router.replace("/");
+          router.replace("/login");
         })
         .catch(error => {
           console.log(error);
