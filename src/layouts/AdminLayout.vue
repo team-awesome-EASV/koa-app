@@ -137,11 +137,15 @@ export default {
 
   methods: {
     ...mapActions("auth", ["logOut"]),
-    ...mapActions("workshops", { setWorkshopsA: "setWorkshops" })
+    ...mapActions("workshops", {
+      setWorkshopsA: "setWorkshops",
+      setModules: "setModulesToWorkshops"
+    })
   },
 
   beforeMount() {
     this.setWorkshopsA();
+    this.setModules();
   }
 };
 </script>

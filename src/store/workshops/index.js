@@ -38,7 +38,7 @@ export default {
                 .doc(workshopElement.id)
                 .onSnapshot(workshopElementTwo => {
                   console.log(
-                    "display value of worshop after update",
+                    "display value of workshop after update",
                     workshopElementTwo.data()
                   );
                   this.content = workshopElementTwo.data();
@@ -87,38 +87,35 @@ export default {
         workshopItems.forEach(doc => {
           // console.log("this is the workshop", workshopItems);
           var workShopData = doc.data();
-
-          workshop
-            .doc(doc.id)
-            .collection("Modules")
-            .onSnapshot(moduleItems => {
-              moduleList = [];
-              moduleItems.forEach(doc => {
-                // console.log("this is the id", doc.id);
-                // console.log("this are the modules", moduleItems);
-                var moduleData = doc.data();
-                var moduleElement = {};
-                // console.log("this is the module data", moduleData);
-                moduleElement = {
-                  ...moduleData,
-                  id: doc.id
-                };
-
-                moduleList.push(moduleElement);
-                // console.log("this is module element", moduleElement);
-              });
-              // console.log("this is the moduleList", moduleList);
-              workshopList.push({
-                ...workShopData,
-                moduleList,
-                id: doc.id
-              });
-            });
+          workshopList.push({
+            ...workShopData,
+            id: doc.id
+          });
         });
 
         content = workshopList;
         state.commit("setAllWorkshops", content);
         // console.log("this is workshop vuex content", content);
+      });
+    },
+
+    setModulesToWorkshops({ commit }) {
+      var moduleList = [];
+      workshop.onSnapshot(item => {
+        item.forEach(doc => {
+          workshop
+            .doc(doc.id)
+            .collection("Modules")
+            .onSnapshot(moduleItems => {
+              moduleItems.forEach(doc => {
+                var modData = doc.data();
+                moduleList.push(modData);
+                console.log("module list", moduleList);
+              });
+              commit("setModules", moduleList);
+              moduleList = [];
+            });
+        });
       });
     },
 
@@ -133,6 +130,17 @@ export default {
         .catch(error => {
           console.log("there was an error", error.message);
         });
+      workshop
+        .doc(payload)
+        .collection("Modules")
+        .delete()
+        .then(() => {
+          Notify.create("Workshop and Modules deleted");
+          console.log("deleted  modules and workshop with ID", payload);
+        })
+        .catch(error => {
+          console.log("there was an error", error.message);
+        });
     }
   },
 
@@ -142,6 +150,17 @@ export default {
       // console.log("this should be empty", state.allWorkshops);
       state.allWorkshops = content;
       // console.log("THIS IS Workshop", state.allWorkshops);
+    },
+    setModules(state, content) {
+      for (var i = 0; i < state.allWorkshops.length; i++) {
+        console.log("the value of", i);
+        console.log("this is the content", content[0].workshopId);
+        console.log("this is the workshop", state.allWorkshops[i].workshopId);
+        if (content[0].workshopId == state.allWorkshops[i].workshopId) {
+          state.allWorkshops[i].moduleList = content;
+        }
+      }
+      console.log(state.allWorkshops.length);
     },
 
     setActiveWorkshop(state, content) {
