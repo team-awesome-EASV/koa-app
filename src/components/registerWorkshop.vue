@@ -276,22 +276,6 @@
                     val => (val && val.length > 0) || 'Please type something'
                   ]"
                 />
-
-                <div>
-                  <q-btn label="Submit" type="submit" color="primary" />
-                  <q-btn
-                    label="Add new module"
-                    color="secondary"
-                    @click="addNewModule"
-                  />
-                  <q-btn
-                    label="Reset"
-                    type="reset"
-                    color="primary"
-                    flat
-                    class="q-ml-sm"
-                  />
-                </div>
               </q-form>
             </div>
           </q-step>
