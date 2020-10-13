@@ -112,7 +112,7 @@ export default {
               moduleItems.forEach(doc => {
                 var modData = doc.data();
                 moduleList.push(modData);
-                console.log("module list", moduleList);
+                // console.log("module list", moduleList);
               });
               commit("setModules", moduleList);
               moduleList = [];
@@ -127,7 +127,7 @@ export default {
         .delete()
         .then(() => {
           Notify.create("Workshop deleted");
-          console.log("deleted item with ID", payload);
+          // console.log("deleted item with ID", payload);
         })
         .catch(error => {
           console.log("there was an error", error.message);
@@ -138,7 +138,7 @@ export default {
         .delete()
         .then(() => {
           Notify.create("Workshop and Modules deleted");
-          console.log("deleted  modules and workshop with ID", payload);
+          // console.log("deleted  modules and workshop with ID", payload);
         })
         .catch(error => {
           console.log("there was an error", error.message);
@@ -155,9 +155,9 @@ export default {
     },
     setModules(state, content) {
       for (var i = 0; i < state.allWorkshops.length; i++) {
-        console.log("the value of", i);
-        console.log("this is the content", content[0].workshopId);
-        console.log("this is the workshop", state.allWorkshops[i].workshopId);
+        // console.log("the value of", i);
+        // console.log("this is the content", content[0].workshopId);
+        // console.log("this is the workshop", state.allWorkshops[i].workshopId);
         if (content[0].workshopId == state.allWorkshops[i].workshopId) {
           state.allWorkshops[i].moduleList = content;
         }
