@@ -15,7 +15,9 @@ export default {
     workshopsSelect: state =>
       state.allWorkshops.map(el => ({ label: el.name, value: el.id })),
     moduleSelect: state => id => {
-      return state.allWorkshops.find(workshop => workshop.id === id);
+      return state.allWorkshops
+        .find(workshop => workshop.id === id)
+        .moduleList.map(el => ({ label: el.moduleName, value: el.id }));
     }
   },
 

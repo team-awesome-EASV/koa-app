@@ -34,13 +34,14 @@
             :options="workshops"
             label="Workshop"
             hint="Choose workshop"
+            @input="clearModule"
           />
 
           <q-select
             rounded
             outlined
             v-model="newGroup.module"
-            :options="workshops"
+            :options="moduleList"
             label="Module"
             hint="Choose module"
           />
@@ -113,6 +114,9 @@
             >
               <q-icon name="group" />
             </q-avatar>
+            <p v-if="newGroup.workshop">
+              tu powinna byc lista moduluow
+            </p>
           </div>
         </q-form>
 
@@ -137,8 +141,6 @@
         icon="schedule"
         :done="done2"
       >
-        STEP 2
-
         <!--        <q-stepper-navigation>-->
         <!--          <q-btn-->
         <!--            flat-->
@@ -205,7 +207,7 @@
 
 <script>
 import { mapGetters, mapActions } from "vuex";
-import { workshop } from "boot/firebase";
+
 export default {
   name: "StepperGroups",
 
@@ -216,12 +218,12 @@ export default {
       done2: false,
       done3: false,
       newGroup: {
-        name: null,
-        workshop: null,
-        module: null,
-        teacher: null,
-        totalSpots: null,
-        location: null,
+        name: "",
+        workshop: "",
+        module: "",
+        teacher: "",
+        totalSpots: "",
+        location: "",
         color: "#019A9D",
         status: "inactive",
         acceptsParticipants: true
@@ -231,8 +233,15 @@ export default {
 
   computed: {
     ...mapGetters("workshops", {
-      workshops: "workshopsSelect"
-    })
+      workshops: "workshopsSelect",
+      modules: "moduleSelect"
+    }),
+
+    moduleList() {
+      return this.newGroup.workshop
+        ? this.modules(this.newGroup.workshop.value)
+        : [{ label: "Choose workshop first", value: null }];
+    }
 
     // workshops: function() {
     //   return this.allWorkshops.map(el => {
@@ -247,6 +256,10 @@ export default {
       this.done2 = false;
       this.done3 = false;
       this.step = 1;
+    },
+
+    clearModule() {
+      this.newGroup.module = "";
     },
 
     onSubmit() {
