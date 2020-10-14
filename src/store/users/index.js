@@ -35,11 +35,11 @@ export default {
               .join("")
           });
         });
-        allUsersTemp = [];
-        console.log("i am inside snapshot", allUsersTemp);
-      });
 
-      context.commit("committAllUsers", allUsersTemp);
+        console.log("i am inside snapshot", allUsersTemp);
+        context.commit("committAllUsers", allUsersTemp);
+        allUsersTemp = [];
+      });
     }
   }
 };
