@@ -31,8 +31,10 @@
           <q-avatar size="56px" class="q-mb-sm">
             <img src="../assets/avatar.jpg" />
           </q-avatar>
-          <div class="text-weight-bold" v-if="user">Hello {{ user.name }}</div>
-          <div v-if="user">{{ user.email }}</div>
+          <div class="text-weight-bold" v-if="curentUser">
+            Hello {{ curentUser.name }}
+          </div>
+          <div v-if="curentUser">{{ curentUser.email }}</div>
         </div>
       </q-img>
 
@@ -122,17 +124,32 @@ export default {
       navShortcuts: routesData,
 
       TabNavLinks: [
-        { name: "HOME", path: "/" },
-        { name: "GROUPS", path: "/groups" },
-        { name: "WORKSHOPS", path: "/workshops" },
-        { name: "PARTICIPANTS", path: "/participants" },
-        { name: "USERS", path: "/users" }
+        {
+          name: "HOME",
+          path: "/"
+        },
+        {
+          name: "GROUPS",
+          path: "/groups"
+        },
+        {
+          name: "WORKSHOPS",
+          path: "/workshops"
+        },
+        {
+          name: "PARTICIPANTS",
+          path: "/participants"
+        },
+        {
+          name: "USERS",
+          path: "/users"
+        }
       ]
     };
   },
 
   computed: {
-    ...mapGetters("auth", ["user"])
+    ...mapGetters("auth", ["curentUser"])
   },
 
   methods: {
@@ -140,12 +157,14 @@ export default {
     ...mapActions("workshops", {
       setWorkshopsA: "setWorkshops",
       setModules: "setModulesToWorkshops"
-    })
+    }),
+    ...mapActions("users", ["getAllUsers"])
   },
 
   beforeMount() {
     this.setWorkshopsA();
     this.setModules();
+    this.getAllUsers();
   }
 };
 </script>

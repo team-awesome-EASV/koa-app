@@ -19,7 +19,7 @@ export default {
   },
 
   getters: {
-    user: state => state.loggedInUser,
+    curentUser: state => state.loggedInUser,
     isAuthenticated: state => state.isAuthenticated
   },
 
