@@ -5,55 +5,41 @@ export default {
     namespaced: true,  
 
   state: {
-    userDetails: [],
+    allUsers: [],
   },
 
   mutations:{
 
-    setUserDetails: state => {
-        let userDetails = []
-
-        users.onSnapshot((snapshotItems) => {
-            userDetails = []
-            snapshotItems.forEach((doc) => {
-                var userDetailsData = doc.data();
-                userDetails.push({
-                ...userDetailsData,
-                id: doc.id
-                })
-            })
-            state.userDetails = userDetails
-        }
-    )
-}
-
-    // created() {
-    //     users.get().then((querySnapshot) => {
-    //         querySnapshot.forEach((doc => {
-    //             console.log(doc.id, "=>", doc.data());
-    //             var userDetailsData = doc.data();
-    //             this.userDetails.push({
-    //                 id: doc.id,
-    //                 name: userDetailsData.name,
-    //                 email: userDetailsData.email
-    //             })
-    //         }))
-    //     })
-    // },
-
-
+    committAllUsers: (state, payload) => {
+        console.log("is this even happening?", payload);
+        state.allUsers = payload;
+      },
 
   },
 
   actions:{
-    setUserDetails: context => {
-        context.commit('setUserDetails')
-    }
+
+    getAllUsers: context => {
+        let allUsersTemp = []
+
+        users.onSnapshot((snapshotItems) => {
+       
+            snapshotItems.forEach((doc) => {
+                let userDetailsData = doc.data();
+                allUsersTemp.push({
+                    id: doc.id,
+                    name: userDetailsData.name,
+                    email: userDetailsData.email,
+                    initial: userDetailsData.name.split(' ').map(word => word.charAt(0)).join('')
+                });
+            });
+            allUsersTemp = [];
+        }).then(() => {context.commit("committAllUsers", allUsersTemp);
   },
 
   getters: {
-    userDetails : state => state.userDetails
-  },
+    userDetails: state => state.allUsers
+  }
 
 
   
