@@ -18,7 +18,7 @@
             :done="done1"
             class="row justify-center fit"
           >
-            <q-form @reset="onReset" class="q-gutter-md">
+            <q-form class="q-gutter-md">
               <q-input
                 rounded
                 outlined
@@ -34,7 +34,7 @@
               <q-select
                 rounded
                 outlined
-                v-model="workshopInfo.teache"
+                v-model="workshopInfo.teacher"
                 :options="selectOptions"
                 label="select a teacher"
                 hint="Choose the teacher for this module"
@@ -54,12 +54,24 @@
               />
 
               <q-editor
+                class="editor-full-width"
                 ref="editor_ref"
                 @paste.native="evt => pasteCapture(evt)"
-                v-model="workshopInfo.editor"
+                v-model="workshopInfo.description"
                 toolbar-text-color="white"
                 toolbar-toggle-color="yellow-8"
                 toolbar-bg="primary"
+                :toolbar="[
+                  ['bold', 'italic', 'underline'],
+                  [
+                    {
+                      label: $q.lang.editor.formatting,
+                      icon: $q.iconSet.editor.formatting,
+                      list: 'no-icons',
+                      options: ['p', 'h3', 'h4', 'h5', 'h6', 'code']
+                    }
+                  ]
+                ]"
                 placeholder="this is the description, it will be used as an aricle that describes the workshop, and it will be inserted between the intoduction and the conclusion."
               />
 
@@ -87,8 +99,7 @@
                 :rules="[
                   val =>
                     (val !== null && val !== '') ||
-                    'Please enter the number of modules',
-                  val => val < 1 || 'Please enter a number bigger thet 0'
+                    'Please enter the number of modules'
                 ]"
               />
 
@@ -143,7 +154,7 @@
 
           <q-step
             :name="2"
-            title="add module to the workshop"
+            title="Add module to the workshop"
             caption="Pick name, description, teacher, duration and key words for the module"
             icon="schedule"
             :done="done2"
@@ -170,114 +181,108 @@
             <!--          />-->
             <!--        </q-stepper-navigation>-->
 
-            <div class="q-pa-md col-8" style="overflow: auto">
-              <h3>Input data</h3>
-              {{ activeWorkshop }}
+            <q-form class="q-gutter-md">
+              <div></div>
+              <p>workshop info</p>
+              <div>
+                <p>
+                  you are now adding a new module for the following workshop:
+                </p>
+                <p>name: {{ activeWorkshop.name }}</p>
+                <p v-if="activeWorkshop.teacher">
+                  teacher: {{ activeWorkshop.teacher.label }}
+                </p>
+                <p>introduction: {{ activeWorkshop.introduction }}</p>
+                <p
+                  v-for="keyWord in activeWorkshop.keyWordsArray"
+                  :key="keyWord.index"
+                >
+                  key words: {{ keyWord }}
+                </p>
+              </div>
 
-              <q-form
-                @submit.prevent="onModuleSubmit"
-                @reset="onModuleReset"
-                class="q-gutter-md"
-              >
-                <p>workshop info</p>
-                <div>
-                  <p>
-                    you are now adding a new module for the following workshop:
-                  </p>
-                  <p>name: {{ activeWorkshop.name }}</p>
-                  <p v-if="activeWorkshop.teacher">
-                    teacher: {{ activeWorkshop.teacher.label }}
-                  </p>
-                  <p>introduction: {{ activeWorkshop.introduction }}</p>
-                  <p
-                    v-for="keyWord in activeWorkshop.keyWordsArray"
-                    :key="keyWord.index"
-                  >
-                    key words: {{ keyWord }}
-                  </p>
-                </div>
+              <q-input
+                rounded
+                outlined
+                v-model="moduleInfo.moduleName"
+                label="Name of module"
+                hint="enter the name of the module"
+                :lazy-rules="true"
+                :rules="[
+                  val => (val && val.length > 0) || 'Please type something'
+                ]"
+              />
+              <q-select
+                rounded
+                outlined
+                v-model="moduleInfo.moduleTeacher"
+                :options="selectOptions"
+                label="select a teacher"
+              />
+              <q-input
+                rounded
+                outlined
+                type="textarea"
+                v-model="moduleInfo.moduleIntroduction"
+                label="Introduction"
+                hint="this is the introduction, it will apear as a small description"
+                :lazy-rules="true"
+                :rules="[
+                  val => (val && val.length > 0) || 'Please type something'
+                ]"
+              />
 
-                <q-input
-                  rounded
-                  outlined
-                  v-model="moduleInfo.moduleName"
-                  label="Name of module"
-                  hint="enter the name of the module"
-                  :lazy-rules="true"
-                  :rules="[
-                    val => (val && val.length > 0) || 'Please type something'
-                  ]"
-                />
-                <q-select
-                  rounded
-                  outlined
-                  v-model="moduleInfo.moduleTeacher"
-                  :options="selectOptions"
-                  label="select a teacher"
-                />
-                <q-input
-                  rounded
-                  outlined
-                  type="textarea"
-                  v-model="moduleInfo.moduleIntroduction"
-                  label="Introduction"
-                  hint="this is the introduction, it will apear as a small description"
-                  :lazy-rules="true"
-                  :rules="[
-                    val => (val && val.length > 0) || 'Please type something'
-                  ]"
-                />
+              <q-editor
+                class="editor-full-width"
+                ref="editor_ref_module"
+                v-model="moduleInfo.moduleDescription"
+                @paste.native="evt => pasteCaptureModule(evt)"
+                toolbar-text-color="white"
+                toolbar-toggle-color="yellow-8"
+                toolbar-bg="primary"
+                placeholder="this is the description, it will be used as an article that describes the module, and it will be inserted between the intoduction and the conclusion."
+              />
 
-                <q-editor
-                  ref="editor_ref_module"
-                  @paste.native="evt => pasteCapture(evt)"
-                  v-model="moduleInfo.moduleDescription"
-                  toolbar-text-color="white"
-                  toolbar-toggle-color="yellow-8"
-                  toolbar-bg="primary"
-                  placeholder="this is the description, it will be used as an article that describes the module, and it will be inserted between the intoduction and the conclusion."
-                />
-                <q-input
-                  rounded
-                  outlined
-                  type="textarea"
-                  v-model="moduleInfo.moduleConclusion"
-                  label="Conclusion"
-                  hint="this is the conclusion, it can be used as a punch-line"
-                  :lazy-rules="true"
-                  :rules="[
-                    val => (val && val.length > 0) || 'Please type something'
-                  ]"
-                />
+              <q-input
+                rounded
+                outlined
+                type="textarea"
+                v-model="moduleInfo.moduleConclusion"
+                label="Conclusion"
+                hint="this is the conclusion, it can be used as a punch-line"
+                :lazy-rules="true"
+                :rules="[
+                  val => (val && val.length > 0) || 'Please type something'
+                ]"
+              />
 
-                <q-input
-                  rounded
-                  outlined
-                  type="number"
-                  v-model="moduleInfo.moduleDuration"
-                  label="Number of weeks"
-                  hint="enter the duration of the workshop in weeks"
-                  :lazy-rules="true"
-                  :rules="[
-                    val =>
-                      (val !== null && val !== '') || 'Please type your age',
-                    val => (val > 0 && val < 100) || 'Please type a real age'
-                  ]"
-                />
-                <q-input
-                  rounded
-                  outlined
-                  v-model="moduleKeyWordsInput"
-                  label="Key Words"
-                  placeholder="add, key, words, here"
-                  hint="Name up to 10 key words that best describe the Workshop, use comma and space ', ' to seaprate them"
-                  :lazy-rules="true"
-                  :rules="[
-                    val => (val && val.length > 0) || 'Please type something'
-                  ]"
-                />
-              </q-form>
-            </div>
+              <q-input
+                rounded
+                outlined
+                type="number"
+                v-model="moduleInfo.moduleDuration"
+                label="Number of weeks"
+                hint="enter the duration of the workshop in weeks"
+                :lazy-rules="true"
+                :rules="[
+                  val =>
+                    (val !== null && val !== '') || 'Please type real number',
+                  val => (val > 0 && val < 100) || 'Please type a real number'
+                ]"
+              />
+              <q-input
+                rounded
+                outlined
+                v-model="moduleKeyWordsInput"
+                label="Key Words"
+                placeholder="add, key, words, here"
+                hint="Name up to 10 key words that best describe the Workshop, use comma and space ', ' to seaprate them"
+                :lazy-rules="true"
+                :rules="[
+                  val => (val && val.length > 0) || 'Please type something'
+                ]"
+              />
+            </q-form>
           </q-step>
 
           <q-step
@@ -316,16 +321,22 @@
               />
 
               <q-btn
-                v-if="!workshopSubmited"
+                v-if="step === 1 && !workshopSubmited"
                 @click="uploadWorkshop"
                 color="primary"
                 label="upload workshop"
               />
               <q-btn
-                v-if="step === 2 && !moduleSubmited"
+                v-else-if="step === 2 && !moduleSubmited"
                 @click="onModuleSubmit"
                 color="primary"
                 label="upload module"
+              />
+              <q-btn
+                v-else-if="step === 2 && moduleSubmited"
+                @click="onModuleSubmit"
+                color="primary"
+                label="add new module"
               />
               <q-btn
                 v-if="workshopSubmited || moduleSubmited"
@@ -496,7 +507,7 @@ export default {
         name: "",
         teacher: "",
         introduction: "",
-        editor: "",
+        description: "",
         conclusion: "",
         active: false,
         modulesNo: 2,
@@ -572,11 +583,11 @@ export default {
         id: this.activeWorkshop.workshopId
       });
       this.moduleSubmited = true;
+      this.onModuleReset();
     },
 
     addNewModule() {
-      this.onModuleSubmit();
-      this.onReset();
+      onModuleSubmit();
     },
 
     onModuleReset() {
@@ -618,14 +629,31 @@ export default {
         }
         onPasteStripFormattingIEPaste = false;
       }
+    },
+
+    pasteCaptureModule(evt) {
+      let text, onPasteStripFormattingIEPaste;
+      evt.preventDefault();
+      if (evt.originalEvent && evt.originalEvent.clipboardData.getData) {
+        text = evt.originalEvent.clipboardData.getData("text/plain");
+        this.$refs.editor_ref_module.runCmd("insertText", text);
+      } else if (evt.clipboardData && evt.clipboardData.getData) {
+        text = evt.clipboardData.getData("text/plain");
+        this.$refs.editor_ref_module.runCmd("insertText", text);
+      } else if (window.clipboardData && window.clipboardData.getData) {
+        if (!onPasteStripFormattingIEPaste) {
+          onPasteStripFormattingIEPaste = true;
+          this.$refs.editor_ref_module.runCmd("ms-pasteTextOnly", text);
+        }
+        onPasteStripFormattingIEPaste = false;
+      }
     }
   }
 };
 </script>
 
-<style></style>
-// workshop.add({ // workshopValue // // name: this.name, // // introduction:
-this.introduction, // // body: this.editor, // // conclusion: this.conclusion,
-// // teacher: this.teacher.label, // // modulesNo: this.modulesNo, // //
-duration: this.duration, // // keyWordsArray: this.keyWordsArray, // // active:
-this.active // });
+<style>
+.editor-full-width {
+  min-width: 50vw;
+}
+</style>

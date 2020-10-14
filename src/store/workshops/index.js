@@ -36,15 +36,19 @@ export default {
               workshopPath: workshopElement.path
             })
             .then(() => {
+              Notify.create("Workshop created");
+              // console.log("deleted  modules and workshop with ID", payload);
+            })
+            .then(() => {
               workshop
                 .doc(workshopElement.id)
                 .onSnapshot(workshopElementTwo => {
-                  console.log(
-                    "display value of workshop after update",
-                    workshopElementTwo.data()
-                  );
+                  // console.log(
+                  //   "display value of workshop after update",
+                  //   workshopElementTwo.data()
+                  // );
                   this.content = workshopElementTwo.data();
-                  console.log("this is the content", this.content);
+                  // console.log("this is the content", this.content);
                   commit("setActiveWorkshop", this.content);
                 });
             });
@@ -55,8 +59,8 @@ export default {
     },
 
     addNewModuleToWorkshop({}, { info, id }) {
-      console.log(" active workshop with this", info);
-      console.log(" active workshop with this", id);
+      // console.log(" active workshop with this", info);
+      // console.log(" active workshop with this", id);
       workshop
         .doc(id)
         .collection("Modules")
@@ -74,6 +78,9 @@ export default {
               modulePath: moduleElement.path
             });
         })
+        .then(() => {
+          Notify.create("Module added to workshop");
+        })
         .catch(error => {
           console.error("Error writing document: ", error);
         });
@@ -81,7 +88,6 @@ export default {
 
     async setWorkshops(state) {
       var workshopList = [];
-      var moduleList = [];
 
       var content = null;
       workshop.onSnapshot(workshopItems => {
@@ -91,7 +97,8 @@ export default {
           var workShopData = doc.data();
           workshopList.push({
             ...workShopData,
-            id: doc.id
+            id: doc.id,
+            extendModules: false
           });
         });
 
@@ -122,23 +129,38 @@ export default {
     },
 
     deleteWorkshopFromDatabase({}, payload) {
+      if (
+        workshop
+          .doc(payload)
+          .collection("Modules")
+          .doc()
+      ) {
+        workshop
+          .doc(payload)
+          .collection("Modules")
+          .onSnapshot(items => {
+            items.forEach(doc => {
+              workshop
+                .doc(payload)
+                .collection("Modules")
+                .doc(doc.id)
+                .delete()
+                .then(() => {
+                  Notify.create("Workshop and Modules deleted");
+                  // console.log("deleted  modules and workshop with ID", payload);
+                })
+                .catch(error => {
+                  console.log("there was an error", error.message);
+                });
+            });
+          });
+      }
       workshop
         .doc(payload)
         .delete()
         .then(() => {
           Notify.create("Workshop deleted");
           // console.log("deleted item with ID", payload);
-        })
-        .catch(error => {
-          console.log("there was an error", error.message);
-        });
-      workshop
-        .doc(payload)
-        .collection("Modules")
-        .delete()
-        .then(() => {
-          Notify.create("Workshop and Modules deleted");
-          // console.log("deleted  modules and workshop with ID", payload);
         })
         .catch(error => {
           console.log("there was an error", error.message);
@@ -155,14 +177,17 @@ export default {
     },
     setModules(state, content) {
       for (var i = 0; i < state.allWorkshops.length; i++) {
-        // console.log("the value of", i);
-        // console.log("this is the content", content[0].workshopId);
-        // console.log("this is the workshop", state.allWorkshops[i].workshopId);
-        if (content[0].workshopId == state.allWorkshops[i].workshopId) {
+        if (content[0]) {
+          // console.log("the value of", i);
+          // console.log("this is the content", content[0].workshopId);
+          // console.log("this is the workshop", state.allWorkshops[i].workshopId);
+          if (content[0].workshopId == state.allWorkshops[i].workshopId) {
+            state.allWorkshops[i].moduleList = content;
+          }
+        } else {
           state.allWorkshops[i].moduleList = content;
         }
       }
-      console.log(state.allWorkshops.length);
     },
 
     setActiveWorkshop(state, content) {

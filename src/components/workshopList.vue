@@ -19,7 +19,7 @@
             <q-card-section>
               <p>Description introduction: {{ item.introduction }}</p>
               <span>Body description:</span>
-              <div v-html="item.editor"></div>
+              <div v-html="item.description"></div>
               <p>Description conclusion: {{ item.conclusion }}</p>
               <p>Workshop duration: {{ item.duration }} weeks</p>
               <p>Workshop no modules: {{ item.modulesNo }} modules</p>
@@ -48,11 +48,11 @@
               <q-btn
                 label="modules"
                 color="secondary"
-                @click.prevent="showModules = !showModules"
+                @click.prevent="item.extendModules = !item.extendModules"
               />
             </q-card-actions>
           </q-card>
-          <div v-if="showModules">
+          <div v-if="item.extendModules">
             <q-card
               class="my-card bg-primary text-white"
               v-for="module in item.moduleList"
@@ -91,7 +91,7 @@
                 <q-btn
                   label="close"
                   color="secondary"
-                  @click.prevent="showModules = !showModules"
+                  @click.prevent="item.extendModules = !item.extendModules"
                 />
               </q-card-actions>
             </q-card>
@@ -122,6 +122,7 @@ export default {
       setWorkshopsA: "setWorkshops",
       deleteWorkshop: "deleteWorkshopFromDatabase"
     }),
+
     confirm(workshopId) {
       this.$q
         .dialog({
