@@ -12,7 +12,7 @@ export default {
 
 <style lang="scss">
 body {
-  font-family: "Sora", sans-serif;
+  font-family: "Fira Sans", sans-serif;
 }
 body.body--dark {
   background-color: darken($dark, 6);
