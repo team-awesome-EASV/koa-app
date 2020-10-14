@@ -20,11 +20,13 @@ const firebaseConfig = {
   appId: "1:747073319956:web:c52cdc51a1aacca9dfe301",
   measurementId: "G-9YSJNDPKYN"
 };
+
 // Initialize Firebase
 let firebaseApp = firebase.initializeApp(firebaseConfig);
 let auth = firebaseApp.auth();
 let db = firebaseApp.firestore();
 let workshop = db.collection("Workshops");
+let users = db.collection("Users")
 
 firebase.analytics();
 
@@ -87,6 +89,7 @@ export {
   auth,
   db,
   workshop,
+  users,
   firebaseConfig,
   ensureAuthIsInitialized,
   isAuthenticated
