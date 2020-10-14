@@ -26,10 +26,16 @@
     </q-header>
 
     <q-drawer v-model="leftDrawerOpen" show-if-above bordered>
-      <q-img src="../assets/koas-bg.jpg" style="height: 150px">
-        <div class="absolute-bottom bg-transparent">
+      <q-img
+        src="../assets/koas-bg.jpg"
+        :img-style="{
+          height: '160px',
+          filter: 'brightness(80%)'
+        }"
+      >
+        <div class="absolute-bottom bg-transparent text-left">
           <q-avatar size="56px" class="q-mb-sm">
-            <img src="../assets/avatar.jpg" />
+            <img src="../assets/avatar.jpg" alt="" />
           </q-avatar>
           <div class="text-weight-bold" v-if="curentUser">
             Hello {{ curentUser.name }}

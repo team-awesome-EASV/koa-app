@@ -130,7 +130,7 @@
         <!--          />-->
         <!--        </q-stepper-navigation>-->
       </q-step>
-
+      <!--TODO try this https://quasar.dev/vue-components/tabs#Example--Dynamic-tabs with vertical tabs and stuff inside the tab for each day-->
       <q-step
         :name="2"
         title="Set dates and time"

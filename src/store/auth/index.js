@@ -1,6 +1,14 @@
 import firebase from "firebase/app";
 import { auth, db } from "boot/firebase";
 import router from "../../router/index";
+import {
+  Loading,
+  Notify
+
+  // optional!, for example below
+  // with custom spinner
+  // QSpinnerGears
+} from "quasar";
 
 export default {
   namespaced: true,
@@ -24,7 +32,11 @@ export default {
   },
 
   actions: {
-    registerUser({}, payload) {
+    registerUser({ dispatch }, payload) {
+      Loading.show({
+        message:
+          'Registering  <b>you</b> in our database.<br/><span class="text-primary">Hang on...</span>'
+      });
       auth
         .createUserWithEmailAndPassword(payload.email, payload.password)
         .then(response => {
@@ -42,20 +54,34 @@ export default {
               .set(registeredUser)
               .catch(error => {
                 console.log(error);
+              })
+              .then(() => {
+                dispatch("getUserData", user.uid);
+                router.push("/").then(() => {
+                  Loading.hide();
+                  Notify.create({
+                    message: `New user created! Welcome ${user.displayName}`,
+                    type: "positive"
+                  });
+                });
               });
           });
           console.log("user registered and added to db", response);
         })
         .catch(function(error) {
           // Handle Errors here.
-          var errorCode = error.code;
-          var errorMessage = error.message;
+
           console.log(error.code, error.message);
+          Loading.hide();
           // ...
         });
     },
     loginUser({ commit, dispatch }, payload) {
       console.log("login");
+      Loading.show({
+        message:
+          'Logging  <b>you</b> in is in progress.<br/><span class="text-primary">Hang on...</span>'
+      });
       auth
         .setPersistence(firebase.auth.Auth.Persistence.LOCAL)
         .then(() =>
@@ -68,28 +94,46 @@ export default {
 
               router
                 .push("/")
+                .then(() => Loading.hide())
                 .catch(error => console.log(error, "error glupiego routera"));
             })
             .catch(error => {
+              Loading.hide();
               // Handle Errors here.
-              var errorCode = error.code;
-              var errorMessage = error.message;
+              let errorCode = error.code;
+              let errorMessage = error.message;
               if (errorCode === "auth/wrong-password") {
-                alert("Wrong password.");
+                Notify.create({
+                  message: "Wrong password!",
+                  type: "negative",
+                  position: "center"
+                });
               } else {
-                alert(errorMessage);
+                Notify.create({
+                  message: errorMessage,
+                  type: "negative",
+                  position: "center"
+                });
               }
-              console.log(error);
+              console.log(errorCode, errorMessage);
             })
         )
-        .catch(e => console.log(e));
+        .catch(e => {
+          console.log(e);
+          Loading.hide();
+        });
     },
-    logOut({ commit }) {
+    logOut({}) {
+      Loading.show({
+        message:
+          'Goodbye!<br/><span class="text-primary">We hope to see you soon again</span>'
+      });
       auth
         .signOut()
         .then(() => {
           // commit("userStatus", null);
           console.log("user logged out");
+          Loading.hide();
           // router.replace("/login").catch(e => console.log(e, "error"));
         })
         .catch(error => {
