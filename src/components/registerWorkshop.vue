@@ -188,13 +188,13 @@
                 <p>
                   you are now adding a new module for the following workshop:
                 </p>
-                <p>name: {{ activeWorkshop.name }}</p>
-                <p v-if="activeWorkshop.teacher">
-                  teacher: {{ activeWorkshop.teacher.label }}
+                <p>name: {{ workshopInfo.name }}</p>
+                <p v-if="workshopInfo.teacher">
+                  teacher: {{ workshopInfo.teacher.label }}
                 </p>
-                <p>introduction: {{ activeWorkshop.introduction }}</p>
+                <p>introduction: {{ workshopInfo.introduction }}</p>
                 <p
-                  v-for="keyWord in activeWorkshop.keyWordsArray"
+                  v-for="keyWord in workshopInfo.keyWordsArray"
                   :key="keyWord.index"
                 >
                   key words: {{ keyWord }}
@@ -311,35 +311,38 @@
                 v-if="step > 1"
                 flat
                 color="primary"
-                @click="
-                  $refs.stepper.previous(),
-                    (workshopSubmited = false),
-                    (moduleSubmited = false)
-                "
+                @click="$refs.stepper.previous()"
                 label="Back"
                 class="q-ml-sm"
               />
 
               <q-btn
-                v-if="step === 1 && !workshopSubmited"
-                @click="uploadWorkshop"
+                v-if="step === 1"
                 color="primary"
-                label="upload workshop"
+                @click="$refs.stepper.next()"
+                label="continue"
               />
               <q-btn
-                v-else-if="step === 2 && !moduleSubmited"
-                @click="onModuleSubmit"
+                v-if="step === 2"
                 color="primary"
-                label="upload module"
+                @click="updateModulesArray(), $refs.stepper.next()"
+                label="continue"
               />
+
               <q-btn
-                v-else-if="step === 2 && moduleSubmited"
-                @click="onModuleSubmit"
-                color="primary"
+                v-if="step === 2"
+                @click="updateModulesArray()"
+                color="secondary"
                 label="add new module"
               />
               <q-btn
-                v-if="workshopSubmited || moduleSubmited"
+                v-if="step === 3"
+                @click="uploadWorkshopAndModules()"
+                color="primary"
+                label="add workshop and modules"
+              />
+              <q-btn
+                v-if="step === 3"
                 @click="$refs.stepper.next()"
                 color="primary"
                 :label="step === 3 ? 'Finish' : 'Continue'"
@@ -348,143 +351,6 @@
           </template>
         </q-stepper>
       </div>
-
-      <!-- <div style="color:pink; font-size: 2vh">
-      Create Workshop page
-    </div>
-    <q-btn
-      class="q-mt-xl"
-      color="white"
-      text-color="blue"
-      unelevated
-      to="/"
-      label="Go Home"
-      no-caps
-    />
-    <div
-      class="full-width row wsplitify-start items-start content-start text-primary"
-    >
-      <div class="q-pa-md col-8" style="overflow: auto">
-        <h3>Input data</h3>
-
-        <q-form @submit.prevent="onSubmit" @reset="onReset" class="q-gutter-md">
-          <q-input
-            filled
-            v-model="workshopInfo.name"
-            label="Name of workshop"
-            hint="enter the name of the workshop"
-            :lazy-rules="true"
-            :rules="[val => (val && val.length > 0) || 'Please type something']"
-          />
-
-          <q-select
-            v-model="workshopInfo.teacher"
-            :options="selectOptions"
-            label="select a teacher"
-          />
-
-          <q-input
-            filled
-            type="textarea"
-            v-model="workshopInfo.introduction"
-            label="Introduction"
-            hint="this is the introduction, it will apear as a small description"
-            :lazy-rules="true"
-            :rules="[val => (val && val.length > 0) || 'Please type something']"
-          />
-
-          <q-editor
-            ref="editor_ref"
-            @paste.native="evt => pasteCapture(evt)"
-            v-model="workshopInfo.editor"
-            toolbar-text-color="white"
-            toolbar-toggle-color="yellow-8"
-            toolbar-bg="primary"
-            placeholder="this is the description, it will be used as an aricle that describes the workshop, and it will be inserted between the intoduction and the conclusion."
-          />
-          <q-input
-            filled
-            type="textarea"
-            v-model="workshopInfo.conclusion"
-            label="Conclution"
-            hint="this is the conclusion, it can be used as a punch-line"
-            :lazy-rules="true"
-            :rules="[val => (val && val.length > 0) || 'Please type something']"
-          />
-
-          <q-input
-            filled
-            type="number"
-            v-model="workshopInfo.modulesNo"
-            label="Number of modules"
-            hint="enter the number of modules the worshop has"
-            :lazy-rules="true"
-            :rules="[
-              val => (val !== null && val !== '') || 'Please type your age',
-              val => (val > 0 && val < 100) || 'Please type a real age'
-            ]"
-          />
-
-          <q-input
-            filled
-            type="number"
-            v-model="workshopInfo.duration"
-            label="Number of weeks"
-            hint="enter the duration of the workshop in weeks"
-            :lazy-rules="true"
-            :rules="[
-              val => (val !== null && val !== '') || 'Please type your age',
-              val => (val > 0 && val < 100) || 'Please type a real age'
-            ]"
-          />
-          <q-input
-            filled
-            v-model="keyWords"
-            label="Key Words"
-            placeholder="add, key, words, here"
-            hint="Name up to 10 key words that best describe the Workshop, use comma and space ', ' to seaprate them"
-            :lazy-rules="true"
-            :rules="[val => (val && val.length > 0) || 'Please type something']"
-          />
-
-          <q-toggle
-            v-model="workshopInfo.active"
-            label="turn on to display worshop information on the website"
-          />
-
-          <div>
-            <q-btn label="Submit" type="submit" color="primary" />
-            <q-btn
-              label="Reset"
-              type="reset"
-              color="primary"
-              flat
-              class="q-ml-sm"
-            />
-          </div>
-        </q-form>
-      </div>
-      <div class="col-4" style="overflow: auto">
-        <h3>Show imputed data</h3>
-        <p>Workshop name: {{ workshopInfo.name }}</p>
-        <p v-if="workshopInfo.teacher">
-          Teacher name: {{ workshopInfo.teacher.label }}
-        </p>
-
-        <p>Workshop duration: {{ workshopInfo.duration }} weeks</p>
-        <p>Workshop no modules: {{ workshopInfo.modulesNo }} modules</p>
-        <p>Description introduction: {{ workshopInfo.introduction }}</p>
-
-        <span>Body description:</span>
-        <div v-html="workshopInfo.editor"></div>
-        <p>Description conclusion: {{ workshopInfo.conclusion }}</p>
-        <p>Workshop keywords: {{ keyWords }}</p>
-        <p>
-          workshop status: <span v-if="workshopInfo.active"> active </span>
-          <span v-else> Inactive</span>
-        </p>
-      </div>
-    </div> -->
     </div>
   </div>
 </template>
@@ -528,6 +394,8 @@ export default {
 
       moduleKeyWordsInput: "",
       modules: [],
+      moduleElement: null,
+      moduleTemp: {},
 
       moduleInfo: {
         moduleTeacher: "",
@@ -553,7 +421,30 @@ export default {
       "addNewWorkshopToDatabase",
       "addNewModuleToWorkshop"
     ]),
+    // create and populate modules array, will store multiple instances of the module object
 
+    updateModulesArray(module, keywords) {
+      var temp = this.createNewModule(
+        this.moduleInfo,
+        this.moduleKeyWordsInput
+      );
+      this.modules.push(temp);
+    },
+
+    createNewModule(module, keywords) {
+      const obj = {};
+      (obj.moduleTeacher = module.moduleTeacher),
+        (obj.moduleName = module.moduleName),
+        (obj.moduleIntroduction = module.moduleIntroduction),
+        (obj.moduleDescription = module.moduleDescription),
+        (obj.moduleConclusion = module.moduleConclusion),
+        (obj.moduleDuration = module.moduleDuration),
+        (obj.moduleKeyWordsArray = keywords.split(", ")),
+        (obj.workshopId = module.workshopId),
+        (obj.workshopPath = module.workshopPath);
+      return obj;
+    },
+    // upload the workshop and the modules to the database
     uploadWorkshop() {
       this.workshopInfo.keyWordsArray = this.keyWords.split(", ");
       // var workshopValue = this.workshopInfo;
@@ -562,34 +453,35 @@ export default {
       this.workshopSubmited = true;
     },
 
-    action() {
-      if (this.step === 1) {
-        uploadWorkshop();
-      } else if (this.step === 2) {
-        onModuleSubmit();
-      }
+    getIndividualModules() {
+      this.modules.forEach(el => {
+        this.moduleElement = el;
+        this.onModuleSubmit();
+      });
     },
 
     onModuleSubmit() {
-      this.moduleInfo.moduleKeyWordsArray = this.moduleKeyWordsInput.split(
-        ", "
-      );
-      this.moduleInfo.workshopId = this.activeWorkshop.workshopId;
-      this.moduleInfo.workshopPath = this.activeWorkshop.workshopPath;
-      console.log("this is the module info", this.moduleInfo);
-      //   console.log("this is the id info", this.activeWorkshop.workshopId);
-      this.addNewModuleToWorkshop({
-        info: this.moduleInfo,
-        id: this.activeWorkshop.workshopId
-      });
-      this.moduleSubmited = true;
+      console.log("this is the active workshop", this.activeworkshop);
+      if (this.activeWorkshop) {
+        this.moduleElement.workshopId = this.activeWorkshop.workshopId;
+        this.moduleElement.workshopPath = this.activeWorkshop.workshopPath;
+        console.log("this is the module info", this.moduleElement);
+        console.log("this is the id info", this.activeWorkshop.workshopId);
+        this.addNewModuleToWorkshop({
+          info: this.moduleElement,
+          id: this.activeWorkshop.workshopId
+        });
+      }
+
       this.onModuleReset();
     },
 
-    addNewModule() {
-      onModuleSubmit();
+    uploadWorkshopAndModules() {
+      console.log("the upload gets triggered");
+      this.uploadWorkshop();
+      this.getIndividualModules();
     },
-
+    // reset the forms
     onModuleReset() {
       this.moduleInfo.moduleName = "";
       this.moduleInfo.moduleIntroduction = "";
@@ -613,6 +505,8 @@ export default {
       this.workshopInfo.keyWordsArray = [];
       this.workshopInfo.active = false;
     },
+
+    // allows paste in the WYSIWYG
     pasteCapture(evt) {
       let text, onPasteStripFormattingIEPaste;
       evt.preventDefault();
