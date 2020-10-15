@@ -1,9 +1,11 @@
 <template>
-    <h1>Settings</h1>
+  <div>
+    Settings
+  </div>
 </template>
 
 <script>
-
+export default {};
 </script>
 
 <style lang="css"></style>

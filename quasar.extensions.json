@@ -1,3 +1,5 @@
 {
-  "@quasar/qcalendar": {}
+  "@quasar/qcalendar": {},
+  "@quasar/qscroller": {},
+  "@quasar/qiconpicker": {}
 }

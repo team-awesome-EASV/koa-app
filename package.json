@@ -16,13 +16,15 @@
   "dependencies": {
     "@quasar/extras": "^1.0.0",
     "core-js": "^3.6.5",
-    "firebase": "^7.19.1",
+    "firebase": "^7.23.0",
     "quasar": "^1.0.0",
     "vue-i18n": "^8.0.0"
   },
   "devDependencies": {
     "@quasar/app": "^2.0.0",
     "@quasar/quasar-app-extension-qcalendar": "^2.3.0",
+    "@quasar/quasar-app-extension-qiconpicker": "^1.2.5",
+    "@quasar/quasar-app-extension-qscroller": "^1.0.10",
     "babel-eslint": "^10.0.1",
     "eslint": "^6.8.0",
     "eslint-config-prettier": "^6.9.0",
