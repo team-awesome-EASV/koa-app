@@ -6,7 +6,8 @@ export default {
 
   state: {
     allWorkshops: [],
-    activeWorkshop: {}
+    activeWorkshop: {},
+    tempModules: []
   },
 
   getters: {
@@ -22,13 +23,22 @@ export default {
   },
 
   actions: {
-    addNewWorkshopToDatabase({ commit }, payload) {
+    addTempModuleToState({ commit }, payload) {
+      var content = payload;
+      commit("populateTempModules", content);
+    },
+
+    addNewWorkshopToDatabase({ state, commit, dispatch }, payload) {
       var content = {};
+      var workshopId = "";
+      var workshopPath = "";
       workshop
         .add({
           ...payload
         })
         .then(workshopElement => {
+          this.workshopId = workshopElement.id;
+          this.workshopPath = workshopElement.path;
           workshop
             .doc(workshopElement.id)
             .update({
@@ -37,18 +47,22 @@ export default {
             })
             .then(() => {
               Notify.create("Workshop created");
-              // console.log("deleted  modules and workshop with ID", payload);
+              state.tempModules.forEach(el => {
+                dispatch("addNewModuleToWorkshop", {
+                  info: {
+                    ...el,
+                    workshopPath: this.workshopPath,
+                    workshopId: this.workshopId
+                  },
+                  id: this.workshopId
+                });
+              });
             })
             .then(() => {
               workshop
                 .doc(workshopElement.id)
                 .onSnapshot(workshopElementTwo => {
-                  // console.log(
-                  //   "display value of workshop after update",
-                  //   workshopElementTwo.data()
-                  // );
                   this.content = workshopElementTwo.data();
-                  // console.log("this is the content", this.content);
                   commit("setActiveWorkshop", this.content);
                 });
             });
@@ -193,6 +207,10 @@ export default {
     setActiveWorkshop(state, content) {
       // console.log("this is the content of activeworkshop mutation", content);
       state.activeWorkshop = content;
+    },
+
+    populateTempModules(state, content) {
+      state.tempModules = content;
     }
   }
 };

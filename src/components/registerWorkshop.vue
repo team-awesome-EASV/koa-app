@@ -129,6 +129,7 @@
                 :rules="[
                   val => (val && val.length > 0) || 'Please type something'
                 ]"
+                @blur="populateKeyWordArray()"
               />
 
               <q-toggle v-model="workshopInfo.active">
@@ -193,11 +194,14 @@
                   teacher: {{ workshopInfo.teacher.label }}
                 </p>
                 <p>introduction: {{ workshopInfo.introduction }}</p>
-                <p
-                  v-for="keyWord in workshopInfo.keyWordsArray"
-                  :key="keyWord.index"
-                >
-                  key words: {{ keyWord }}
+                <p>
+                  Key words chosen to describe the workshop:
+                  <q-btn
+                    v-for="(word, index) in workshopInfo.keyWordsArray"
+                    :key="index"
+                  >
+                    {{ word }}</q-btn
+                  >
                 </p>
               </div>
 
@@ -240,6 +244,17 @@
                 toolbar-text-color="white"
                 toolbar-toggle-color="yellow-8"
                 toolbar-bg="primary"
+                :toolbar="[
+                  ['bold', 'italic', 'underline'],
+                  [
+                    {
+                      label: $q.lang.editor.formatting,
+                      icon: $q.iconSet.editor.formatting,
+                      list: 'no-icons',
+                      options: ['p', 'h3', 'h4', 'h5', 'h6', 'code']
+                    }
+                  ]
+                ]"
                 placeholder="this is the description, it will be used as an article that describes the module, and it will be inserted between the intoduction and the conclusion."
               />
 
@@ -281,6 +296,7 @@
                 :rules="[
                   val => (val && val.length > 0) || 'Please type something'
                 ]"
+                @blur="populateModuleKeyWordArray()"
               />
             </q-form>
           </q-step>
@@ -292,17 +308,151 @@
             :done="done3"
             caption="Make sure all is correct."
           >
-            STEP 3
-            <!--        <q-stepper-navigation>-->
-            <!--          <q-btn-->
-            <!--            flat-->
-            <!--            @click="step = 2"-->
-            <!--            color="primary"-->
-            <!--            label="Back"-->
-            <!--            class="q-ml-sm"-->
-            <!--          />-->
-            <!--          <q-btn color="primary" @click="done3 = true" label="Finish" />-->
-            <!--        </q-stepper-navigation>-->
+            <div class="q-pa-md" style="max-width: 100%">
+              <q-card>
+                <q-tabs
+                  v-model="tab"
+                  dense
+                  class="text-grey"
+                  active-color="primary"
+                  indicator-color="primary"
+                  align="justify"
+                >
+                  <q-tab name="workshop" label="Workshop" />
+                  <q-tab name="modules" label="Modules" />
+                </q-tabs>
+
+                <q-separator />
+
+                <q-tab-panels v-model="tab" animated>
+                  <q-tab-panel name="workshop" class="q-pa-none">
+                    <q-splitter v-model="splitterModel" style="height: auto">
+                      <template v-slot:before>
+                        <q-tabs v-model="innerTab" vertical class="text-teal">
+                          <q-tab
+                            name="innerWorkshop"
+                            icon="mail"
+                            label="Workshop"
+                          />
+                          <q-tabs
+                            v-model="innerTab"
+                            vertical
+                            class="text-teal"
+                            v-for="(module, index) in modules"
+                            :key="index"
+                          >
+                            <q-tab
+                              name="innerModule"
+                              icon="alarm"
+                              :label="module.moduleName"
+                              @click="updateActiveModuleIndexNr(index)"
+                            />
+                          </q-tabs>
+                        </q-tabs>
+                      </template>
+
+                      <template v-slot:after>
+                        <q-tab-panels
+                          v-model="innerTab"
+                          animated
+                          transition-prev="slide-down"
+                          transition-next="slide-up"
+                        >
+                          <q-tab-panel name="innerWorkshop">
+                            <div class="text-h4 q-mb-md">
+                              {{ workshopInfo.name }}
+                            </div>
+                            <p>teacher: {{ workshopInfo.teacher.label }}</p>
+                            <p>
+                              Introduction to the workshop:
+                              {{ workshopInfo.introduction }}
+                            </p>
+                            <p>Workshop description:</p>
+                            <div v-html="workshopInfo.description"></div>
+
+                            <p>
+                              Workshop Conslution:
+                              {{ workshopInfo.conclusion }}
+                            </p>
+                            <p>
+                              Key words chosen to describe the workshop:
+                              <q-btn
+                                v-for="(word,
+                                index) in workshopInfo.keyWordsArray"
+                                :key="index"
+                              >
+                                {{ word }}</q-btn
+                              >
+                            </p>
+                          </q-tab-panel>
+
+                          <q-tab-panel name="innerModule">
+                            <div class="text-h4 q-mb-md">Modules</div>
+                            <div class="text-h4 q-mb-md">
+                              {{ modules[activeModuleIndex].moduleName }}
+                            </div>
+                            <p>
+                              teacher:
+                              {{
+                                modules[activeModuleIndex].moduleTeacher.label
+                              }}
+                            </p>
+                            <p>
+                              Introduction to the workshop:
+                              {{
+                                modules[activeModuleIndex].moduleIntroduction
+                              }}
+                            </p>
+                            <p>Workshop description:</p>
+                            <div
+                              v-html="
+                                modules[activeModuleIndex].moduleDescription
+                              "
+                            ></div>
+
+                            <p>
+                              Workshop Conslution:
+                              {{ modules[activeModuleIndex].moduleConclusion }}
+                            </p>
+                            <p>
+                              Key words chosen to describe the workshop:
+                              <q-btn
+                                v-for="(word, index) in modules[
+                                  activeModuleIndex
+                                ].moduleKeyWordsArray"
+                                :key="index"
+                              >
+                                {{ word }}</q-btn
+                              >
+                            </p>
+                          </q-tab-panel>
+                        </q-tab-panels>
+                      </template>
+                    </q-splitter>
+                  </q-tab-panel>
+
+                  <q-tab-panel name="modules">
+                    <div class="text-h6">Modules</div>
+                    Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                  </q-tab-panel>
+
+                  <q-tab-panel name="movies">
+                    <div class="text-h6">Movies</div>
+                    Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                  </q-tab-panel>
+                </q-tab-panels>
+              </q-card>
+            </div>
+            <!-- <q-stepper-navigation>
+              <q-btn
+                flat
+                @click="step = 2"
+                color="primary"
+                label="Back"
+                class="q-ml-sm"
+              />
+              <q-btn color="primary" @click="done3 = true" label="Finish" />
+            </q-stepper-navigation> -->
           </q-step>
 
           <template v-slot:navigation>
@@ -325,7 +475,7 @@
               <q-btn
                 v-if="step === 2"
                 color="primary"
-                @click="updateModulesArray(), $refs.stepper.next()"
+                @click="populateTempModules(), $refs.stepper.next()"
                 label="continue"
               />
 
@@ -363,12 +513,19 @@ export default {
   name: "CreateWorkshop",
   data() {
     return {
+      // layout behaviout
       step: 1,
       done1: false,
       done2: false,
       done3: false,
+      tab: "workshop",
+      innerTab: "innerWorkshop",
+      splitterModel: 20,
       workshopSubmited: false,
       moduleSubmited: false,
+      activeModuleIndex: 0,
+      //   end of layout behaviour
+      //   step one modals and info
       workshopInfo: {
         name: "",
         teacher: "",
@@ -381,17 +538,8 @@ export default {
         keyWordsArray: []
       },
       keyWords: "",
-      selectOptions: [
-        {
-          label: "Teacher Name One",
-          value: "teacher-one"
-        },
-        {
-          label: "Teacher Name Two",
-          value: "teacher-two"
-        }
-      ],
 
+      // step two modals and info
       moduleKeyWordsInput: "",
       modules: [],
       moduleElement: null,
@@ -407,7 +555,19 @@ export default {
         moduleKeyWordsArray: [],
         workshopId: "",
         workshopPath: ""
-      }
+      },
+
+      // commune info for all steps
+      selectOptions: [
+        {
+          label: "Teacher Name One",
+          value: "teacher-one"
+        },
+        {
+          label: "Teacher Name Two",
+          value: "teacher-two"
+        }
+      ]
     };
   },
   computed: {
@@ -419,19 +579,19 @@ export default {
   methods: {
     ...mapActions("workshops", [
       "addNewWorkshopToDatabase",
-      "addNewModuleToWorkshop"
+      "addNewModuleToWorkshop",
+      "addTempModuleToState"
     ]),
     // create and populate modules array, will store multiple instances of the module object
-
-    updateModulesArray(module, keywords) {
-      var temp = this.createNewModule(
-        this.moduleInfo,
-        this.moduleKeyWordsInput
-      );
+    updateActiveModuleIndexNr(index) {
+      this.activeModuleIndex = index;
+    },
+    updateModulesArray(module) {
+      var temp = this.createNewModule(this.moduleInfo);
       this.modules.push(temp);
     },
 
-    createNewModule(module, keywords) {
+    createNewModule(module) {
       const obj = {};
       (obj.moduleTeacher = module.moduleTeacher),
         (obj.moduleName = module.moduleName),
@@ -439,47 +599,63 @@ export default {
         (obj.moduleDescription = module.moduleDescription),
         (obj.moduleConclusion = module.moduleConclusion),
         (obj.moduleDuration = module.moduleDuration),
-        (obj.moduleKeyWordsArray = keywords.split(", ")),
+        (obj.moduleKeyWordsArray = module.moduleKeyWordsArray),
         (obj.workshopId = module.workshopId),
         (obj.workshopPath = module.workshopPath);
       return obj;
     },
+
+    // push modules array to the store
+    populateTempModules() {
+      this.addTempModuleToState(this.modules);
+    },
+
     // upload the workshop and the modules to the database
-    uploadWorkshop() {
+
+    populateKeyWordArray() {
       this.workshopInfo.keyWordsArray = this.keyWords.split(", ");
+    },
+    populateModuleKeyWordArray() {
+      this.moduleInfo.moduleKeyWordsArray = this.moduleKeyWordsInput.split(
+        ", "
+      );
+    },
+
+    uploadWorkshop() {
+      //   this.workshopInfo.keyWordsArray = this.keyWords.split(", ");
       // var workshopValue = this.workshopInfo;
-      console.log("this is workshopInfo ", this.workshopInfo);
+      //   console.log("this is workshopInfo ", this.workshopInfo);
       this.addNewWorkshopToDatabase(this.workshopInfo);
       this.workshopSubmited = true;
     },
 
-    getIndividualModules() {
-      this.modules.forEach(el => {
-        this.moduleElement = el;
-        this.onModuleSubmit();
-      });
-    },
+    // getIndividualModules() {
+    //   this.modules.forEach(el => {
+    //     this.moduleElement = el;
+    //     this.onModuleSubmit();
+    //   });
+    // },
 
-    onModuleSubmit() {
-      console.log("this is the active workshop", this.activeworkshop);
-      if (this.activeWorkshop) {
-        this.moduleElement.workshopId = this.activeWorkshop.workshopId;
-        this.moduleElement.workshopPath = this.activeWorkshop.workshopPath;
-        console.log("this is the module info", this.moduleElement);
-        console.log("this is the id info", this.activeWorkshop.workshopId);
-        this.addNewModuleToWorkshop({
-          info: this.moduleElement,
-          id: this.activeWorkshop.workshopId
-        });
-      }
+    // onModuleSubmit() {
+    //   //   console.log("this is the active workshop", this.activeworkshop);
+    //   if (this.activeWorkshop) {
+    //     this.moduleElement.workshopId = this.activeWorkshop.workshopId;
+    //     this.moduleElement.workshopPath = this.activeWorkshop.workshopPath;
+    //     console.log("this is the module info", this.moduleElement);
+    //     // console.log("this is the id info", this.activeWorkshop.workshopId);
+    //     this.addNewModuleToWorkshop({
+    //       info: this.moduleElement,
+    //       id: this.activeWorkshop.workshopId
+    //     });
+    //   }
 
-      this.onModuleReset();
-    },
+    //   this.onModuleReset();
+    // },
 
     uploadWorkshopAndModules() {
       console.log("the upload gets triggered");
       this.uploadWorkshop();
-      this.getIndividualModules();
+      //   this.getIndividualModules();
     },
     // reset the forms
     onModuleReset() {
@@ -548,6 +724,6 @@ export default {
 
 <style>
 .editor-full-width {
-  min-width: 50vw;
+  min-width: 60vw;
 }
 </style>
