@@ -3,8 +3,9 @@ import { today } from "@quasar/quasar-ui-qcalendar/src/index";
 export default {
   calendarView: "month",
   selectedDate: today(),
-  locale: "en-us",
+  locale: "pl",
   maxDays: 1,
+  weekdays: [1, 2, 3, 4, 5, 6, 0],
   bordered: true,
   fiveDayWorkWeek: false,
   firstDayMonday: true,
@@ -28,7 +29,7 @@ export default {
   enableTheme: true,
   theme: {
     name: "deafult",
-    backgroundBodyOutside: "rgba(64,166,159, .3)",
+    backgroundBodyOutside: "rgba(64,100,159, .1)",
 
     colorDayLabelCurrent: "accent"
   },

@@ -102,7 +102,7 @@
                 :rules="[v => (v && v.length > 0) || 'Field cannot be empty']"
                 autofocus
               />
-              <q-input v-model="eventForm.details" label="Details"/>
+              <q-input v-model="eventForm.details" label="Details" />
               <q-field v-model="eventForm.allDay" style="padding-bottom: 20px;">
                 <q-checkbox v-model="eventForm.allDay" label="All-Day event?" />
               </q-field>
@@ -306,8 +306,6 @@
         :short-weekday-label="shortWeekdayLabel"
         :short-interval-label="shortIntervalLabel"
         :interval-height="intervalHeight"
-        :resource-height="resourceHeight"
-        :resource-width="resourceWidth"
         :day-height="dayHeight"
         :show-month-label="showMonthLabel"
         :show-work-weeks="showWorkWeeks"
@@ -324,7 +322,7 @@
         @click:week="addEventMenu"
       >
         <template #day="{ timestamp }">
-          <template v-if="calendarView.indexOf('agenda') < 0">
+          <template>
             <template v-for="(event, index) in getEvents(timestamp.date)">
               <q-badge
                 :key="index"
@@ -350,10 +348,7 @@
         </template>
 
         <template #day-header="{ timestamp }">
-          <div
-            v-if="calendarView.indexOf('agenda') < 0"
-            class="row justify-center"
-          >
+          <div class="row justify-center">
             <template v-for="(event, index) in eventsMap[timestamp.date]">
               <q-badge
                 v-if="!event.time"
@@ -388,7 +383,7 @@
         </template>
 
         <template #day-body="{ timestamp, timeStartPos, timeDurationHeight }">
-          <template v-if="calendarView.indexOf('agenda') < 0">
+          <template>
             <template v-for="(event, index) in getEvents(timestamp.date)">
               <q-badge
                 v-if="event.time"
@@ -414,41 +409,6 @@
               </q-badge>
             </template>
           </template>
-          <template v-else>
-            <template v-for="agenda in getAgenda(timestamp)">
-              <div
-                :key="timestamp.date + agenda.time"
-                :label="agenda.time"
-                class="justify-start q-ma-sm shadow-5 bg-grey-6"
-                style="overflow: hidden;"
-              >
-                <div
-                  v-if="agenda.avatar"
-                  class="row justify-center"
-                  style="margin-top: 30px; width: 100%;"
-                >
-                  <q-avatar
-                    style="margin-top: -25px; margin-bottom: 10px; font-size: 60px; max-height: 50px;"
-                  >
-                    <img
-                      :src="agenda.avatar"
-                      style="border: #9e9e9e solid 5px;"
-                    />
-                  </q-avatar>
-                </div>
-                <div class="col-12 q-px-sm">
-                  <strong>{{ agenda.time }}</strong>
-                </div>
-                <div
-                  v-if="agenda.desc"
-                  class="col-12 q-px-sm"
-                  style="font-size: 10px;"
-                >
-                  {{ agenda.desc }}
-                </div>
-              </div>
-            </template>
-          </template>
         </template>
 
         <template #intervals-header="days">
@@ -468,7 +428,7 @@
 <script>
 import { mapGetters } from "vuex";
 import { isCssColor } from "src/util/color";
-import events from "src/util/events";
+// import events from "src/util/events";
 import { padTime } from "src/util/time";
 import { colors, date, Platform } from "quasar";
 import { prevent, stop, stopAndPrevent } from "quasar/src/utils/event";
@@ -499,12 +459,13 @@ const formDefault = {
 
 export default {
   name: "PageIndex",
+  props: { eventList: Array },
 
   data() {
     return {
       keyValue: 0,
       direction: "next",
-      weekdays: [0, 1, 2, 3, 4, 5, 6],
+
       disabledDays: [],
       addEvent: false,
       contextDay: null,
@@ -532,7 +493,7 @@ export default {
     this.$root.$on("calendar:next", this.calendarNext);
     this.$root.$on("calendar:prev", this.calendarPrev);
     this.$root.$on("calendar:today", this.calendarToday);
-    this.events = events;
+    this.events = this.eventList;
     this.updateFormatters();
   },
   beforeDestroy() {
@@ -566,7 +527,8 @@ export default {
       resourceWidth: "calendar/resourceWidth",
       dayHeight: "calendar/dayHeight",
       enableTheme: "calendar/enableTheme",
-      theme: "calendar/theme"
+      theme: "calendar/theme",
+      weekdays: "calendar/weekdays"
     }),
     intervalStart() {
       return this.intervalRange.min * (1 / this.intervalRangeStep);
@@ -877,12 +839,6 @@ export default {
     onDateChanged({ scope, event }) {
       this.calendarView = "day";
     },
-    resourceClicked({ scope, event }) {
-      // console.log('resource clicked:', scope)
-    },
-    resourceDayClicked({ scope, event }) {
-      // console.log('resource:day clicked:', scope)
-    },
     addEventMenu({ scope, event }) {
       const isDisabled = scope.timestamp
         ? scope.timestamp.disabled
@@ -1102,44 +1058,54 @@ export default {
       if (Platform.is.desktop) {
         this.ignoreNextSwipe = true;
       }
-    },
-    getAgenda(timestamp) {
-      return this.agenda[parseInt(timestamp.weekday, 10)];
     }
   }
 };
 </script>
 
-<style lang="sass">
-.q-calendar-daily__day-interval:hover
-  background-color: rgba(0,0,255,.1)
+<style lang="scss">
+.q-calendar-daily__day-interval:hover {
+  background-color: adjust-color($primary, $alpha: -0.8);
+}
 
-.q-calendar-weekly__workweek:hover
-  background-color: rgba(0,0,255,.1)
+.q-calendar-weekly__workweek:hover {
+  background-color: adjust-color($primary, $alpha: -0.8);
+}
 
-.q-calendar-weekly__day:hover
-  background-color: rgba(0,0,255,.1)
+.q-calendar-weekly__day:hover {
+  background-color: adjust-color($primary, $alpha: -0.8);
+}
 
-.q-calendar-weekly__head-weekday:hover
-  background-color: rgba(0,0,255,.1)
+.q-calendar-weekly__head-weekday:hover {
+  background-color: adjust-color($primary, $alpha: -0.8);
+}
 
-.calendar-container
-  position: relative
+.calendar-container {
+  position: relative;
+}
 
-.my-event
-  width: 100%
-  position: absolute
-  font-size: 12px
+.q-calendar-weekly__day--content {
+  padding-top: 2.5em;
+}
 
-.full-width
-  left: 0
-  width: 100%
+.my-event {
+  width: 100%;
+  position: absolute;
+  font-size: 12px;
+}
 
-.left-side
-  left: 0
-  width: 49.75%
+.full-width {
+  left: 0;
+  width: 100%;
+}
 
-.right-side
-  left: 50.25%
-  width: 49.75%
+.left-side {
+  left: 0;
+  width: 49.75%;
+}
+
+.right-side {
+  left: 50.25%;
+  width: 49.75%;
+}
 </style>

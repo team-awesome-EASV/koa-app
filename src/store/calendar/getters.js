@@ -25,3 +25,4 @@ export const dayHeight = state => state.dayHeight;
 export const enableTheme = state => state.enableTheme;
 export const theme = state => state.theme;
 export const titlebarHeight = state => state.titlebarHeight;
+export const weekdays = state => state.weekdays;

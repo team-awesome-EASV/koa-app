@@ -139,7 +139,10 @@
         :done="done2"
         class=""
       >
-        <div class="row fit justify-around no-wrap">
+        <h5>{{ startDateDOW }}</h5>
+        <h5>{{ activeDays }}</h5>
+        <h6>{{ allDates }}</h6>
+        <div class="row fit justify-around no-wrap ">
           <q-form @submit="onSubmit" @reset="onReset" class=" col-5">
             <div class="row justify-around q-mb-md">
               <q-input
@@ -159,7 +162,11 @@
                       transition-show="scale"
                       transition-hide="scale"
                     >
-                      <q-date v-model="newGroup.startDate">
+                      <q-date
+                        v-model="newGroup.startDate"
+                        :first-day-of-week="1"
+                        @input="startDateDowSelect"
+                      >
                         <div class="row items-center justify-end">
                           <q-btn
                             v-close-popup
@@ -234,16 +241,7 @@
               </q-item>
             </q-list>
           </q-form>
-          <q-date v-model="events" multiple class="col-5">
-            <q-popup-edit v-model="events">
-              <q-input
-                v-model="events"
-                type="date"
-                dense
-                autofocus
-                counter
-              /> </q-popup-edit
-          ></q-date>
+          <calendar-layout class="col-5" :events="this.events" />
         </div>
 
         <!--        <q-stepper-navigation>-->
@@ -312,9 +310,14 @@
 
 <script>
 import { mapGetters } from "vuex";
+import CalendarLayout from "layouts/CalendarLayout";
+import { date } from "quasar";
 
 export default {
   name: "StepperGroups",
+  components: {
+    CalendarLayout
+  },
 
   data() {
     return {
@@ -337,62 +340,147 @@ export default {
       },
 
       events: [
-        "2020/10/01",
-        "2020/10/05",
-        "2020/10/06",
-        "2020/10/09",
-        "2020/10/23"
+        {
+          title: "April Fools Day",
+          details:
+            "Everything is funny as long as it is happening to someone else",
+          date: "2020-10-01",
+          bgcolor: "orange"
+        },
+        {
+          title: "Sisters Birthday",
+          details: "Buy a nice present",
+          date: "2020-10-04",
+          bgcolor: "green",
+          icon: "fas fa-birthday-cake"
+        },
+        {
+          title: "Meeting",
+          details: "Time to pitch my idea to the company",
+          date: "2020-10-08",
+          time: "10:00",
+          duration: 120,
+          bgcolor: "red",
+          icon: "fas fa-handshake"
+        },
+        {
+          title: "Lunch",
+          details: "Company is paying!",
+          date: "2020-10-08",
+          time: "11:30",
+          duration: 90,
+          bgcolor: "teal",
+          icon: "fas fa-hamburger"
+        },
+        {
+          title: "Visit mom",
+          details: "Always a nice chat with mom",
+          date: "2020-10-20",
+          time: "17:00",
+          duration: 90,
+          bgcolor: "blue-grey",
+          icon: "fas fa-car"
+        },
+        {
+          title: "Conference",
+          details: "Teaching Javascript 101",
+          date: "2020-10-22",
+          time: "08:00",
+          duration: 540,
+          bgcolor: "blue",
+          icon: "fas fa-chalkboard-teacher"
+        },
+        {
+          title: "Girlfriend",
+          details: "Meet GF for dinner at Swanky Restaurant",
+          date: "2020-10-22",
+          time: "19:00",
+          duration: 180,
+          bgcolor: "teal",
+          icon: "fas fa-utensils"
+        },
+        {
+          title: "Fishing",
+          details: "Time for some weekend R&R",
+          date: "2020-10-27",
+          bgcolor: "purple",
+          icon: "fas fa-fish",
+          days: 2
+        },
+        {
+          title: "Vacation",
+          details:
+            "Trails and hikes, going camping! Don't forget to bring bear spray!",
+          date: "2020-10-29",
+          bgcolor: "purple",
+          icon: "fas fa-plane",
+          days: 5
+        }
       ],
 
       groupSchedule: [
         {
           day: "Monday",
+          doW: 1,
           short: "Mon",
           meetingDay: false,
-          time: "",
-          duration: 0
+          time: "00:00",
+          duration: 0,
+          dates: []
         },
         {
           day: "Tuesday",
+          doW: 2,
           short: "Tue",
           meetingDay: false,
-          time: "",
-          duration: 0
+          time: "00:00",
+          duration: 0,
+          dates: []
         },
         {
           day: "Wednesday",
+          doW: 3,
           short: "Wed",
           meetingDay: false,
-          time: "",
-          duration: 0
+          time: "00:00",
+          duration: 0,
+          dates: []
         },
         {
           day: "Thursday",
+          doW: 4,
           short: "Thu",
           meetingDay: false,
-          time: "",
-          duration: 0
+          time: "00:00",
+          duration: 0,
+          dates: []
         },
         {
           day: "Friday",
+          doW: 5,
           short: "Fri",
           meetingDay: false,
-          time: "",
-          duration: 0
+          time: "00:00",
+          duration: 0,
+          dates: []
         },
         {
           day: "Saturday",
+          doW: 6,
           short: "Sat",
           meetingDay: false,
-          time: "",
-          duration: 0
+          time: "00:00",
+          duration: 0,
+          dates: []
         },
         {
           day: "Sunday",
+          doW: 7,
           short: "Sun",
           meetingDay: false,
-          time: "",
-          duration: 0
+          time: "00:00",
+          duration: 0,
+          dates: []
         }
       ]
     };
@@ -408,8 +496,50 @@ export default {
       return this.newGroup.workshop
         ? this.modules(this.newGroup.workshop.value)
         : [{ label: "Choose workshop first", value: null }];
-    }
+    },
 
+    activeDays() {
+      return this.groupSchedule.filter(day => day.meetingDay === true);
+    },
+
+    startDateDOW() {
+      return date.getDayOfWeek(this.newGroup.startDate);
+    },
+
+    allDates() {
+      let dates = [];
+      this.activeDays.forEach(day => {
+        let startDate = new Date(this.newGroup.startDate);
+        //Find deltaDays between starting date and selected day for each selected day of week
+        let delta = this.deltaDays(this.startDateDOW, day.doW);
+        //
+        let hours = Number(day.time.split(":")[0]); //12
+        let minutes = Number(day.time.split(":")[1]); //45
+        console.log(delta);
+        let firstDay =
+          delta <= 0
+            ? date.addToDate(startDate, {
+                days: Math.abs(delta),
+                hours: hours,
+                minutes: minutes
+              })
+            : date.addToDate(
+                date.subtractFromDate(startDate, {
+                  days: Math.abs(delta)
+                }),
+                { hours: hours, minutes: minutes }
+              );
+
+        console.log(firstDay);
+        //For each selected day of week find all dates in the group duration range
+        for (let i = 0; i < this.newGroup.length; i++) {
+          let daysToAdd = 7 * i;
+          let dayToPush = date.addToDate(firstDay, { days: daysToAdd });
+          dates.push(dayToPush.toLocaleString("pl", { hour12: false }));
+        }
+      });
+      return dates;
+    }
     // workshops: function() {
     //   return this.allWorkshops.map(el => {
     //     el.name;
@@ -418,6 +548,17 @@ export default {
   },
 
   methods: {
+    startDateDowSelect() {
+      let index = this.groupSchedule.findIndex(
+        el => el.doW === this.startDateDOW
+      );
+
+      this.groupSchedule[index].meetingDay = true;
+    },
+    deltaDays(dow1, dow2) {
+      return dow1 - dow2;
+    },
+
     reset() {
       this.done1 = false;
       this.done2 = false;

@@ -1,5 +1,5 @@
 <template>
-  <div class="q-pa-lg">
+  <div>
     <q-toolbar class="bg-primary text-white">
       <q-icon name="far fa-calendar-alt" class="q-ml-md" size="1.5rem"></q-icon>
 
@@ -36,7 +36,7 @@
       ></q-select>
     </q-toolbar>
 
-    <calendartest />
+    <calendartest :event-list="eventsList" />
   </div>
 </template>
 
@@ -52,10 +52,16 @@ export default {
   components: {
     calendartest
   },
+  props: {
+    events: {
+      type: Array
+    }
+  },
   data() {
     return {
       titleFormatter: null,
       dateFormatter: null,
+      eventsList: this.events,
       viewOptions: [
         { label: "Day", value: "day" },
         { label: "Week", value: "week" },
