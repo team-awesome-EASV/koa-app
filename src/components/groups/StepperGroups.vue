@@ -139,9 +139,9 @@
         :done="done2"
         class=""
       >
-        <h5>{{ startDateDOW }}</h5>
-        <h5>{{ activeDays }}</h5>
-        <h6>{{ allDates }}</h6>
+        <p>{{ startDateDOW }}</p>
+        <p>{{ activeDays }}</p>
+        <p>{{ allDates }}</p>
         <div class="row fit justify-around no-wrap ">
           <q-form @submit="onSubmit" @reset="onReset" class=" col-5">
             <div class="row justify-around q-mb-md">
@@ -547,6 +547,25 @@ export default {
     // }
   },
 
+  watch: {
+    "newGroup.startDate": function(newValue, oldValue) {
+      let index = this.groupSchedule.findIndex(
+        el => el.doW === date.getDayOfWeek(newValue)
+      );
+      let oldIndex = this.groupSchedule.findIndex(
+        el => el.doW === date.getDayOfWeek(oldValue)
+      );
+      this.groupSchedule[index].meetingDay = true;
+      this.groupSchedule[oldIndex].meetingDay = false;
+    }
+  },
+
+  created() {
+    let timeStamp = Date.now();
+    let formattedString = date.formatDate(timeStamp, "YYYY-MM-DD");
+    this.newGroup.startDate = formattedString;
+  },
+
   methods: {
     startDateDowSelect() {
       let index = this.groupSchedule.findIndex(
@@ -588,11 +607,7 @@ export default {
       }
     },
 
-    onReset() {
-      this.name = null;
-      this.age = null;
-      this.accept = false;
-    }
+    onReset() {}
   }
 };
 </script>
