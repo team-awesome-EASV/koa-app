@@ -102,7 +102,7 @@
                 :rules="[v => (v && v.length > 0) || 'Field cannot be empty']"
                 autofocus
               />
-              <q-input v-model="eventForm.details" label="Details" />
+              <q-input v-model="eventForm.details" label="Details"/>
               <q-field v-model="eventForm.allDay" style="padding-bottom: 20px;">
                 <q-checkbox v-model="eventForm.allDay" label="All-Day event?" />
               </q-field>
@@ -125,8 +125,6 @@
                         :locale="locale"
                         :hour24-format="true"
                         :rounded-borders="true"
-                        border-color="#2196f3"
-                        bar-color="#2196f3"
                         text-color="white"
                         color="primary"
                         inner-text-color="primary"
@@ -166,8 +164,6 @@
                           :locale="locale"
                           :hour24-format="true"
                           :rounded-borders="true"
-                          border-color="#2196f3"
-                          bar-color="#2196f3"
                           color="primary"
                           text-color="white"
                           inner-color="white"
@@ -206,8 +202,6 @@
                           :locale="locale"
                           :hour24-format="true"
                           :rounded-borders="true"
-                          border-color="#2196f3"
-                          bar-color="#2196f3"
                           color="primary"
                           text-color="white"
                           inner-color="white"
@@ -238,8 +232,9 @@
                       <q-icon-picker
                         v-model="eventForm.icon"
                         :filter="eventForm.icon"
-                        icon-set="fontawesome-v5"
+                        icon-set="material-icons"
                         tooltips
+                        color="primary"
                         :pagination.sync="pagination"
                         style="height: 300px; width: 300px; background-color: white;"
                       />
@@ -318,7 +313,8 @@
         :show-work-weeks="showWorkWeeks"
         :no-default-header-btn="noDefaultHeaderBtn"
         :no-default-header-text="noDefaultHeaderText"
-        :resources="resources"
+        enable-theme
+        :theme="theme"
         @change="onChanged"
         @moved="onMoved"
         @click:date="onDateChanged"
@@ -474,83 +470,19 @@ import { mapGetters } from "vuex";
 import { isCssColor } from "src/util/color";
 import events from "src/util/events";
 import { padTime } from "src/util/time";
-import { date, colors, Platform } from "quasar";
-import { stop, prevent, stopAndPrevent } from "quasar/src/utils/event";
+import { colors, date, Platform } from "quasar";
+import { prevent, stop, stopAndPrevent } from "quasar/src/utils/event";
 // normally you would not import "all" of QCalendar, but is needed for this example to work with UMD (codepen)
 import {
-  PARSE_REGEX,
-  PARSE_TIME,
-  DAYS_IN_MONTH,
-  DAYS_IN_MONTH_LEAP,
-  DAYS_IN_MONTH_MIN,
-  DAYS_IN_MONTH_MAX,
-  MONTH_MAX,
-  MONTH_MIN,
-  DAY_MIN,
-  DAYS_IN_WEEK,
-  MINUTES_IN_HOUR,
-  HOURS_IN_DAY,
-  FIRST_HOUR,
-  MILLISECONDS_IN_MINUTE,
-  MILLISECONDS_IN_HOUR,
-  MILLISECONDS_IN_DAY,
-  MILLISECONDS_IN_WEEK,
-  Timestamp,
-  TimeObject,
-  today,
-  getStartOfWeek,
-  getEndOfWeek,
-  getStartOfMonth,
-  getEndOfMonth,
-  parseTime,
-  validateTimestamp,
-  parsed,
-  parseTimestamp,
-  parseDate,
-  getDayIdentifier,
-  getTimeIdentifier,
-  diffTimestamp,
-  updateRelative,
-  updateMinutes,
-  updateWeekday,
-  updateDayOfYear,
-  updateWorkWeek,
-  updateDisabled,
-  updateFormatted,
-  getDayOfYear,
-  getWorkWeek,
-  getWeekday,
-  isLeapYear,
-  daysInMonth,
-  copyTimestamp,
-  padNumber,
-  getDate,
-  getTime,
-  getDateTime,
-  nextDay,
-  prevDay,
-  moveRelativeDays,
-  relativeDays,
-  findWeekday,
-  getWeekdaySkips,
-  createDayList,
-  createIntervalList,
-  createNativeLocaleFormatter,
-  makeDate,
-  makeDateTime,
-  validateNumber,
-  isBetweenDates,
-  isOverlappingDates,
-  daysBetween,
-  weeksBetween,
   addToDate,
-  compareTimestamps,
-  compareDate,
-  compareTime,
-  compareDateTime,
-  // helpers
-  convertToUnit,
-  indexOf
+  getDate,
+  getDateTime,
+  getDayIdentifier,
+  getTime,
+  getTimeIdentifier,
+  isBetweenDates,
+  makeDateTime,
+  parseTimestamp
 } from "@quasar/quasar-ui-qcalendar/src/index"; // ui is aliased from '@quasar/quasar-ui-qcalendar'
 
 // import "drag-drop-touch";
@@ -565,20 +497,15 @@ const formDefault = {
   bgcolor: "#0000FF"
 };
 
-// function leftClick (e) {
-//   return e.button === 0
-// }
-
 export default {
   name: "PageIndex",
 
   data() {
     return {
-      dzis: today(),
       keyValue: 0,
       direction: "next",
       weekdays: [0, 1, 2, 3, 4, 5, 6],
-      disabledDays: ["2019-04-02", "2019-04-03", "2019-04-04", "2019-04-05"],
+      disabledDays: [],
       addEvent: false,
       contextDay: null,
       eventForm: { ...formDefault },
@@ -592,145 +519,7 @@ export default {
       showDateScrollerAllDay: false,
       showDateTimeScrollerStart: false,
       showDateTimeScrollerEnd: false,
-      resources: [
-        {
-          label: "John"
-        },
-        {
-          label: "Mary"
-        },
-        {
-          label: "Susan"
-        },
-        {
-          label: "Olivia"
-        },
-        {
-          label: "Board Room"
-        },
-        {
-          label: "Room-1"
-        },
-        {
-          label: "Room-2"
-        }
-      ],
-      agenda: {
-        // value represents day of the week
-        1: [
-          {
-            time: "08:00",
-            avatar: "https://cdn.quasar.dev/img/boy-avatar.png",
-            desc: "Meeting with CEO"
-          },
-          {
-            time: "08:30",
-            avatar: "https://cdn.quasar.dev/img/avatar.png",
-            desc: "Meeting with HR"
-          },
-          {
-            time: "10:00",
-            avatar: "https://cdn.quasar.dev/img/avatar1.jpg",
-            desc: "Meeting with Karen"
-          }
-        ],
-        2: [
-          {
-            time: "11:30",
-            avatar: "https://cdn.quasar.dev/img/avatar2.jpg",
-            desc: "Meeting with Alisha"
-          },
-          {
-            time: "17:00",
-            avatar: "https://cdn.quasar.dev/img/avatar3.jpg",
-            desc: "Meeting with Sarah"
-          }
-        ],
-        3: [
-          {
-            time: "08:00",
-            desc: "Stand-up SCRUM",
-            avatar: "https://cdn.quasar.dev/img/material.png"
-          },
-          {
-            time: "09:00",
-            avatar: "https://cdn.quasar.dev/img/boy-avatar.png"
-          },
-          {
-            time: "10:00",
-            desc: "Sprint planning",
-            avatar: "https://cdn.quasar.dev/img/material.png"
-          },
-          {
-            time: "13:00",
-            avatar: "https://cdn.quasar.dev/img/avatar1.jpg"
-          }
-        ],
-        4: [
-          {
-            time: "09:00",
-            avatar: "https://cdn.quasar.dev/img/avatar3.jpg"
-          },
-          {
-            time: "10:00",
-            avatar: "https://cdn.quasar.dev/img/avatar2.jpg"
-          },
-          {
-            time: "13:00",
-            avatar: "https://cdn.quasar.dev/img/material.png"
-          }
-        ],
-        5: [
-          {
-            time: "08:00",
-            avatar: "https://cdn.quasar.dev/img/boy-avatar.png"
-          },
-          {
-            time: "09:00",
-            avatar: "https://cdn.quasar.dev/img/avatar2.jpg"
-          },
-          {
-            time: "09:30",
-            avatar: "https://cdn.quasar.dev/img/avatar4.jpg"
-          },
-          {
-            time: "10:00",
-            avatar: "https://cdn.quasar.dev/img/avatar5.jpg"
-          },
-          {
-            time: "11:30",
-            avatar: "https://cdn.quasar.dev/img/material.png"
-          },
-          {
-            time: "13:00",
-            avatar: "https://cdn.quasar.dev/img/avatar6.jpg"
-          },
-          {
-            time: "13:30",
-            avatar: "https://cdn.quasar.dev/img/avatar3.jpg"
-          },
-          {
-            time: "14:00",
-            avatar: "https://cdn.quasar.dev/img/linux-avatar.png"
-          },
-          {
-            time: "14:30",
-            avatar: "https://cdn.quasar.dev/img/avatar.png"
-          },
-          {
-            time: "15:00",
-            avatar: "https://cdn.quasar.dev/img/boy-avatar.png"
-          },
-          {
-            time: "15:30",
-            avatar: "https://cdn.quasar.dev/img/avatar2.jpg"
-          },
-          {
-            time: "16:00",
-            avatar: "https://cdn.quasar.dev/img/avatar6.jpg"
-          }
-        ]
-      },
+
       // Icon picker
       showIconPicker: false,
       pagination: {
@@ -859,9 +648,6 @@ export default {
     }
   },
   watch: {
-    // selectedDate (val) {
-    //   console.log('selectedDate: ', val)
-    // },
     fiveDayWorkWeek() {
       if (this.fiveDayWorkWeek) {
         this.weekdays = [1, 2, 3, 4, 5];
@@ -897,9 +683,6 @@ export default {
     }
   },
   methods: {
-    hopsa(data) {
-      console.log(data);
-    },
     calendarNext() {
       this.$refs.calendar.next();
     },
@@ -982,6 +765,7 @@ export default {
       }
       return events;
     },
+
     checkDateTimeStart(/* val */) {
       this.$refs.dateTimeEnd.resetValidation();
       if (this.eventForm.dateTimeStart && this.eventForm.dateTimeEnd) {
@@ -996,11 +780,7 @@ export default {
         } else {
           const timeStart = getTimeIdentifier(timestampStart);
           const timeEnd = getTimeIdentifier(timestampEnd);
-          if (timeStart <= timeEnd) {
-            return true;
-          } else {
-            return false;
-          }
+          return timeStart <= timeEnd;
         }
       }
       return false;
@@ -1020,11 +800,7 @@ export default {
         } else {
           const timeEnd = getTimeIdentifier(timestampEnd);
           const timeStart = getTimeIdentifier(timestampStart);
-          if (timeEnd >= timeStart) {
-            return true;
-          } else {
-            return false;
-          }
+          return timeEnd >= timeStart;
         }
       }
       return false;
@@ -1170,8 +946,7 @@ export default {
     getDuration(dateTimeStart, dateTimeEnd, unit) {
       const start = makeDateTime(parseTimestamp(dateTimeStart));
       const end = makeDateTime(parseTimestamp(dateTimeEnd));
-      const diff = date.getDateDiff(end, start, unit);
-      return diff;
+      return date.getDateDiff(end, start, unit);
     },
     convertDurationTime(n) {
       const num = n;

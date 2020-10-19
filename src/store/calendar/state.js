@@ -1,11 +1,13 @@
+import { today } from "@quasar/quasar-ui-qcalendar/src/index";
+
 export default {
-  calendarView: "day",
-  selectedDate: "2019-04-01",
+  calendarView: "month",
+  selectedDate: today(),
   locale: "en-us",
   maxDays: 1,
-  bordered: false,
+  bordered: true,
   fiveDayWorkWeek: false,
-  firstDayMonday: false,
+  firstDayMonday: true,
   shortMonthLabel: false,
   showDayOfYearLabel: false,
   shortWeekdayLabel: false,
@@ -23,7 +25,12 @@ export default {
   resourceHeight: 60,
   resourceWidth: 100,
   dayHeight: 100,
-  enableTheme: false,
+  enableTheme: true,
+  theme: {
+    name: "deafult",
+    backgroundBodyOutside: "rgba(64,166,159, .3)",
 
+    colorDayLabelCurrent: "accent"
+  },
   titlebarHeight: 0
 };
