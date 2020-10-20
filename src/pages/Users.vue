@@ -1,18 +1,20 @@
 <template>
 <div>
+    <pageHeading
+        icon="account_circle"
+        title="Here you can manage users">
+    </pageHeading>
     <usersDisplay></usersDisplay>
 </div>
 </template>
 
 <script>
-// import userList from "../components/users/userList.vue"
-// import userDetails from "../components/users/userDetails.vue"
+import pageHeading from "../components/pageHeading.vue"
 import usersDisplay from "../components/users/usersDisplay.vue"
 
 export default {
     components: {
-        // userList: userList,
-        // userDetails: userDetails
+        pageHeading: pageHeading,
         usersDisplay: usersDisplay
     },
 }

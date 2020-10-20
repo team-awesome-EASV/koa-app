@@ -1,14 +1,21 @@
 <template>
-  <div class=" text-white text-center q-pa-md flex flex-center">
-    <workshop-list/>
-  </div>
+<div>
+    <pageHeading
+        icon="build"
+        title="Here you can manage workshops">
+    </pageHeading>
+    <workshop-list />
+</div>
 </template>
 
 <script>
-import workshops from "../components/workshopList"
+import pageHeading from "../components/pageHeading.vue"
+import workshops from "../components/workshops/workshopList"
+
 export default {
-  components: {
-    workshopList: workshops
-  }
+    components: {
+        pageHeading: pageHeading,
+        workshopList: workshops
+    }
 }
 </script>

@@ -78,11 +78,11 @@
         </div>
     </q-card>
 
-    <q-card class="my-card q-ma-lg col-12 col-md-5">
+    <q-card class="user_details_wrapper q-ma-lg col-12 col-md-5">
         <div
             class="info_box"
             v-if="showInfo = !detailsShow">
-            <h2>Select user from list</h2>
+            <h3>Select user from list</h3>
             <h6>To display detailed information</h6>
         </div>
         <div v-if="detailsShow">
@@ -101,7 +101,7 @@
                         class="q-ma-xs"
                         color="primary"
                         icon="account_circle"
-                        label=" user" />
+                        label="client" />
                 </div>
             </q-img>
 
@@ -132,13 +132,39 @@
                         <h4>User details</h4>
                         <ul>
                             <li>email: {{selectedUser.email}}</li>
-                            <li>numer telefonu: +48 872-982-192</li>
+                            <li>phone number: +48 872-982-192</li>
                             <li>password: lubie-placki</li>
-                            <li>adress: Antkiewicza 37/9 Warszawa</li>
+                            <li>address: Antkiewicza 37/9 Warszawa</li>
                         </ul>
                     </q-card>
                 </div>
             </q-card-section>
+            <div class="admin-controls">
+                <q-btn
+                    class="q-ma-md"
+                    icon="email"
+                    label="Email user"
+                    color="primary">
+                </q-btn>
+                <q-btn
+                    class="q-ma-md"
+                    icon="edit"
+                    label="Edit user"
+                    color="primary">
+                </q-btn>
+                <q-btn
+                    class="q-ma-md"
+                    icon="upgrade"
+                    label="Change role"
+                    color="primary">
+                </q-btn>
+                <q-btn
+                    class="q-ma-md"
+                    icon="delete_forever"
+                    label="Delete user"
+                    color="negative">
+                </q-btn>
+            </div>
         </div>
     </q-card>
 </div>
@@ -152,7 +178,8 @@ import {
 } from "src/boot/firebase.js";
 import {
     mapGetters,
-    mapActions
+    mapActions,
+    mapMutations
 } from "vuex";
 
 export default {
@@ -178,7 +205,6 @@ export default {
     },
 
     methods: {
-
         selectUser(user) {
             this.selectedUser = user
         }
@@ -187,6 +213,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+// List styles
+
 .basic-info-container {
     display: flex;
     width: 40%;
@@ -201,6 +229,14 @@ export default {
     }
 }
 
+// User details wrapper styles
+
+.user_details_wrapper {
+    position: -webkit-sticky;
+    position: sticky;
+    top: 11%;
+}
+
 .info_box {
     width: 100%;
     height: 100%;
@@ -209,7 +245,7 @@ export default {
     justify-content: center;
     flex-direction: column;
 
-    h2 {
+    h3 {
         margin-bottom: 1rem;
     }
 
@@ -233,8 +269,8 @@ export default {
 
 .user_details {
     display: flex;
-    justify-content: flex-start;
-    align-items: center;
+    justify-content: space-around;
+    align-items: flex-start;
 }
 
 h4 {
@@ -260,5 +296,12 @@ ul {
 li {
     margin: 0.8rem;
     font-size: 1.4rem;
+}
+
+.admin-controls {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
 }
 </style>

@@ -13,9 +13,9 @@ export default {
       console.log("is this even happening?", payload);
       state.allUsers = payload;
     },
+    
     selectUser(user) {
       state.selectedUser = user
-      
   }
   },
 
