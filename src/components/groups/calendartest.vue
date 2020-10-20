@@ -289,7 +289,7 @@
         :interval-style="modifiedStyle"
         :day-style="modifiedStyle"
         :resource-style="modifiedStyle"
-        animated
+        :animated="animated"
         transition-prev="slide-right"
         transition-next="slide-left"
         :drag-over-func="onDragOver"
@@ -459,7 +459,7 @@ const formDefault = {
 
 export default {
   name: "PageIndex",
-  props: { eventList: Array },
+  props: { eventList: Array, animated: Boolean },
 
   data() {
     return {
