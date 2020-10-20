@@ -130,6 +130,7 @@
         <!--          />-->
         <!--        </q-stepper-navigation>-->
       </q-step>
+
       <!--TODO try this https://quasar.dev/vue-components/tabs#Example--Dynamic-tabs with vertical tabs and stuff inside the tab for each day-->
       <q-step
         :name="2"
@@ -141,7 +142,7 @@
       >
         <p>{{ startDateDOW }}</p>
         <p>{{ activeDays }}</p>
-        <p>{{ allDates }}</p>
+        <p>{{ lessons }}</p>
         <div class="row fit justify-around no-wrap ">
           <q-form @submit="onSubmit" @reset="onReset" class=" col-5">
             <div class="row justify-around q-mb-md">
@@ -241,7 +242,11 @@
               </q-item>
             </q-list>
           </q-form>
-          <calendar-layout class="col-5" :events="this.events" />
+          <calendar-layout
+            class="col-5"
+            :events="lessons"
+            :key="lessons.length"
+          />
         </div>
 
         <!--        <q-stepper-navigation>-->
@@ -525,7 +530,6 @@ export default {
                 days: Math.abs(delta)
               });
 
-        console.log(firstDay);
         //For each selected day of week find all dates in the group duration range
         for (let i = 0; i < this.newGroup.length; i++) {
           let daysToAdd = 7 * i;
@@ -543,17 +547,7 @@ export default {
         }
       });
       return dates;
-    },
-    workshops: function() {
-      return this.allWorkshops.map(el => {
-        el.name;
-      });
     }
-    // workshops: function() {
-    //   return this.allWorkshops.map(el => {
-    //     el.name;
-    //   });
-    // }
   },
 
   watch: {
