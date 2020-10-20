@@ -339,84 +339,84 @@ export default {
         length: 0
       },
 
-      events: [
-        {
-          title: "April Fools Day",
-          details:
-            "Everything is funny as long as it is happening to someone else",
-          date: "2020-10-01",
-          bgcolor: "orange"
-        },
-        {
-          title: "Sisters Birthday",
-          details: "Buy a nice present",
-          date: "2020-10-04",
-          bgcolor: "green",
-          icon: "fas fa-birthday-cake"
-        },
-        {
-          title: "Meeting",
-          details: "Time to pitch my idea to the company",
-          date: "2020-10-08",
-          time: "10:00",
-          duration: 120,
-          bgcolor: "red",
-          icon: "fas fa-handshake"
-        },
-        {
-          title: "Lunch",
-          details: "Company is paying!",
-          date: "2020-10-08",
-          time: "11:30",
-          duration: 90,
-          bgcolor: "teal",
-          icon: "fas fa-hamburger"
-        },
-        {
-          title: "Visit mom",
-          details: "Always a nice chat with mom",
-          date: "2020-10-20",
-          time: "17:00",
-          duration: 90,
-          bgcolor: "blue-grey",
-          icon: "fas fa-car"
-        },
-        {
-          title: "Conference",
-          details: "Teaching Javascript 101",
-          date: "2020-10-22",
-          time: "08:00",
-          duration: 540,
-          bgcolor: "blue",
-          icon: "fas fa-chalkboard-teacher"
-        },
-        {
-          title: "Girlfriend",
-          details: "Meet GF for dinner at Swanky Restaurant",
-          date: "2020-10-22",
-          time: "19:00",
-          duration: 180,
-          bgcolor: "teal",
-          icon: "fas fa-utensils"
-        },
-        {
-          title: "Fishing",
-          details: "Time for some weekend R&R",
-          date: "2020-10-27",
-          bgcolor: "purple",
-          icon: "fas fa-fish",
-          days: 2
-        },
-        {
-          title: "Vacation",
-          details:
-            "Trails and hikes, going camping! Don't forget to bring bear spray!",
-          date: "2020-10-29",
-          bgcolor: "purple",
-          icon: "fas fa-plane",
-          days: 5
-        }
-      ],
+      // lessons: [
+      //   {
+      //     title: "April Fools Day",
+      //     details:
+      //       "Everything is funny as long as it is happening to someone else",
+      //     date: "2020-10-01",
+      //     bgcolor: "orange"
+      //   },
+      //   {
+      //     title: "Sisters Birthday",
+      //     details: "Buy a nice present",
+      //     date: "2020-10-04",
+      //     bgcolor: "green",
+      //     icon: "fas fa-birthday-cake"
+      //   },
+      //   {
+      //     title: "Meeting",
+      //     details: "Time to pitch my idea to the company",
+      //     date: "2020-10-08",
+      //     time: "10:00",
+      //     duration: 120,
+      //     bgcolor: "red",
+      //     icon: "fas fa-handshake"
+      //   },
+      //   {
+      //     title: "Lunch",
+      //     details: "Company is paying!",
+      //     date: "2020-10-08",
+      //     time: "11:30",
+      //     duration: 90,
+      //     bgcolor: "teal",
+      //     icon: "fas fa-hamburger"
+      //   },
+      //   {
+      //     title: "Visit mom",
+      //     details: "Always a nice chat with mom",
+      //     date: "2020-10-20",
+      //     time: "17:00",
+      //     duration: 90,
+      //     bgcolor: "blue-grey",
+      //     icon: "fas fa-car"
+      //   },
+      //   {
+      //     title: "Conference",
+      //     details: "Teaching Javascript 101",
+      //     date: "2020-10-22",
+      //     time: "08:00",
+      //     duration: 540,
+      //     bgcolor: "blue",
+      //     icon: "fas fa-chalkboard-teacher"
+      //   },
+      //   {
+      //     title: "Girlfriend",
+      //     details: "Meet GF for dinner at Swanky Restaurant",
+      //     date: "2020-10-22",
+      //     time: "19:00",
+      //     duration: 180,
+      //     bgcolor: "teal",
+      //     icon: "fas fa-utensils"
+      //   },
+      //   {
+      //     title: "Fishing",
+      //     details: "Time for some weekend R&R",
+      //     date: "2020-10-27",
+      //     bgcolor: "purple",
+      //     icon: "fas fa-fish",
+      //     days: 2
+      //   },
+      //   {
+      //     title: "Vacation",
+      //     details:
+      //       "Trails and hikes, going camping! Don't forget to bring bear spray!",
+      //     date: "2020-10-29",
+      //     bgcolor: "purple",
+      //     icon: "fas fa-plane",
+      //     days: 5
+      //   }
+      // ],
 
       groupSchedule: [
         {
@@ -506,39 +506,48 @@ export default {
       return date.getDayOfWeek(this.newGroup.startDate);
     },
 
-    allDates() {
+    lessons() {
       let dates = [];
       this.activeDays.forEach(day => {
         let startDate = new Date(this.newGroup.startDate);
         //Find deltaDays between starting date and selected day for each selected day of week
         let delta = this.deltaDays(this.startDateDOW, day.doW);
-        //
-        let hours = Number(day.time.split(":")[0]); //12
-        let minutes = Number(day.time.split(":")[1]); //45
-        console.log(delta);
+        // let hours = Number(day.time.split(":")[0]); //12
+        // let minutes = Number(day.time.split(":")[1]); //45
         let firstDay =
           delta <= 0
             ? date.addToDate(startDate, {
-                days: Math.abs(delta),
-                hours: hours,
-                minutes: minutes
+                days: Math.abs(delta)
+                // hours: hours,
+                // minutes: minutes
               })
-            : date.addToDate(
-                date.subtractFromDate(startDate, {
-                  days: Math.abs(delta)
-                }),
-                { hours: hours, minutes: minutes }
-              );
+            : date.subtractFromDate(startDate, {
+                days: Math.abs(delta)
+              });
 
         console.log(firstDay);
         //For each selected day of week find all dates in the group duration range
         for (let i = 0; i < this.newGroup.length; i++) {
           let daysToAdd = 7 * i;
           let dayToPush = date.addToDate(firstDay, { days: daysToAdd });
-          dates.push(dayToPush.toLocaleString("pl", { hour12: false }));
+          let dayFormatted = date.formatDate(dayToPush, "YYYY-MM-DD");
+
+          dates.push({
+            title: this.newGroup.name,
+            date: dayFormatted,
+            time: day.time,
+            duration: day.duration,
+            bgcolor: this.newGroup.color,
+            icon: ""
+          });
         }
       });
       return dates;
+    },
+    workshops: function() {
+      return this.allWorkshops.map(el => {
+        el.name;
+      });
     }
     // workshops: function() {
     //   return this.allWorkshops.map(el => {
@@ -558,12 +567,6 @@ export default {
       this.groupSchedule[index].meetingDay = true;
       this.groupSchedule[oldIndex].meetingDay = false;
     }
-  },
-
-  created() {
-    let timeStamp = Date.now();
-    let formattedString = date.formatDate(timeStamp, "YYYY-MM-DD");
-    this.newGroup.startDate = formattedString;
   },
 
   methods: {
