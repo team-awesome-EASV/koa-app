@@ -131,6 +131,29 @@
                 ]"
                 @blur="populateKeyWordArray()"
               />
+              <div class="flex flex-center">
+                <q-file
+                  v-model="workshopFile"
+                  bottom-slots
+                  rounded
+                  outlined
+                  label="add image"
+                  accept=".jpg, .png, image/*"
+                  @rejected="onRejected"
+                >
+                  <template v-slot:hint>
+                    Chose an image to upload and then click the upload button
+                  </template>
+                  <template v-slot:after>
+                    <q-btn
+                      push
+                      color="primary"
+                      label="upload"
+                      @click="addImageToDb"
+                    />
+                  </template>
+                </q-file>
+              </div>
 
               <q-toggle v-model="workshopInfo.active">
                 <q-tooltip>
@@ -298,6 +321,30 @@
                 ]"
                 @blur="populateModuleKeyWordArray()"
               />
+
+              <div class="flex flex-center">
+                <q-file
+                  v-model="moduleFile"
+                  bottom-slots
+                  rounded
+                  outlined
+                  label="add image"
+                  accept=".jpg, .png, image/*"
+                  @rejected="onRejected"
+                >
+                  <template v-slot:hint>
+                    Chose an image to upload and then click the upload button
+                  </template>
+                  <template v-slot:after>
+                    <q-btn
+                      push
+                      color="primary"
+                      label="upload"
+                      @click="addModuleImageToDb"
+                    />
+                  </template>
+                </q-file>
+              </div>
             </q-form>
           </q-step>
 
@@ -362,21 +409,42 @@
                             <div class="text-h4 q-mb-md">
                               {{ workshopInfo.name }}
                             </div>
-                            <p>teacher: {{ workshopInfo.teacher.label }}</p>
-                            <p>
-                              Introduction to the workshop:
-                              {{ workshopInfo.introduction }}
-                            </p>
-                            <p>Workshop description:</p>
-                            <div v-html="workshopInfo.description"></div>
+                            <div
+                              class="fit row wrap justify-start items-start content-start"
+                            >
+                              <div
+                                class="col-auto col-xs-12 col-md-6   q-gutter-xs "
+                                style="overflow: auto"
+                              >
+                                <p>teacher: {{ workshopInfo.teacher.label }}</p>
+                                <p>
+                                  Introduction to the workshop:
+                                  {{ workshopInfo.introduction }}
+                                </p>
+                                <p>Workshop description:</p>
+                                <div v-html="workshopInfo.description"></div>
 
-                            <p>
-                              Workshop Conslution:
-                              {{ workshopInfo.conclusion }}
-                            </p>
+                                <p>
+                                  Workshop Conclution:
+                                  {{ workshopInfo.conclusion }}
+                                </p>
+                              </div>
+                              <div
+                                class="col-auto col-xs-12 col-md-6   q-gutter-xs "
+                                style="overflow: auto"
+                              >
+                                <q-img
+                                  :src="workshopInfo.image"
+                                  :ratio="1"
+                                  alt="representative image for workshop"
+                                />
+                              </div>
+                            </div>
+
                             <p>
                               Key words chosen to describe the workshop:
                               <q-btn
+                                class="q-mx-sm"
                                 v-for="(word,
                                 index) in workshopInfo.keyWordsArray"
                                 :key="index"
@@ -391,32 +459,58 @@
                             <div class="text-h4 q-mb-md">
                               {{ modules[activeModuleIndex].moduleName }}
                             </div>
-                            <p>
-                              teacher:
-                              {{
-                                modules[activeModuleIndex].moduleTeacher.label
-                              }}
-                            </p>
-                            <p>
-                              Introduction to the workshop:
-                              {{
-                                modules[activeModuleIndex].moduleIntroduction
-                              }}
-                            </p>
-                            <p>Workshop description:</p>
-                            <div
-                              v-html="
-                                modules[activeModuleIndex].moduleDescription
-                              "
-                            ></div>
 
-                            <p>
-                              Workshop Conslution:
-                              {{ modules[activeModuleIndex].moduleConclusion }}
-                            </p>
+                            <div
+                              class="fit row wrap justify-start items-start content-start"
+                            >
+                              <div
+                                class="col-auto col-xs-12 col-md-6   q-gutter-xs "
+                                style="overflow: auto"
+                              >
+                                <p>
+                                  teacher:
+                                  {{
+                                    modules[activeModuleIndex].moduleTeacher
+                                      .label
+                                  }}
+                                </p>
+                                <p>
+                                  Introduction to the Module:
+                                  {{
+                                    modules[activeModuleIndex]
+                                      .moduleIntroduction
+                                  }}
+                                </p>
+                                <p>Module description:</p>
+                                <div
+                                  v-html="
+                                    modules[activeModuleIndex].moduleDescription
+                                  "
+                                ></div>
+
+                                <p>
+                                  Module Conslution:
+                                  {{
+                                    modules[activeModuleIndex].moduleConclusion
+                                  }}
+                                </p>
+                              </div>
+
+                              <div
+                                class="col-auto col-xs-12 col-md-6   q-gutter-xs "
+                                style="overflow: auto"
+                              >
+                                <q-img
+                                  :src="modules[activeModuleIndex].moduleImage"
+                                  :ratio="1"
+                                  alt="representative image for workshop"
+                                />
+                              </div>
+                            </div>
                             <p>
                               Key words chosen to describe the workshop:
                               <q-btn
+                                class="q-mx-sm"
                                 v-for="(word, index) in modules[
                                   activeModuleIndex
                                 ].moduleKeyWordsArray"
@@ -469,7 +563,7 @@
               <q-btn
                 v-if="step === 1"
                 color="primary"
-                @click="$refs.stepper.next()"
+                @click="updateImageURL(), $refs.stepper.next()"
                 label="continue"
               />
               <q-btn
@@ -524,6 +618,8 @@ export default {
       workshopSubmited: false,
       moduleSubmited: false,
       activeModuleIndex: 0,
+      workshopFile: null,
+      moduleFile: null,
       //   end of layout behaviour
       //   step one modals and info
       workshopInfo: {
@@ -535,7 +631,8 @@ export default {
         active: false,
         modulesNo: 2,
         duration: 2,
-        keyWordsArray: []
+        keyWordsArray: [],
+        image: ""
       },
       keyWords: "",
 
@@ -553,6 +650,7 @@ export default {
         moduleConclusion: "",
         moduleDuration: 1,
         moduleKeyWordsArray: [],
+        moduleImage: "",
         workshopId: "",
         workshopPath: ""
       },
@@ -572,7 +670,9 @@ export default {
   },
   computed: {
     ...mapGetters("workshops", {
-      activeWorkshop: "activeWorkshop"
+      activeWorkshop: "activeWorkshop",
+      imageURL: "imageURL",
+      moduleImageURL: "moduleImageURL"
     })
   },
 
@@ -580,8 +680,25 @@ export default {
     ...mapActions("workshops", [
       "addNewWorkshopToDatabase",
       "addNewModuleToWorkshop",
-      "addTempModuleToState"
+      "addTempModuleToState",
+      "addImageToDatabase",
+      "addModuleImageToDatabase"
     ]),
+    updateImageURL() {
+      this.workshopInfo.image = this.imageURL;
+    },
+    updateModuleImageURL() {
+      this.moduleInfo.moduleImage = this.moduleImageURL;
+    },
+
+    addModuleImageToDb() {
+      this.addModuleImageToDatabase(this.moduleFile);
+    },
+    addImageToDb() {
+      console.log("this is the file", this.workshopFile);
+      this.addImageToDatabase(this.workshopFile);
+    },
+
     // create and populate modules array, will store multiple instances of the module object
     updateActiveModuleIndexNr(index) {
       this.activeModuleIndex = index;
@@ -592,6 +709,7 @@ export default {
     },
 
     createNewModule(module) {
+      this.updateModuleImageURL();
       const obj = {};
       (obj.moduleTeacher = module.moduleTeacher),
         (obj.moduleName = module.moduleName),
@@ -601,7 +719,9 @@ export default {
         (obj.moduleDuration = module.moduleDuration),
         (obj.moduleKeyWordsArray = module.moduleKeyWordsArray),
         (obj.workshopId = module.workshopId),
-        (obj.workshopPath = module.workshopPath);
+        (obj.workshopPath = module.workshopPath),
+        (obj.moduleImage = module.moduleImage);
+
       return obj;
     },
 
@@ -625,6 +745,7 @@ export default {
       //   this.workshopInfo.keyWordsArray = this.keyWords.split(", ");
       // var workshopValue = this.workshopInfo;
       //   console.log("this is workshopInfo ", this.workshopInfo);
+
       this.addNewWorkshopToDatabase(this.workshopInfo);
       this.workshopSubmited = true;
     },
@@ -717,6 +838,15 @@ export default {
         }
         onPasteStripFormattingIEPaste = false;
       }
+    },
+
+    onRejected(rejectedEntries) {
+      // Notify plugin needs to be installed
+      // https://quasar.dev/quasar-plugins/notify#Installation
+      this.$q.notify({
+        type: "negative",
+        message: `${rejectedEntries.length} file(s) did not pass validation constraints`
+      });
     }
   }
 };

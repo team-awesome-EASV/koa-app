@@ -1,4 +1,4 @@
-import { workshop } from "src/boot/firebase.js";
+import { workshop, firebaseApp } from "src/boot/firebase.js";
 import { Notify } from "quasar";
 
 export default {
@@ -7,7 +7,9 @@ export default {
   state: {
     allWorkshops: [],
     activeWorkshop: {},
-    tempModules: []
+    tempModules: [],
+    imageURL: "",
+    moduleImageURL: ""
   },
 
   getters: {
@@ -19,13 +21,38 @@ export default {
       return state.allWorkshops
         .find(workshop => workshop.id === id)
         .moduleList.map(el => ({ label: el.moduleName, value: el.id }));
-    }
+    },
+    imageURL: state => state.imageURL,
+    moduleImageURL: state => state.moduleImageURL
   },
 
   actions: {
     addTempModuleToState({ commit }, payload) {
       var content = payload;
       commit("populateTempModules", content);
+    },
+
+    addImageToDatabase({ commit }, payload) {
+      var storage = firebaseApp.storage().ref("Images/" + payload.name);
+      var uploadTask = storage.put(payload);
+
+      uploadTask.on(
+        "state_changed",
+        snapshot => {
+          console.log("the image ", snapshot);
+        },
+        error => {
+          Notify.create("an error has accured, please try again");
+          console.log(error);
+        },
+        () => {
+          uploadTask.snapshot.ref.getDownloadURL().then(downloadURL => {
+            console.log("file is at", downloadURL);
+            var content = downloadURL;
+            commit("updateImageURL", content);
+          });
+        }
+      );
     },
 
     addNewWorkshopToDatabase({ state, commit, dispatch }, payload) {
@@ -70,6 +97,29 @@ export default {
         .catch(function(error) {
           console.error("Error writing document: ", error);
         });
+    },
+
+    addModuleImageToDatabase({ commit }, payload) {
+      var storage = firebaseApp.storage().ref("Images/" + payload.name);
+      var uploadTask = storage.put(payload);
+
+      uploadTask.on(
+        "state_changed",
+        snapshot => {
+          console.log("the image ", snapshot);
+        },
+        error => {
+          Notify.create("an error has accured, please try again");
+          console.log(error);
+        },
+        () => {
+          uploadTask.snapshot.ref.getDownloadURL().then(downloadURL => {
+            console.log("file is at", downloadURL);
+            var content = downloadURL;
+            commit("updateModuleImageURL", content);
+          });
+        }
+      );
     },
 
     addNewModuleToWorkshop({}, { info, id }) {
@@ -160,8 +210,19 @@ export default {
                 .doc(doc.id)
                 .delete()
                 .then(() => {
-                  Notify.create("Workshop and Modules deleted");
-                  // console.log("deleted  modules and workshop with ID", payload);
+                  workshop
+                    .doc(payload)
+                    .delete()
+                    .then(() => {
+                      Notify.create("Workshop deleted");
+                      Notify.create("Workshop and Modules deleted");
+                      // console.log("deleted item with ID", payload);
+                    })
+                    .catch(error => {
+                      console.log("there was an error", error.message);
+                    });
+
+                  //  put other delete here.. you know which one.. haw haw
                 })
                 .catch(error => {
                   console.log("there was an error", error.message);
@@ -169,20 +230,18 @@ export default {
             });
           });
       }
-      workshop
-        .doc(payload)
-        .delete()
-        .then(() => {
-          Notify.create("Workshop deleted");
-          // console.log("deleted item with ID", payload);
-        })
-        .catch(error => {
-          console.log("there was an error", error.message);
-        });
     }
   },
 
   mutations: {
+    updateImageURL(state, content) {
+      state.imageURL = content;
+    },
+
+    updateModuleImageURL(state, content) {
+      state.moduleImageURL = content;
+    },
+
     setAllWorkshops(state, content) {
       state.allWorkshops = [];
       // console.log("this should be empty", state.allWorkshops);
