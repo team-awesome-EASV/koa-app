@@ -4,14 +4,19 @@ export default {
   namespaced: true,
 
   state: {
-    allUsers: []
+    allUsers: [],
+    selectedUser: 0,
   },
 
   mutations: {
     committAllUsers: (state, payload) => {
       console.log("is this even happening?", payload);
       state.allUsers = payload;
-    }
+    },
+    selectUser(user) {
+      state.selectedUser = user
+      
+  }
   },
 
   getters: {

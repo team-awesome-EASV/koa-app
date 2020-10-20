@@ -1,22 +1,19 @@
 <template>
-<div class="full-width row wrap justify-center items-start content-start text-primary">
-    <q-card class="q-ma-lg col-12 col-md-6">
-        <userList></userList>
-    </q-card>
-    <q-card class="my-card q-ma-lg col-12 col-md-5">
-        <userDetails></userDetails>
-    </q-card>
+<div>
+    <usersDisplay></usersDisplay>
 </div>
 </template>
 
 <script>
-import userList from "../components/users/userList.vue"
-import userDetails from "../components/users/userDetails.vue"
+// import userList from "../components/users/userList.vue"
+// import userDetails from "../components/users/userDetails.vue"
+import usersDisplay from "../components/users/usersDisplay.vue"
 
 export default {
     components: {
-        userList: userList,
-        userDetails: userDetails
-    }
+        // userList: userList,
+        // userDetails: userDetails
+        usersDisplay: usersDisplay
+    },
 }
 </script>
