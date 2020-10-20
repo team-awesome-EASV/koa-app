@@ -36,7 +36,7 @@
       ></q-select>
     </q-toolbar>
 
-    <calendartest :event-list="eventsList" />
+    <calendartest />
   </div>
 </template>
 

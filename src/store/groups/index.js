@@ -14,9 +14,11 @@ export default {
       isActive: false,
       acceptsParticipants: true,
       startDate: "",
-      length: 0,
+      timespan: 1,
       lessons: []
-    }
+    },
+
+    eventTest: []
   },
 
   mutations: {
@@ -60,16 +62,33 @@ export default {
       state.newGroup.startDate = payload;
     },
 
-    newGroupLength: (state, payload) => {
-      state.newGroup.length = payload;
+    newGroupTimespan: (state, payload) => {
+      state.newGroup.timespan = payload;
     },
 
     newGroupIcon: (state, payload) => {
       state.newGroup.icon = payload;
+    },
+
+    eventsTest: (state, payload) => {
+      state.eventTest = payload;
+    },
+
+    deleteLesson: (state, payload) => {
+      state.newGroup.lessons.splice(payload, 1);
+    },
+
+    updateLesson: (state, payload) => {
+      state.newGroup.lessons.splice(payload.index, 1, payload.update);
+    },
+
+    addNewLesson: (state, payload) => {
+      state.newGroup.lessons.push(payload);
     }
   },
 
   getters: {
-    newGroup: state => state.newGroup
+    newGroup: state => state.newGroup,
+    newGroupLessons: state => state.newGroup.lessons
   }
 };

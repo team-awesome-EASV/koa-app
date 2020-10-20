@@ -25,7 +25,9 @@
             v-model="name"
             debounce="500"
             lazy-rules
-            :rules="[val => (val && val.length > 0) || 'Please type something']"
+            :rules="[
+              val => (val && val.length > 0) || 'Please type name of the group'
+            ]"
           />
 
           <q-select
@@ -36,6 +38,8 @@
             label="Workshop"
             hint="Choose workshop"
             @input="clearModule"
+            lazy-rules
+            :rules="[val => !!val || 'Field is required']"
           />
 
           <q-select
@@ -45,6 +49,8 @@
             :options="moduleList"
             label="Module"
             hint="Choose module"
+            lazy-rules
+            :rules="[val => !!val || 'Field is required']"
           />
 
           <q-input
@@ -55,6 +61,8 @@
             outlined
             label="Number of seats"
             hint="Choose maximum number of participants"
+            lazy-rules
+            :rules="[val => !!val || 'Field is required']"
           />
 
           <q-toggle
@@ -62,6 +70,8 @@
             color="primary"
             v-model="isActive"
             size="lg"
+            lazy-rules
+            :rules="[val => !!val || 'Field is required']"
           >
             <q-tooltip>
               Set the group status to active if group is currently running.
@@ -77,6 +87,8 @@
             color="primary"
             v-model="acceptsParticipants"
             size="lg"
+            lazy-rules
+            :rules="[val => !!val || 'Field is required']"
           >
             <q-tooltip>
               Toggle to open or close the group for new members
@@ -153,18 +165,16 @@
         :done="done2"
         class=""
       >
-        <p>{{ startDateDOW }}</p>
-        <p>{{ activeDays }}</p>
-        <p>{{ lessons }}</p>
+        <!--                <p>{{ lessons }}</p>-->
         <div class="row fit justify-around no-wrap ">
-          <q-form @submit="onSubmit" @reset="onReset" class=" col-5">
+          <q-form @submit="onSubmit" @reset="onReset" class="col-5">
             <div class="row justify-around q-mb-md">
               <q-input
                 rounded
                 outlined
                 label="Groups starts on"
                 hint="Choose the day when group meets for the first time"
-                v-model="newGroup.startDate"
+                v-model="startDate"
                 mask="date"
                 :rules="['date']"
                 class=""
@@ -177,7 +187,7 @@
                       transition-hide="scale"
                     >
                       <q-date
-                        v-model="newGroup.startDate"
+                        v-model="startDate"
                         :first-day-of-week="1"
                         @input="startDateDowSelect"
                       >
@@ -200,7 +210,7 @@
                 type="number"
                 label="Group last for"
                 hint="Choose number of weeks"
-                v-model="newGroup.length"
+                v-model="timespan"
               ></q-input>
             </div>
 
@@ -257,8 +267,8 @@
           </q-form>
           <calendar-layout
             class="col-5"
+            :key="lessonUpdate"
             :events="lessons"
-            :key="lessons.length"
           />
         </div>
 
@@ -344,24 +354,24 @@ export default {
         itemsPerPage: 35,
         page: 0
       },
-
+      lessonUpdate: true,
       step: 1,
       done1: false,
       done2: false,
       done3: false,
-      newGroup: {
-        name: "",
-        workshop: "",
-        module: "",
-        teacher: "",
-        totalSpots: "",
-        location: "",
-        color: "#019A9D",
-        status: "inactive",
-        acceptsParticipants: true,
-        startDate: "",
-        length: 0
-      },
+      // newGroup: {
+      //   name: "",
+      //   workshop: "",
+      //   module: "",
+      //   teacher: "",
+      //   totalSpots: "",
+      //   location: "",
+      //   color: "#019A9D",
+      //   status: "inactive",
+      //   acceptsParticipants: true,
+      //   startDate: "",
+      //   timespan: 0
+      // },
 
       groupSchedule: [
         {
@@ -436,6 +446,7 @@ export default {
       workshops: "workshopsSelect",
       modules: "moduleSelect"
     }),
+    ...mapGetters("groups", ["newGroup"]),
 
     name: {
       get() {
@@ -509,6 +520,24 @@ export default {
       }
     },
 
+    startDate: {
+      get() {
+        return this.$store.state.groups.newGroup.startDate;
+      },
+      set(val) {
+        this.$store.commit("groups/newGroupStartDate", val);
+      }
+    },
+
+    timespan: {
+      get() {
+        return this.$store.state.groups.newGroup.timespan;
+      },
+      set(val) {
+        this.$store.commit("groups/newGroupTimespan", val);
+      }
+    },
+
     moduleList() {
       return this.workshop
         ? this.modules(this.workshop.value)
@@ -520,13 +549,13 @@ export default {
     },
 
     startDateDOW() {
-      return date.getDayOfWeek(this.newGroup.startDate);
+      return date.getDayOfWeek(this.startDate);
     },
 
     lessons() {
       let dates = [];
       this.activeDays.forEach(day => {
-        let startDate = new Date(this.newGroup.startDate);
+        let startDate = new Date(this.startDate);
         //Find deltaDays between starting date and selected day for each selected day of week
         let delta = this.deltaDays(this.startDateDOW, day.doW);
         // let hours = Number(day.time.split(":")[0]); //12
@@ -543,27 +572,34 @@ export default {
               });
 
         //For each selected day of week find all dates in the group duration range
-        for (let i = 0; i < this.newGroup.length; i++) {
+        for (let i = 0; i < this.timespan; i++) {
           let daysToAdd = 7 * i;
           let dayToPush = date.addToDate(firstDay, { days: daysToAdd });
           let dayFormatted = date.formatDate(dayToPush, "YYYY-MM-DD");
 
           dates.push({
-            title: this.newGroup.name,
+            title: this.name,
             date: dayFormatted,
             time: day.time,
             duration: day.duration,
-            bgcolor: this.newGroup.color,
-            icon: ""
+            bgcolor: this.color,
+            icon: this.icon
           });
         }
       });
+
+      this.toggleUpdate();
       return dates;
     }
   },
 
+  beforeUpdate() {
+    this.$store.commit("groups/newGroupLessons", this.lessons);
+    console.log("im from before update");
+  },
+
   watch: {
-    "newGroup.startDate": function(newValue, oldValue) {
+    startDate: function(newValue, oldValue) {
       let index = this.groupSchedule.findIndex(
         el => el.doW === date.getDayOfWeek(newValue)
       );
@@ -576,6 +612,10 @@ export default {
   },
 
   methods: {
+    toggleUpdate() {
+      this.lessonUpdate = !this.lessonUpdate;
+    },
+
     startDateDowSelect() {
       let index = this.groupSchedule.findIndex(
         el => el.doW === this.startDateDOW
@@ -618,6 +658,10 @@ export default {
 
     onReset() {}
   }
+
+  // beforeUpdate() {
+  //   console.log(this.lessons);
+  // }
 };
 </script>
 
