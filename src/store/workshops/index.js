@@ -23,6 +23,11 @@ export default {
         .find(workshop => workshop.id === id)
         .moduleList.map(el => ({ label: el.moduleName, value: el.moduleId }));
     },
+    moduleTeacher: state => (id, moduleId) => {
+      return state.allWorkshops
+        .find(workshop => workshop.id === id)
+        .moduleList.find(module => module.moduleId === moduleId).moduleTeacher;
+    },
     imageURL: state => state.imageURL,
     moduleImageURL: state => state.moduleImageURL
   },

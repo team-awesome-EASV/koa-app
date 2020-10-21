@@ -21,7 +21,7 @@
         /></q-avatar>
       </div>
       <div class="text-h5 text-weight-light text-italic q-mt-sm q-mb-xs">
-        Teacher: {{ group.teacher }}
+        Teacher: {{ group.teacher.label }}
       </div>
     </q-card-section>
     <q-card-section>

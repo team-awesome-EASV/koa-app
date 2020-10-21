@@ -25,6 +25,7 @@ export default {
   mutations: {
     newGroupLessons: (state, payload) => {
       state.newGroup.lessons = payload;
+      console.log("all lessons overwritten");
     },
 
     newGroupName: (state, payload) => {
