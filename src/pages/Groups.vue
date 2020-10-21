@@ -1,18 +1,25 @@
 <template>
-  <div class="">
+<div>
+    <pageHeading
+        icon="group"
+        title="Here you can manage groups">
+    </pageHeading>
     <CalendarLayout />
-  </div>
+</div>
 </template>
 
 <script>
+import pageHeading from "../components/pageHeading.vue"
 import CalendarLayout from "layouts/CalendarLayout";
+
 export default {
-  name: "Groups",
-  components: {
-    CalendarLayout
-  },
-  data() {
-    return {};
-  }
+
+    components: {
+        pageHeading: pageHeading,
+        CalendarLayout
+    },
+    data() {
+        return {};
+    }
 };
 </script>

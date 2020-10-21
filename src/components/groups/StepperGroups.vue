@@ -22,46 +22,56 @@
             outlined
             label="Group Name"
             hint="Name of the group"
-            v-model="newGroup.name"
+            v-model="name"
+            debounce="500"
             lazy-rules
-            :rules="[val => (val && val.length > 0) || 'Please type something']"
+            :rules="[
+              val => (val && val.length > 0) || 'Please type name of the group'
+            ]"
           />
 
           <q-select
             rounded
             outlined
-            v-model="newGroup.workshop"
+            v-model="workshop"
             :options="workshops"
             label="Workshop"
             hint="Choose workshop"
             @input="clearModule"
+            lazy-rules
+            :rules="[val => !!val || 'Field is required']"
           />
 
           <q-select
             rounded
             outlined
-            v-model="newGroup.module"
+            v-model="module"
             :options="moduleList"
             label="Module"
             hint="Choose module"
+            lazy-rules
+            :rules="[val => !!val || 'Field is required']"
           />
 
           <q-input
-            v-model.number="newGroup.totalSpots"
+            v-model.number="spots"
+            debounce="500"
             type="number"
             rounded
             outlined
             label="Number of seats"
             hint="Choose maximum number of participants"
+            lazy-rules
+            :rules="[val => !!val || 'Field is required']"
           />
 
           <q-toggle
-            :label="`This group is ${newGroup.status}`"
+            :label="`This group is ${isActive ? 'active' : 'inactive'}`"
             color="primary"
-            false-value="inactive"
-            true-value="active"
-            v-model="newGroup.status"
+            v-model="isActive"
             size="lg"
+            lazy-rules
+            :rules="[val => !!val || 'Field is required']"
           >
             <q-tooltip>
               Set the group status to active if group is currently running.
@@ -70,13 +80,15 @@
 
           <q-toggle
             :label="
-              newGroup.acceptsParticipants
+              acceptsParticipants
                 ? 'This group is open for new members'
                 : 'This group is closed'
             "
             color="primary"
-            v-model="newGroup.acceptsParticipants"
+            v-model="acceptsParticipants"
             size="lg"
+            lazy-rules
+            :rules="[val => !!val || 'Field is required']"
           >
             <q-tooltip>
               Toggle to open or close the group for new members
@@ -85,21 +97,21 @@
           <div class="row items-center">
             <div class="col">
               <q-color
-                v-model="newGroup.color"
+                v-model="color"
                 no-header
                 no-footer
                 default-view="palette"
                 :palette="[
-                  '#f94144ff',
-                  '#f3722cff',
-                  '#f8961eff',
-                  '#f9844aff',
-                  '#f9c74fff',
-                  '#90be6dff',
-                  '#43aa8bff',
-                  '#4d908eff',
-                  '#577590ff',
-                  '#277da1ff'
+                  '#f94144',
+                  '#f3722c',
+                  '#f8961e',
+                  '#f9844a',
+                  '#f9c74f',
+                  '#90be6d',
+                  '#43aa8b',
+                  '#4d908e',
+                  '#577590',
+                  '#277da1'
                 ]"
                 class="my-picker"
               />
@@ -108,11 +120,24 @@
               >
             </div>
             <q-avatar
-              :style="`background-color: ${newGroup.color}`"
+              :style="`background-color: ${color}`"
               text-color="white"
               size="xl"
+              @click="showIconPicker = true"
             >
-              <q-icon name="group" />
+              <q-icon :name="icon">
+                <q-tooltip>Click to pick the group icon</q-tooltip>
+                <q-popup-proxy v-model="showIconPicker">
+                  <q-icon-picker
+                    v-model="icon"
+                    icon-set="fontawesome-v5"
+                    color="secondary"
+                    tooltips
+                    :pagination.sync="pagination"
+                    style="height: 300px; width: 300px; background-color: white;"
+                  />
+                </q-popup-proxy>
+              </q-icon>
             </q-avatar>
           </div>
         </q-form>
@@ -140,18 +165,16 @@
         :done="done2"
         class=""
       >
-        <p>{{ startDateDOW }}</p>
-        <p>{{ activeDays }}</p>
-        <p>{{ lessons }}</p>
+        <!--                <p>{{ lessons }}</p>-->
         <div class="row fit justify-around no-wrap ">
-          <q-form @submit="onSubmit" @reset="onReset" class=" col-5">
+          <q-form @submit="onSubmit" @reset="onReset" class="col-5">
             <div class="row justify-around q-mb-md">
               <q-input
                 rounded
                 outlined
                 label="Groups starts on"
                 hint="Choose the day when group meets for the first time"
-                v-model="newGroup.startDate"
+                v-model="startDate"
                 mask="date"
                 :rules="['date']"
                 class=""
@@ -164,7 +187,7 @@
                       transition-hide="scale"
                     >
                       <q-date
-                        v-model="newGroup.startDate"
+                        v-model="startDate"
                         :first-day-of-week="1"
                         @input="startDateDowSelect"
                       >
@@ -187,7 +210,7 @@
                 type="number"
                 label="Group last for"
                 hint="Choose number of weeks"
-                v-model="newGroup.length"
+                v-model="timespan"
               ></q-input>
             </div>
 
@@ -244,8 +267,8 @@
           </q-form>
           <calendar-layout
             class="col-5"
+            :key="lessonUpdate"
             :events="lessons"
-            :key="lessons.length"
           />
         </div>
 
@@ -326,102 +349,29 @@ export default {
 
   data() {
     return {
+      showIconPicker: false,
+      pagination: {
+        itemsPerPage: 35,
+        page: 0
+      },
+      lessonUpdate: true,
       step: 1,
       done1: false,
       done2: false,
       done3: false,
-      newGroup: {
-        name: "",
-        workshop: "",
-        module: "",
-        teacher: "",
-        totalSpots: "",
-        location: "",
-        color: "#019A9D",
-        status: "inactive",
-        acceptsParticipants: true,
-        startDate: "",
-        length: 0
-      },
-
-      // lessons: [
-      //   {
-      //     title: "April Fools Day",
-      //     details:
-      //       "Everything is funny as long as it is happening to someone else",
-      //     date: "2020-10-01",
-      //     bgcolor: "orange"
-      //   },
-      //   {
-      //     title: "Sisters Birthday",
-      //     details: "Buy a nice present",
-      //     date: "2020-10-04",
-      //     bgcolor: "green",
-      //     icon: "fas fa-birthday-cake"
-      //   },
-      //   {
-      //     title: "Meeting",
-      //     details: "Time to pitch my idea to the company",
-      //     date: "2020-10-08",
-      //     time: "10:00",
-      //     duration: 120,
-      //     bgcolor: "red",
-      //     icon: "fas fa-handshake"
-      //   },
-      //   {
-      //     title: "Lunch",
-      //     details: "Company is paying!",
-      //     date: "2020-10-08",
-      //     time: "11:30",
-      //     duration: 90,
-      //     bgcolor: "teal",
-      //     icon: "fas fa-hamburger"
-      //   },
-      //   {
-      //     title: "Visit mom",
-      //     details: "Always a nice chat with mom",
-      //     date: "2020-10-20",
-      //     time: "17:00",
-      //     duration: 90,
-      //     bgcolor: "blue-grey",
-      //     icon: "fas fa-car"
-      //   },
-      //   {
-      //     title: "Conference",
-      //     details: "Teaching Javascript 101",
-      //     date: "2020-10-22",
-      //     time: "08:00",
-      //     duration: 540,
-      //     bgcolor: "blue",
-      //     icon: "fas fa-chalkboard-teacher"
-      //   },
-      //   {
-      //     title: "Girlfriend",
-      //     details: "Meet GF for dinner at Swanky Restaurant",
-      //     date: "2020-10-22",
-      //     time: "19:00",
-      //     duration: 180,
-      //     bgcolor: "teal",
-      //     icon: "fas fa-utensils"
-      //   },
-      //   {
-      //     title: "Fishing",
-      //     details: "Time for some weekend R&R",
-      //     date: "2020-10-27",
-      //     bgcolor: "purple",
-      //     icon: "fas fa-fish",
-      //     days: 2
-      //   },
-      //   {
-      //     title: "Vacation",
-      //     details:
-      //       "Trails and hikes, going camping! Don't forget to bring bear spray!",
-      //     date: "2020-10-29",
-      //     bgcolor: "purple",
-      //     icon: "fas fa-plane",
-      //     days: 5
-      //   }
-      // ],
+      // newGroup: {
+      //   name: "",
+      //   workshop: "",
+      //   module: "",
+      //   teacher: "",
+      //   totalSpots: "",
+      //   location: "",
+      //   color: "#019A9D",
+      //   status: "inactive",
+      //   acceptsParticipants: true,
+      //   startDate: "",
+      //   timespan: 0
+      // },
 
       groupSchedule: [
         {
@@ -496,10 +446,101 @@ export default {
       workshops: "workshopsSelect",
       modules: "moduleSelect"
     }),
+    ...mapGetters("groups", ["newGroup"]),
+
+    name: {
+      get() {
+        return this.$store.state.groups.newGroup.name;
+      },
+      set(value) {
+        this.$store.commit("groups/newGroupName", value);
+      }
+    },
+
+    workshop: {
+      get() {
+        return this.$store.state.groups.newGroup.workshop;
+      },
+      set(value) {
+        this.$store.commit("groups/newGroupWorkshop", value);
+      }
+    },
+
+    module: {
+      get() {
+        return this.$store.state.groups.newGroup.module;
+      },
+      set(val) {
+        this.$store.commit("groups/newGroupModule", val);
+      }
+    },
+
+    spots: {
+      get() {
+        return this.$store.state.groups.newGroup.totalSpots;
+      },
+      set(val) {
+        this.$store.commit("groups/newGroupTotalSpots", val);
+      }
+    },
+
+    isActive: {
+      get() {
+        return this.$store.state.groups.newGroup.isActive;
+      },
+      set(val) {
+        this.$store.commit("groups/newGroupIsActive", val);
+      }
+    },
+
+    acceptsParticipants: {
+      get() {
+        return this.$store.state.groups.newGroup.acceptsParticipants;
+      },
+      set(val) {
+        this.$store.commit("groups/newGroupAcceptsParticipants", val);
+      }
+    },
+
+    color: {
+      get() {
+        return this.$store.state.groups.newGroup.color;
+      },
+      set(val) {
+        this.$store.commit("groups/newGroupColor", val);
+      }
+    },
+
+    icon: {
+      get() {
+        return this.$store.state.groups.newGroup.icon;
+      },
+      set(val) {
+        this.$store.commit("groups/newGroupIcon", val);
+      }
+    },
+
+    startDate: {
+      get() {
+        return this.$store.state.groups.newGroup.startDate;
+      },
+      set(val) {
+        this.$store.commit("groups/newGroupStartDate", val);
+      }
+    },
+
+    timespan: {
+      get() {
+        return this.$store.state.groups.newGroup.timespan;
+      },
+      set(val) {
+        this.$store.commit("groups/newGroupTimespan", val);
+      }
+    },
 
     moduleList() {
-      return this.newGroup.workshop
-        ? this.modules(this.newGroup.workshop.value)
+      return this.workshop
+        ? this.modules(this.workshop.value)
         : [{ label: "Choose workshop first", value: null }];
     },
 
@@ -508,13 +549,13 @@ export default {
     },
 
     startDateDOW() {
-      return date.getDayOfWeek(this.newGroup.startDate);
+      return date.getDayOfWeek(this.startDate);
     },
 
     lessons() {
       let dates = [];
       this.activeDays.forEach(day => {
-        let startDate = new Date(this.newGroup.startDate);
+        let startDate = new Date(this.startDate);
         //Find deltaDays between starting date and selected day for each selected day of week
         let delta = this.deltaDays(this.startDateDOW, day.doW);
         // let hours = Number(day.time.split(":")[0]); //12
@@ -531,27 +572,34 @@ export default {
               });
 
         //For each selected day of week find all dates in the group duration range
-        for (let i = 0; i < this.newGroup.length; i++) {
+        for (let i = 0; i < this.timespan; i++) {
           let daysToAdd = 7 * i;
           let dayToPush = date.addToDate(firstDay, { days: daysToAdd });
           let dayFormatted = date.formatDate(dayToPush, "YYYY-MM-DD");
 
           dates.push({
-            title: this.newGroup.name,
+            title: this.name,
             date: dayFormatted,
             time: day.time,
             duration: day.duration,
-            bgcolor: this.newGroup.color,
-            icon: ""
+            bgcolor: this.color,
+            icon: this.icon
           });
         }
       });
+
+      this.toggleUpdate();
       return dates;
     }
   },
 
+  beforeUpdate() {
+    this.$store.commit("groups/newGroupLessons", this.lessons);
+    console.log("im from before update");
+  },
+
   watch: {
-    "newGroup.startDate": function(newValue, oldValue) {
+    startDate: function(newValue, oldValue) {
       let index = this.groupSchedule.findIndex(
         el => el.doW === date.getDayOfWeek(newValue)
       );
@@ -564,6 +612,10 @@ export default {
   },
 
   methods: {
+    toggleUpdate() {
+      this.lessonUpdate = !this.lessonUpdate;
+    },
+
     startDateDowSelect() {
       let index = this.groupSchedule.findIndex(
         el => el.doW === this.startDateDOW
@@ -583,7 +635,7 @@ export default {
     },
 
     clearModule() {
-      this.newGroup.module = "";
+      this.module = "";
     },
 
     onSubmit() {
@@ -606,6 +658,10 @@ export default {
 
     onReset() {}
   }
+
+  // beforeUpdate() {
+  //   console.log(this.lessons);
+  // }
 };
 </script>
 

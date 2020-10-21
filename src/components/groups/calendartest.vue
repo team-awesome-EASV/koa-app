@@ -231,8 +231,7 @@
                     <q-popup-proxy v-model="showIconPicker">
                       <q-icon-picker
                         v-model="eventForm.icon"
-                        :filter="eventForm.icon"
-                        icon-set="material-icons"
+                        icon-set="fontawesome-v5"
                         tooltips
                         color="primary"
                         :pagination.sync="pagination"
@@ -292,8 +291,6 @@
         :animated="animated"
         transition-prev="slide-right"
         transition-next="slide-left"
-        :drag-over-func="onDragOver"
-        :drop-func="onDrop"
         :view="calendarView"
         :weekdays="weekdays"
         :interval-minutes="60 * intervalRangeStep"
@@ -472,7 +469,7 @@ export default {
       eventForm: { ...formDefault },
       displayEvent: false,
       event: null,
-      events: [],
+      // events: [],
       gmt: "",
       dragging: false,
       draggedEvent: null,
@@ -493,7 +490,7 @@ export default {
     this.$root.$on("calendar:next", this.calendarNext);
     this.$root.$on("calendar:prev", this.calendarPrev);
     this.$root.$on("calendar:today", this.calendarToday);
-    this.events = this.eventList;
+    // this.events = this.$store.state.groups.newGroup.lessons;
     this.updateFormatters();
   },
   beforeDestroy() {
@@ -528,7 +525,8 @@ export default {
       dayHeight: "calendar/dayHeight",
       enableTheme: "calendar/enableTheme",
       theme: "calendar/theme",
-      weekdays: "calendar/weekdays"
+      weekdays: "calendar/weekdays",
+      events: "groups/newGroupLessons"
     }),
     intervalStart() {
       return this.intervalRange.min * (1 / this.intervalRangeStep);
@@ -643,6 +641,13 @@ export default {
     locale() {
       this.updateFormatters();
     }
+    // eventList: {
+    //   deep: true,
+    //   handler(newValue) {
+    //     console.log("imfromwatcher");
+    //     this.$store.commit("groups/newGroupLessons", newValue);
+    //   }
+    // }
   },
   methods: {
     calendarNext() {
@@ -882,12 +887,15 @@ export default {
       this.eventForm.details = event.details;
       this.addEvent = true; // show dialog
     },
+
     deleteEvent(event) {
       const index = this.findEventIndex(event);
       if (index >= 0) {
-        this.events.splice(index, 1);
+        // this.events.splice(index, 1);
+        this.$store.commit("groups/deleteLesson", index);
       }
     },
+
     findEventIndex(event) {
       for (let i = 0; i < this.events.length; ++i) {
         if (
@@ -958,14 +966,20 @@ export default {
               "minutes"
             );
           }
+
           if (update === true) {
             const index = self.findEventIndex(self.contextDay);
             if (index >= 0) {
-              self.events.splice(index, 1, { ...data });
+              self.$store.commit("groups/updateLesson", {
+                index: index,
+                update: { ...data }
+              });
+              // self.events.splice(index, 1, { ...data });
             }
           } else {
             // add to events array
-            self.events.push(data);
+            self.$store.commit("groups/addNewLesson", data);
+            // self.events.push(data);
           }
 
           self.contextDay = null;
