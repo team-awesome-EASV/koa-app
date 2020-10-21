@@ -64,6 +64,7 @@
           <q-input
             v-model.number="spots"
             debounce="500"
+            :min="1"
             type="number"
             rounded
             outlined
@@ -189,6 +190,7 @@
             <div class="row justify-between q-mb-md">
               <q-input
                 label="Groups starts on"
+                outlined
                 hint="Choose the day when group meets for the first time"
                 v-model="startDate"
                 mask="date"
@@ -218,12 +220,20 @@
                     </q-popup-proxy>
                   </q-icon>
                 </template>
+                <q-tooltip
+                  >Type in the date YYYY/MM/DD or click on the icon</q-tooltip
+                >
               </q-input>
               <q-input
                 type="number"
+                outlined
                 label="Group last for"
                 hint="Choose number of weeks"
                 v-model="timespan"
+                :min="1"
+                :rules="[
+                  val => val > 0 || 'Group cannot be shorter then a week'
+                ]"
               >
                 <template v-slot:append>
                   <q-icon name="update"></q-icon>
@@ -322,6 +332,7 @@
                         v-model.number="day.duration"
                         type="number"
                         dense
+                        :min="0"
                         label="Lesson duration in minutes"
                       />
                     </div>
