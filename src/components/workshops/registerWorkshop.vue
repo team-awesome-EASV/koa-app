@@ -563,14 +563,14 @@
               <q-btn
                 v-if="step === 1"
                 color="primary"
-                :disable="imageURL"
+                :disable="imageURL ? false : true"
                 @click="updateImageURL(), $refs.stepper.next()"
                 label="continue"
               />
               <q-btn
                 v-if="step === 2"
                 color="primary"
-                :disable="moduleImageURL"
+                :disable="moduleImageURL ? false : true"
                 @click="populateTempModules(), $refs.stepper.next()"
                 label="continue"
               />
@@ -622,6 +622,8 @@ export default {
       activeModuleIndex: 0,
       workshopFile: null,
       moduleFile: null,
+      disableBtn: this.disableBtnFx,
+      disableModuleBtn: false,
       // btnDisable: this.imageURL,
       //   end of layout behaviour
       //   step one modals and info
@@ -676,7 +678,22 @@ export default {
       activeWorkshop: "activeWorkshop",
       imageURL: "imageURL",
       moduleImageURL: "moduleImageURL"
-    })
+    }),
+
+    disableBtnFx() {
+      if (this.imageURL) {
+        return false;
+      } else return true;
+    },
+
+    disableModuleBtnFx() {
+      if (this.moduleFile) {
+        return true;
+      }
+      if (this.moduleImageURL || this.moduleFile) {
+        return false;
+      } else return true;
+    }
   },
 
   methods: {
@@ -709,6 +726,7 @@ export default {
     updateModulesArray(module) {
       var temp = this.createNewModule(this.moduleInfo);
       this.modules.push(temp);
+      this.moduleFile = null;
     },
 
     createNewModule(module) {
