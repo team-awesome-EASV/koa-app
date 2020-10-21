@@ -563,12 +563,14 @@
               <q-btn
                 v-if="step === 1"
                 color="primary"
+                :disable="imageURL"
                 @click="updateImageURL(), $refs.stepper.next()"
                 label="continue"
               />
               <q-btn
                 v-if="step === 2"
                 color="primary"
+                :disable="moduleImageURL"
                 @click="populateTempModules(), $refs.stepper.next()"
                 label="continue"
               />
@@ -620,6 +622,7 @@ export default {
       activeModuleIndex: 0,
       workshopFile: null,
       moduleFile: null,
+      // btnDisable: this.imageURL,
       //   end of layout behaviour
       //   step one modals and info
       workshopInfo: {

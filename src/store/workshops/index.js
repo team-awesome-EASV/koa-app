@@ -1,5 +1,6 @@
 import { workshop, firebaseApp } from "src/boot/firebase.js";
 import { Notify } from "quasar";
+import { noDefaultHeaderBtn } from "../calendar/getters";
 
 export default {
   namespaced: true,
@@ -33,26 +34,60 @@ export default {
     },
 
     addImageToDatabase({ commit }, payload) {
-      var storage = firebaseApp.storage().ref("Images/" + payload.name);
-      var uploadTask = storage.put(payload);
+      var storage = firebaseApp.storage();
+      var storageRef = storage.ref("Images/" + payload.name);
 
-      uploadTask.on(
-        "state_changed",
-        snapshot => {
-          console.log("the image ", snapshot);
-        },
-        error => {
-          Notify.create("an error has accured, please try again");
-          console.log(error);
-        },
-        () => {
-          uploadTask.snapshot.ref.getDownloadURL().then(downloadURL => {
-            console.log("file is at", downloadURL);
-            var content = downloadURL;
-            commit("updateImageURL", content);
+      var listRef = storage.ref("Images/");
+      var uploadTask;
+      var result = false;
+      var locations = [];
+      console.log(result);
+
+      listRef
+        .listAll()
+        .then(images => {
+          images.items.forEach(item => {
+            locations.push(item.location.path);
           });
-        }
-      );
+          var exists = locations.find(
+            element => element === storageRef.location.path
+          );
+
+          if (exists) {
+            Notify.create(
+              "an image with the same name already exists please chenge the name"
+            );
+          } else {
+            result = true;
+          }
+          console.log(exists);
+        })
+        .then(() => {
+          console.log(result);
+
+          if (result) {
+            uploadTask = storageRef.put(payload);
+            uploadTask.on(
+              "state_changed",
+              snapshot => {
+                console.log("the image ", snapshot);
+              },
+              error => {
+                Notify.create("an error has accured, please try again");
+                console.log(error);
+              },
+              () => {
+                uploadTask.snapshot.ref.getDownloadURL().then(downloadURL => {
+                  console.log("file is at", downloadURL);
+                  var content = downloadURL;
+                  commit("updateImageURL", content);
+                });
+              }
+            );
+          }
+        });
+
+      console.log(result);
     },
 
     addNewWorkshopToDatabase({ state, commit, dispatch }, payload) {
@@ -100,8 +135,11 @@ export default {
     },
 
     addModuleImageToDatabase({ commit }, payload) {
-      var storage = firebaseApp.storage().ref("Images/" + payload.name);
-      var uploadTask = storage.put(payload);
+      console.log("this is the image", payload);
+      var storage = firebaseApp.storage();
+      var storageRef = storage.ref("Images/" + payload.name);
+
+      let uploadTask = storageRef.put(payload);
 
       uploadTask.on(
         "state_changed",

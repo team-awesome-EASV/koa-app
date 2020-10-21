@@ -7,6 +7,7 @@ import "firebase/analytics";
 // Add the Firebase products that you want to use
 import "firebase/auth";
 import "firebase/firestore";
+import "firebase/storage";
 
 import store from "../store/index";
 
@@ -26,7 +27,7 @@ let firebaseApp = firebase.initializeApp(firebaseConfig);
 let auth = firebaseApp.auth();
 let db = firebaseApp.firestore();
 let workshop = db.collection("Workshops");
-let users = db.collection("Users")
+let users = db.collection("Users");
 
 firebase.analytics();
 
