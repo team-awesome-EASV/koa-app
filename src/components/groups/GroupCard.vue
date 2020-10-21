@@ -10,61 +10,74 @@
         <q-breadcrumbs-el :label="group.module.label" icon="design_services" />
       </q-breadcrumbs>
       <div class="row justify-between items-center q-mt-md">
-        <div class="text-h4 q-mt-sm q-mb-xs">{{ group.name }}</div>
+        <div class="text-h3 q-mt-sm q-mb-xs">
+          {{ group.name }}
+          <q-badge
+            class="q-mx-xs"
+            align="middle"
+            :label="group.isActive ? 'Active' : 'Not active'"
+            :color="group.isActive ? 'accent' : 'grey'"
+          ></q-badge>
+          <q-badge
+            class="q-mx-xs"
+            align="middle"
+            :label="group.acceptsParticipants ? 'Open' : 'Closed'"
+            :color="group.acceptsParticipants ? 'positive' : 'grey'"
+          ></q-badge>
+        </div>
         <q-avatar
           :style="`background-color: ${group.color}`"
           text-color="white"
           size="xl"
           @click="showIconPicker = true"
         >
-          <q-icon :name="group.icon"
-        /></q-avatar>
+          <q-icon :name="group.icon" />
+          <q-badge
+            class="q-mx-xs"
+            align="middle"
+            :label="freeSpots"
+            floating
+            :color="group.acceptsParticipants ? 'accent' : 'grey'"
+          ></q-badge>
+        </q-avatar>
       </div>
       <div class="text-h5 text-weight-light text-italic q-mt-sm q-mb-xs">
         Teacher: {{ group.teacher.label }}
       </div>
-    </q-card-section>
-    <q-card-section>
       <div class="row q-py-sm">
-        <q-chip size="lg" square>
-          <q-avatar color="accent" text-color="white" icon="event" />
-          {{ group.startDate }}
-        </q-chip>
-
-        <q-chip size="lg" square>
-          <q-avatar color="secondary" text-color="white"
-            >{{ group.timespan }}
-          </q-avatar>
-          Weeks
-        </q-chip>
-      </div>
-
-      <div class="row q-py-sm">
-        <q-chip size="lg" square>
+        <q-chip square>
           <q-avatar color="accent" text-color="white"
             >{{ group.totalSpots }}
           </q-avatar>
           Free spots
         </q-chip>
-        <q-chip size="lg" square>
+        <q-chip square>
           <q-avatar color="primary" text-color="white"
             >{{ group.totalSpots }}
           </q-avatar>
           Total spots
         </q-chip>
       </div>
+    </q-card-section>
+    <q-card-section class="q-mb-lg">
+      <div class="row justify-between items-baseline">
+        <div class="column items-start justify-start">
+          <span class="text-body1">Group begins on</span>
+          <q-chip square size="lg" class="q-ma-none">
+            <q-avatar color="secondary" text-color="white" icon="event" />
+            {{ group.startDate }}
+          </q-chip>
+        </div>
 
-      <div class="row ">
-        <q-checkbox
-          disable
-          v-model="group.isActive"
-          label="Group is currently running"
-        />
-        <q-checkbox
-          disable
-          v-model="group.acceptsParticipants"
-          label="Group accepts participants"
-        />
+        <div class="column items-start justify-start">
+          <span class="text-body1">Group lasts</span>
+          <q-chip square size="lg" class="q-ma-none">
+            <q-avatar color="info" text-color="dark"
+              >{{ group.timespan }}
+            </q-avatar>
+            Weeks
+          </q-chip>
+        </div>
       </div>
     </q-card-section>
     <!--    <q-card-actions>-->

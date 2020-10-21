@@ -1,9 +1,7 @@
 <template>
   <div>
     <q-toolbar class="bg-primary text-white">
-      <q-icon name="far fa-calendar-alt" class="q-ml-md" size="1.5rem"></q-icon>
-
-      <q-btn flat dense label="Today" class="q-mx-md" @click="setToday"></q-btn>
+      <q-btn flat dense label="Today" @click="setToday"></q-btn>
       <q-btn
         flat
         dense
@@ -11,6 +9,8 @@
         icon="keyboard_arrow_left"
         @click="onPrev"
       ></q-btn>
+
+      <span class="text-body1 text-weight-bold gt-sm  ">{{ title }}</span>
       <q-btn
         flat
         dense
@@ -18,7 +18,6 @@
         icon="keyboard_arrow_right"
         @click="onNext"
       ></q-btn>
-      <span class="q-mr-xl q-toolbar__title nowrap">{{ title }}</span>
       <q-space></q-space>
       <q-select
         v-model="calendarView"
@@ -32,7 +31,7 @@
         map-options
         :input-class="contentClass"
         :popup-content-class="contentClass"
-        style="min-width: 120px; background: transparent; color: white"
+        style=" background: transparent; color: white"
       ></q-select>
     </q-toolbar>
 
