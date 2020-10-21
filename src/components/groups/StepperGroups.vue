@@ -301,7 +301,7 @@
         :done="done3"
         caption="Make sure all is correct."
       >
-        STEP 3
+        <GroupCard :group="newGroup" />
         <!--        <q-stepper-navigation>-->
         <!--          <q-btn-->
         <!--            flat-->
@@ -340,11 +340,13 @@
 import { mapGetters } from "vuex";
 import CalendarLayout from "layouts/CalendarLayout";
 import { date } from "quasar";
+import GroupCard from "components/groups/GroupCard";
 
 export default {
   name: "StepperGroups",
   components: {
-    CalendarLayout
+    CalendarLayout,
+    GroupCard
   },
 
   data() {

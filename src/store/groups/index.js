@@ -15,7 +15,8 @@ export default {
       acceptsParticipants: true,
       startDate: "",
       timespan: 1,
-      lessons: []
+      lessons: [],
+      participants: []
     },
 
     eventTest: []
