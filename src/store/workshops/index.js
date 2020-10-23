@@ -1,4 +1,4 @@
-import { workshop, firebaseApp } from "src/boot/firebase.js";
+import { workshops, firebaseApp } from "src/boot/firebase.js";
 import { Notify } from "quasar";
 import Router from "../../router/index";
 import routes from "../../router/routes";
@@ -108,14 +108,14 @@ export default {
       var content = {};
       var workshopId = "";
       var workshopPath = "";
-      workshop
+      workshops
         .add({
           ...payload
         })
         .then(workshopElement => {
           this.workshopId = workshopElement.id;
           this.workshopPath = workshopElement.path;
-          workshop
+          workshops
             .doc(workshopElement.id)
             .update({
               workshopId: workshopElement.id,
@@ -135,7 +135,7 @@ export default {
               });
             })
             .then(() => {
-              workshop
+              workshops
                 .doc(workshopElement.id)
                 .onSnapshot(workshopElementTwo => {
                   this.content = workshopElementTwo.data();
@@ -177,7 +177,7 @@ export default {
     addNewModuleToWorkshop({}, { info, id }) {
       // console.log(" active workshop with this", info);
       // console.log(" active workshop with this", id);
-      workshop
+      workshops
         .doc(id)
         .collection("Modules")
         .add({
@@ -185,7 +185,7 @@ export default {
         })
 
         .then(moduleElement => {
-          workshop
+          workshops
             .doc(id)
             .collection("Modules")
             .doc(moduleElement.id)
@@ -202,7 +202,7 @@ export default {
         });
     },
     sendUpdateWorkshopDataToDb({ dispatch}, { data, id }) {
-      workshop.doc(id).update({ ...data }).then(()=> {
+      workshops.doc(id).update({ ...data }).then(()=> {
         Notify.create("workshop succesfuly updated");
         dispatch('setWorkshops')
       })
@@ -210,7 +210,7 @@ export default {
     },
 
     sendUpdateModuleDataToDb({ dispatch }, { data, moduleId, workshopId }) {
-      workshop.doc(workshopId).collection("Modules").doc(moduleId).update({ ...data }).then(() => {
+      workshops.doc(workshopId).collection("Modules").doc(moduleId).update({ ...data }).then(() => {
         Notify.create("The Module was succsfully updated");
         // dispatch("setModulesToWorkshops")
       })
@@ -218,7 +218,7 @@ export default {
 
     grabEditWorkshopFromDb({ commit, dispatch}, info) {
       console.log('this is the info', info)
-      workshop.doc(info).onSnapshot(workshopItem => {
+      workshops.doc(info).onSnapshot(workshopItem => {
         var content = workshopItem.data();
         commit("setEditWorkshopData", content);
         dispatch('grabEditModulesFromDb', info);
@@ -227,7 +227,7 @@ export default {
 
     grabEditModulesFromDb({ commit }, info) {
       var editModuleList = [];
-      workshop.doc(info).collection("Modules").onSnapshot(moduleItems => {
+      workshops.doc(info).collection("Modules").onSnapshot(moduleItems => {
         moduleItems.forEach(doc => {
           let moduleData = doc.data();
           console.log('this is module data', moduleData)
@@ -242,7 +242,7 @@ export default {
       var workshopList = [];
 
       var content = null;
-      workshop.onSnapshot(workshopItems => {
+      workshops.onSnapshot(workshopItems => {
         workshopList = [];
         workshopItems.forEach(doc => {
           // console.log("this is the workshop", workshopItems);
@@ -262,9 +262,9 @@ export default {
 
     setModulesToWorkshops({ commit }) {
       var moduleList = [];
-      workshop.onSnapshot(item => {
+      workshops.onSnapshot(item => {
         item.forEach(doc => {
-          workshop
+          workshops
             .doc(doc.id)
             .collection("Modules")
             .onSnapshot(moduleItems => {
@@ -282,23 +282,23 @@ export default {
 
     deleteWorkshopFromDatabase({}, payload) {
       if (
-        workshop
+        workshops
           .doc(payload)
           .collection("Modules")
           .doc()
       ) {
-        workshop
+        workshops
           .doc(payload)
           .collection("Modules")
           .onSnapshot(items => {
             items.forEach(doc => {
-              workshop
+              workshops
                 .doc(payload)
                 .collection("Modules")
                 .doc(doc.id)
                 .delete()
                 .then(() => {
-                  workshop
+                  workshops
                     .doc(payload)
                     .delete()
                     .then(() => {
@@ -329,7 +329,7 @@ export default {
     },
 
     setEditModuleList(state, content) {
-      console.log('this is the module content', content);
+      // console.log('this is the module content', content);
       state.editModuleListData = content;
        Router.replace({path: '/workshop-edit'});
     },

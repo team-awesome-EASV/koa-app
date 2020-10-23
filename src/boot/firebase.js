@@ -26,7 +26,7 @@ const firebaseConfig = {
 let firebaseApp = firebase.initializeApp(firebaseConfig);
 let auth = firebaseApp.auth();
 let db = firebaseApp.firestore();
-let workshop = db.collection("Workshops");
+let workshops = db.collection("Workshops");
 let users = db.collection("Users");
 
 firebase.analytics();
@@ -89,7 +89,7 @@ export {
   firebaseApp,
   auth,
   db,
-  workshop,
+  workshops,
   users,
   firebaseConfig,
   ensureAuthIsInitialized,
