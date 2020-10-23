@@ -16,11 +16,9 @@ export default {
     committSelectedUser: (state, payload) => {
       state.selectedUser = payload;
     }
-    
   },
 
-  actions: { 
-
+  actions: {
     getAllUsers: context => {
       let allUsersTemp = [];
 
@@ -50,8 +48,8 @@ export default {
   },
 
     deleteUser() {
-      console.log("pizdeczka sprawdza")
-    },
+      console.log("pizdeczka sprawdza");
+    }
   },
 
   getters: {

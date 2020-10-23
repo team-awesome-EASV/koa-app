@@ -321,92 +321,92 @@ export default {
 // List styles
 
 .basic-info-container {
-    display: flex;
-    width: 40%;
+  display: flex;
+  width: 40%;
 }
 
 .kids_container {
-    display: flex;
+  display: flex;
 
-    .kid-holder {
-        padding: 0;
-        margin: 0.2rem;
-    }
+  .kid-holder {
+    padding: 0;
+    margin: 0.2rem;
+  }
 }
 
 // User details wrapper styles
 
 .user_details_wrapper {
-    position: -webkit-sticky;
-    position: sticky;
-    top: 14%;
+  position: -webkit-sticky;
+  position: sticky;
+  top: 14%;
 }
 
 .info_box {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
 
-    h3 {
-        margin-bottom: 1rem;
-    }
+  h3 {
+    margin-bottom: 1rem;
+  }
 
-    h6 {
-        margin-top: 0.2rem;
-        font-weight: 200;
-    }
+  h6 {
+    margin-top: 0.2rem;
+    font-weight: 200;
+  }
 }
 
 .user-wrapper-bg {
-    max-height: 28vh;
+  max-height: 28vh;
 }
 
 .absolute-bottom {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
-    height: 60%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  height: 60%;
 }
 
 .user_details {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
 }
 
 h4 {
-    margin: 0.5rem;
+  margin: 0.5rem;
 }
 
 .left-wrapper {
-    width: 25%;
+  width: 25%;
 }
 
 .right-wrapper {
-    display: flex;
-    flex-direction: row;
-    align-items: flex-start;
-    justify-content: center;
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: center;
 }
 
 ul {
-    list-style: none;
-    padding: 0;
+  list-style: none;
+  padding: 0;
 }
 
 li {
-    margin: 0.8rem;
-    font-size: 1.4rem;
+  margin: 0.8rem;
+  font-size: 1.4rem;
 }
 
 .admin-controls {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: space-around;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
 }
 </style>

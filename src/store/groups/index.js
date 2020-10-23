@@ -1,4 +1,5 @@
 import { groups, workshops, db } from "boot/firebase";
+import { Notify } from "quasar";
 
 export default {
   namespaced: true,
@@ -92,7 +93,7 @@ export default {
   },
 
   actions: {
-    registerGroup({ state }) {
+    registerGroup({ state, dispatch }) {
       let groupWorkshop = state.newGroup.workshop;
       let groupModule = state.newGroup.module;
       let groupDoc = {
@@ -108,14 +109,33 @@ export default {
         workshop: workshops.doc(groupWorkshop.value),
         module: db.doc(groupModule.value)
       };
+
       groups
         .add(groupDoc)
-        .then(function(docRef) {
-          console.log("Document written with ID: ", docRef.id);
+        .then(addedGroup => {
+          groups
+            .doc(addedGroup.id)
+            .update({
+              groupPath: addedGroup.path,
+              groupId: addedGroup.id
+            })
+            .then(() => {
+              dispatch("addLessons", {
+                ...state.newGroup.lessons,
+                groupId: addedGroup.id
+              });
+            });
+          Notify.create({
+            type: "positive",
+            message: "Group created successfully"
+          });
         })
         .catch(function(error) {
           console.error("Error adding document: ", error);
         });
+    },
+    addLessons({}, payload) {
+      console.log(payload);
     }
   },
 
