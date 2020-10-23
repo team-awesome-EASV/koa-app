@@ -1,4 +1,4 @@
-import { groups, workshops, db } from "boot/firebase";
+import { groups, workshops, db, users } from "boot/firebase";
 import { Notify } from "quasar";
 import router from "../../router/index";
 
@@ -109,6 +109,10 @@ export default {
         lessons: [],
         participants: []
       };
+    },
+
+    setAllGroups: (state, payload) => {
+      state.allGroups = payload;
     }
   },
 
@@ -181,11 +185,43 @@ export default {
     resetForm({ commit }) {
       commit("resetNewGroup");
       router.push("/groups");
+    },
+
+    fetchAllGroups({ commit }) {
+      let allGroupsTemp = [];
+
+      groups.onSnapshot(snapshotGropups => {
+        snapshotGropups.forEach(doc => {
+          const groupData = doc.data();
+          let lessons = [];
+
+          const lessonsData = groups
+            .doc(doc.id)
+            .collection("lessons")
+            .get()
+            .then(function(querySnapshot) {
+              querySnapshot.forEach(function(doc) {
+                lessons.push(doc.data());
+                // console.log(doc.id, " => ", doc.data());
+              });
+            })
+            .catch(function(error) {
+              console.log("Error getting documents: ", error);
+            });
+
+          allGroupsTemp.push({ ...groupData, lessons: lessons });
+        });
+
+        console.log("fetch Groups", allGroupsTemp);
+        commit("setAllGroups", allGroupsTemp);
+        allGroupsTemp = [];
+      });
     }
   },
 
   getters: {
     newGroup: state => state.newGroup,
-    newGroupLessons: state => state.newGroup.lessons
+    newGroupLessons: state => state.newGroup.lessons,
+    allGroups: state => state.allGroups
   }
 };
