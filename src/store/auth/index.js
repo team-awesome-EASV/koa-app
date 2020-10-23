@@ -47,7 +47,9 @@ export default {
               email: user.email,
               name: user.displayName,
               phone: user.phoneNumber,
-              photo: user.photoURL
+              photo: user.photoURL,
+              backgroundImg: "",
+              address: ""
             };
             db.collection("Users")
               .doc(registeredUser.id)
