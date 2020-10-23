@@ -1,5 +1,7 @@
 import { workshop, firebaseApp } from "src/boot/firebase.js";
 import { Notify } from "quasar";
+import Router from "../../router/index";
+import routes from "../../router/routes";
 import { noDefaultHeaderBtn } from "../calendar/getters";
 
 export default {
@@ -10,12 +12,19 @@ export default {
     activeWorkshop: {},
     tempModules: [],
     imageURL: "",
-    moduleImageURL: ""
+    moduleImageURL: "",
+  
+    editWorkshopData: {},
+    editModuleListData: null,
+
   },
 
   getters: {
     allWorkshops: state => state.allWorkshops,
     activeWorkshop: state => state.activeWorkshop,
+    editWorkshopData: state => state.editWorkshopData,
+    editModuleListData: state => state.editModuleListData,
+  
     workshopsSelect: state =>
       state.allWorkshops.map(el => ({ label: el.name, value: el.id })),
     moduleSelect: state => id => {
@@ -192,6 +201,42 @@ export default {
           console.error("Error writing document: ", error);
         });
     },
+    sendUpdateWorkshopDataToDb({ dispatch}, { data, id }) {
+      workshop.doc(id).update({ ...data }).then(()=> {
+        Notify.create("workshop succesfuly updated");
+        dispatch('setWorkshops')
+      })
+  
+    },
+
+    sendUpdateModuleDataToDb({ dispatch }, { data, moduleId, workshopId }) {
+      workshop.doc(workshopId).collection("Modules").doc(moduleId).update({ ...data }).then(() => {
+        Notify.create("The Module was succsfully updated");
+        // dispatch("setModulesToWorkshops")
+      })
+    },
+
+    grabEditWorkshopFromDb({ commit, dispatch}, info) {
+      console.log('this is the info', info)
+      workshop.doc(info).onSnapshot(workshopItem => {
+        var content = workshopItem.data();
+        commit("setEditWorkshopData", content);
+        dispatch('grabEditModulesFromDb', info);
+      })
+    },
+
+    grabEditModulesFromDb({ commit }, info) {
+      var editModuleList = [];
+      workshop.doc(info).collection("Modules").onSnapshot(moduleItems => {
+        moduleItems.forEach(doc => {
+          let moduleData = doc.data();
+          console.log('this is module data', moduleData)
+          editModuleList.push(moduleData);
+        });
+        commit("setEditModuleList", editModuleList)
+        
+      })
+    },
 
     async setWorkshops(state) {
       var workshopList = [];
@@ -273,10 +318,23 @@ export default {
             });
           });
       }
-    }
+    },
+
+
   },
 
   mutations: {
+    setEditWorkshopData(state, content) {
+      state.editWorkshopData = content;
+    },
+
+    setEditModuleList(state, content) {
+      console.log('this is the module content', content);
+      state.editModuleListData = content;
+       Router.replace({path: '/workshop-edit'});
+    },
+
+
     updateImageURL(state, content) {
       state.imageURL = content;
     },

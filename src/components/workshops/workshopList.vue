@@ -2,7 +2,6 @@
   <div
     class="full-width row wrap justify-start items-start content-start text-primary"
   >
-    <h5>overview</h5>
     <div
       class="full-width row wrap justify-center items-start content-start text-primary q-gutter-md "
     >
@@ -36,14 +35,19 @@
 
             <q-card-section class="q-pt-none"> </q-card-section>
             <q-card-actions>
-              <q-btn flat>Edit</q-btn>
+              <q-btn
+                flat
+                label="Edit"
+                color="secondary"
+                @click="grabEditWorkshopFromDb(item.workshopId)"
+              ></q-btn>
               <q-btn
                 label="Delete"
                 color="primary"
                 @click.prevent="confirm(item.id)"
               />
               <q-btn
-                label="modules"
+                label="Details"
                 color="secondary"
                 @click.prevent="item.extendModules = !item.extendModules"
               />
@@ -67,7 +71,6 @@
                   align="justify"
                 >
                   <q-tab name="workshop" label="Workshop" />
-                  <q-tab name="modules" label="Modules" />
                 </q-tabs>
 
                 <q-separator />
@@ -140,10 +143,12 @@
                                   teacher:<br />
                                   {{ item.teacher.label }}
                                 </p>
+
                                 <p>
                                   Introduction to the workshop:<br />
                                   {{ item.introduction }}
                                 </p>
+
                                 <p>Workshop description:</p>
                                 <div v-html="item.description"></div>
 
@@ -166,13 +171,16 @@
 
                             <p>
                               Key words chosen to describe the workshop:<br />
-                              <q-btn
-                                class="q-mx-sm"
+
+                              <q-chip
                                 v-for="(word, index) in item.keyWordsArray"
                                 :key="index"
+                                outline
+                                color="primary"
+                                text-color="white"
                               >
                                 {{ word }}
-                              </q-btn>
+                              </q-chip>
                             </p>
                           </q-tab-panel>
 
@@ -237,43 +245,33 @@
                               </div>
                             </div>
                             <p>
-                              Key words chosen to describe the workshop:<br />
-                              <q-btn
-                                class="q-mx-sm"
+                              Key words chosen to describe this module:<br />
+
+                              <q-chip
                                 v-for="(word, index) in item.moduleList[
                                   activeModuleIndex
                                 ].moduleKeyWordsArray"
                                 :key="index"
+                                outline
+                                color="secondary"
+                                text-color="white"
                               >
                                 {{ word }}
-                              </q-btn>
+                              </q-chip>
                             </p>
                           </q-tab-panel>
                         </q-tab-panels>
                       </template>
-                      <q-card-actions class="absolute-bottom">
-                        <q-btn flat>Edit</q-btn>
-
-                        <q-btn
-                          label="Delete"
-                          color="primary"
-                          @click.prevent="confirm(item.id)"
-                        />
-
-                        <q-btn
-                          label="close"
-                          color="secondary"
-                          @click.prevent="
-                            item.extendModules = !item.extendModules
-                          "
-                        />
-                      </q-card-actions>
                     </q-splitter>
-                  </q-tab-panel>
-
-                  <q-tab-panel name="modules">
-                    <div class="text-h6">Modules</div>
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                    <q-card-actions class="flex justify-center q-py-lg">
+                      <q-btn
+                        label="close"
+                        color="secondary"
+                        @click.prevent="
+                          item.extendModules = !item.extendModules
+                        "
+                      />
+                    </q-card-actions>
                   </q-tab-panel>
                 </q-tab-panels>
               </q-card>
@@ -307,7 +305,9 @@ export default {
   methods: {
     ...mapActions("workshops", {
       setWorkshopsA: "setWorkshops",
-      deleteWorkshop: "deleteWorkshopFromDatabase"
+      deleteWorkshop: "deleteWorkshopFromDatabase",
+      grabEditWorkshopInfo: "grabEditWorkshopInfo",
+      grabEditWorkshopFromDb: "grabEditWorkshopFromDb"
     }),
     updateActiveModuleIndexNr(index) {
       this.activeModuleIndex = index;

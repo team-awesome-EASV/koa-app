@@ -366,7 +366,6 @@
                   align="justify"
                 >
                   <q-tab name="workshop" label="Workshop" />
-                  <q-tab name="modules" label="Modules" />
                 </q-tabs>
 
                 <q-separator />
@@ -443,14 +442,17 @@
 
                             <p>
                               Key words chosen to describe the workshop:
-                              <q-btn
-                                class="q-mx-sm"
+
+                              <q-chip
                                 v-for="(word,
                                 index) in workshopInfo.keyWordsArray"
                                 :key="index"
+                                outline
+                                color="primary"
+                                text-color="white"
                               >
-                                {{ word }}</q-btn
-                              >
+                                {{ word }}
+                              </q-chip>
                             </p>
                           </q-tab-panel>
 
@@ -509,30 +511,23 @@
                             </div>
                             <p>
                               Key words chosen to describe the workshop:
-                              <q-btn
-                                class="q-mx-sm"
+
+                              <q-chip
                                 v-for="(word, index) in modules[
                                   activeModuleIndex
                                 ].moduleKeyWordsArray"
                                 :key="index"
+                                outline
+                                color="secondary"
+                                text-color="white"
                               >
-                                {{ word }}</q-btn
-                              >
+                                {{ word }}
+                              </q-chip>
                             </p>
                           </q-tab-panel>
                         </q-tab-panels>
                       </template>
                     </q-splitter>
-                  </q-tab-panel>
-
-                  <q-tab-panel name="modules">
-                    <div class="text-h6">Modules</div>
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                  </q-tab-panel>
-
-                  <q-tab-panel name="movies">
-                    <div class="text-h6">Movies</div>
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit.
                   </q-tab-panel>
                 </q-tab-panels>
               </q-card>
@@ -746,12 +741,9 @@ export default {
       return obj;
     },
 
-    // push modules array to the store
     populateTempModules() {
       this.addTempModuleToState(this.modules);
     },
-
-    // upload the workshop and the modules to the database
 
     populateKeyWordArray() {
       this.workshopInfo.keyWordsArray = this.keyWords.split(", ");
@@ -763,36 +755,9 @@ export default {
     },
 
     uploadWorkshop() {
-      //   this.workshopInfo.keyWordsArray = this.keyWords.split(", ");
-      // var workshopValue = this.workshopInfo;
-      //   console.log("this is workshopInfo ", this.workshopInfo);
-
       this.addNewWorkshopToDatabase(this.workshopInfo);
       this.workshopSubmited = true;
     },
-
-    // getIndividualModules() {
-    //   this.modules.forEach(el => {
-    //     this.moduleElement = el;
-    //     this.onModuleSubmit();
-    //   });
-    // },
-
-    // onModuleSubmit() {
-    //   //   console.log("this is the active workshop", this.activeworkshop);
-    //   if (this.activeWorkshop) {
-    //     this.moduleElement.workshopId = this.activeWorkshop.workshopId;
-    //     this.moduleElement.workshopPath = this.activeWorkshop.workshopPath;
-    //     console.log("this is the module info", this.moduleElement);
-    //     // console.log("this is the id info", this.activeWorkshop.workshopId);
-    //     this.addNewModuleToWorkshop({
-    //       info: this.moduleElement,
-    //       id: this.activeWorkshop.workshopId
-    //     });
-    //   }
-
-    //   this.onModuleReset();
-    // },
 
     uploadWorkshopAndModules() {
       console.log("the upload gets triggered");
