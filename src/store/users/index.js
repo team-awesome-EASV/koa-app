@@ -5,7 +5,7 @@ export default {
 
   state: {
     allUsers: [],
-    selectedUser: 0,
+    selectedUser: {},
   },
 
   mutations: {
@@ -44,8 +44,8 @@ export default {
       });
     },
 
-    selectUser({commit}, user) {
-      commit("user/ committSelectedUser", user)
+    selectUser({commit},user) {
+      commit("committSelectedUser", user)
       console.log({user})
   },
 
@@ -55,6 +55,7 @@ export default {
   },
 
   getters: {
-    userDetails: state => state.allUsers,
+    allUsers: state => state.allUsers,
+    selectedUser: state => state.selectedUser
   }
 };

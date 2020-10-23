@@ -8,7 +8,7 @@
 
             <q-list @click.prevent="detailsShow = true">
                 <q-item
-                    v-for="user in userDetails"
+                    v-for="user in allUsers"
                     :key="user.id"
                     @click="selectUser(user)"
                     class="q-my-sm"
@@ -277,7 +277,6 @@ export default {
             showInfo: true,
             detailsShow: false,
             editUser: false,
-            // selectedUser: 0,
             lorem: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
         };
     },
@@ -286,7 +285,8 @@ export default {
 
     computed: {
         ...mapGetters("users", {
-            userDetails: "userDetails"
+            allUsers: "allUsers",
+            selectedUser: "selectedUser"
         })
     },
 
