@@ -296,10 +296,6 @@ export default {
             selectUser: "selectUser"
         }),
 
-        // selectUser(user) {
-        //     this.selectedUser = user;
-        // },
-
         // Avatar loader component logic!
         checkFileSize(files) {
             return files.filter(file => file.size < 2048)

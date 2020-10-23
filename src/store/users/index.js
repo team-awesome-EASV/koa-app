@@ -13,6 +13,9 @@ export default {
       console.log("is this even happening?", payload);
       state.allUsers = payload;
     },
+    committSelectedUser: (state, payload) => {
+      state.selectedUser = payload;
+    }
     
   },
 
@@ -41,9 +44,9 @@ export default {
       });
     },
 
-    selectUser(state, user) {
-      state.selectedUser = user;
-      console.log("pizda wzieta z vuex")
+    selectUser({commit}, user) {
+      commit("user/ committSelectedUser", user)
+      console.log({user})
   },
 
     deleteUser() {
