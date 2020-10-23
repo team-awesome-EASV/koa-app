@@ -13,7 +13,7 @@ export default {
     tempModules: [],
     imageURL: "",
     moduleImageURL: "",
-  
+
     editWorkshopData: {},
     editModuleListData: null,
 
@@ -24,13 +24,17 @@ export default {
     activeWorkshop: state => state.activeWorkshop,
     editWorkshopData: state => state.editWorkshopData,
     editModuleListData: state => state.editModuleListData,
-  
+
     workshopsSelect: state =>
       state.allWorkshops.map(el => ({ label: el.name, value: el.id })),
     moduleSelect: state => id => {
       return state.allWorkshops
         .find(workshop => workshop.id === id)
-        .moduleList.map(el => ({ label: el.moduleName, value: el.moduleId }));
+        .moduleList.map(el => ({
+          label: el.moduleName,
+          value: el.modulePath,
+          id: el.moduleId
+        }));
     },
     moduleTeacher: state => (id, moduleId) => {
       return state.allWorkshops
@@ -206,7 +210,7 @@ export default {
         Notify.create("workshop succesfuly updated");
         dispatch('setWorkshops')
       })
-  
+
     },
 
     sendUpdateModuleDataToDb({ dispatch }, { data, moduleId, workshopId }) {
@@ -234,7 +238,7 @@ export default {
           editModuleList.push(moduleData);
         });
         commit("setEditModuleList", editModuleList)
-        
+
       })
     },
 

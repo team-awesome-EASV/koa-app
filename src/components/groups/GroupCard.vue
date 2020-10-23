@@ -1,5 +1,5 @@
 <template>
-  <q-card class="my-card" flat bordered>
+  <q-card class="my-card" bordered>
     <q-card-section>
       <q-breadcrumbs class="text-accent" gutter="md">
         <template v-slot:separator>

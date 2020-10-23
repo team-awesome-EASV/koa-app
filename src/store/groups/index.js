@@ -1,3 +1,5 @@
+import { groups, workshops, db } from "boot/firebase";
+
 export default {
   namespaced: true,
 
@@ -86,6 +88,34 @@ export default {
 
     addNewLesson: (state, payload) => {
       state.newGroup.lessons.push(payload);
+    }
+  },
+
+  actions: {
+    registerGroup({ state }) {
+      let groupWorkshop = state.newGroup.workshop;
+      let groupModule = state.newGroup.module;
+      let groupDoc = {
+        name: state.newGroup.name,
+        totalSpots: state.newGroup.totalSpots,
+        color: state.newGroup.color,
+        icon: state.newGroup.icon,
+        isActive: state.newGroup.isActive,
+        acceptsParticipants: state.newGroup.acceptsParticipants,
+        startDate: state.newGroup.startDate,
+        timespan: state.newGroup.timespan,
+        teacher: state.newGroup.teacher,
+        workshop: workshops.doc(groupWorkshop.value),
+        module: db.doc(groupModule.value)
+      };
+      groups
+        .add(groupDoc)
+        .then(function(docRef) {
+          console.log("Document written with ID: ", docRef.id);
+        })
+        .catch(function(error) {
+          console.error("Error adding document: ", error);
+        });
     }
   },
 

@@ -28,6 +28,7 @@ let auth = firebaseApp.auth();
 let db = firebaseApp.firestore();
 let workshops = db.collection("Workshops");
 let users = db.collection("Users");
+let groups = db.collection("Groups");
 
 firebase.analytics();
 
@@ -92,6 +93,7 @@ export {
   workshops,
   users,
   firebaseConfig,
+  groups,
   ensureAuthIsInitialized,
   isAuthenticated
 };

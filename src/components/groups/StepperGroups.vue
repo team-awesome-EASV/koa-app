@@ -2,7 +2,7 @@
   <div class="q-pa-md">
     <q-stepper
       v-model="step"
-      header-nav
+      :header-nav="(step === 3 && done1) || done2"
       ref="stepper"
       done-color="positive"
       active-color="primary"
@@ -194,7 +194,7 @@
                 hint="Choose the day when group meets for the first time"
                 v-model="startDate"
                 mask="date"
-                :rules="['date']"
+                :rules="[val => !!val || 'Field is required']"
               >
                 <template v-slot:append>
                   <q-icon name="event" class="cursor-pointer">
@@ -427,7 +427,18 @@
         :done="done3"
         caption="Make sure all is correct."
       >
-        <GroupCard :group="newGroup" />
+        <div class="row justify-around">
+          <div class="col-12 col-md-5">
+            <h5 class="text-weight-thin text-italic text-justify">
+              Review the card below. If all data is correct press red button and
+              group will be created. If not go back and correct it.
+            </h5>
+          </div>
+
+          <div class="col-12 col-md-5">
+            <GroupCard :group="newGroup" />
+          </div>
+        </div>
         <!--        <q-stepper-navigation>-->
         <!--          <q-btn-->
         <!--            flat-->
@@ -453,7 +464,7 @@
 
           <q-btn
             @click="handleNext"
-            color="primary"
+            :color="step === 3 ? 'accent' : 'primary'"
             :label="step === 3 ? 'Finish' : 'Continue'"
           />
         </q-stepper-navigation>
@@ -463,7 +474,7 @@
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import { mapGetters, mapActions } from "vuex";
 import CalendarLayout from "layouts/CalendarLayout";
 import { date } from "quasar";
 import GroupCard from "components/groups/GroupCard";
@@ -662,7 +673,7 @@ export default {
 
     teacher() {
       return this.workshop
-        ? this.moduleTeacher(this.workshop.value, this.module.value)
+        ? this.moduleTeacher(this.workshop.value, this.module.id)
         : "no sleep";
     },
 
@@ -734,6 +745,8 @@ export default {
   },
 
   methods: {
+    ...mapActions("groups", ["registerGroup"]),
+
     handleNext() {
       if (this.step === 1) {
         this.$refs.step1.validate().then(outcome => {
@@ -743,7 +756,25 @@ export default {
           }
         });
       }
+      if (this.step === 2 && this.newGroup.lessons.length > 0) {
+        this.$refs.step2.validate().then(outcome => {
+          if (outcome) {
+            this.$refs.stepper.next();
+            this.done2 = true;
+          }
+        });
+      } else if (this.step === 2 && this.newGroup.lessons.length === 0) {
+        this.$q.notify({
+          type: "negative",
+          message: "Create at least one lesson",
+          position: "center"
+        });
+      }
+      if (this.step === 3) {
+        this.registerGroup();
+      }
     },
+
     setTeacher() {
       this.$store.commit("groups/newGroupTeacher", this.teacher);
     },
