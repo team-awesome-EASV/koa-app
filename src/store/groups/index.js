@@ -1,5 +1,6 @@
 import { groups, workshops, db } from "boot/firebase";
 import { Notify } from "quasar";
+import router from "../../router/index";
 
 export default {
   namespaced: true,
@@ -21,7 +22,7 @@ export default {
       lessons: [],
       participants: []
     },
-
+    allGroups: [],
     eventTest: []
   },
 
@@ -89,6 +90,25 @@ export default {
 
     addNewLesson: (state, payload) => {
       state.newGroup.lessons.push(payload);
+    },
+
+    resetNewGroup: state => {
+      state.newGroup = {
+        name: "",
+        workshop: "",
+        module: "",
+        teacher: "",
+        totalSpots: 0,
+        location: "",
+        color: "#019A9D",
+        icon: "fas fa-lightbulb",
+        isActive: false,
+        acceptsParticipants: true,
+        startDate: "",
+        timespan: 1,
+        lessons: [],
+        participants: []
+      };
     }
   },
 
@@ -107,12 +127,15 @@ export default {
         timespan: state.newGroup.timespan,
         teacher: state.newGroup.teacher,
         workshop: workshops.doc(groupWorkshop.value),
-        module: db.doc(groupModule.value)
+        module: db.doc(groupModule.value),
+        participants: []
       };
+      let lessons = { array: state.newGroup.lessons, id: "" };
 
       groups
         .add(groupDoc)
         .then(addedGroup => {
+          lessons.id = addedGroup.id;
           groups
             .doc(addedGroup.id)
             .update({
@@ -120,22 +143,44 @@ export default {
               groupId: addedGroup.id
             })
             .then(() => {
-              dispatch("addLessons", {
-                ...state.newGroup.lessons,
-                groupId: addedGroup.id
-              });
+              dispatch("addLessons", lessons);
             });
           Notify.create({
             type: "positive",
             message: "Group created successfully"
           });
         })
+        .then(() => {
+          dispatch("resetForm");
+        })
         .catch(function(error) {
           console.error("Error adding document: ", error);
         });
     },
-    addLessons({}, payload) {
-      console.log(payload);
+    addLessons({ dispatch }, payload) {
+      const groupDocRef = groups.doc(payload.id).collection("lessons");
+      const lessons = payload.array;
+
+      console.log(groupDocRef);
+      console.log(lessons);
+
+      lessons.forEach(lesson => {
+        const { side, ...rest } = lesson;
+        groupDocRef
+          .add(rest)
+          .then(addedLesson => {
+            groupDocRef.doc(addedLesson.id).update({
+              lessonId: addedLesson.id,
+              lessonPath: addedLesson.path
+            });
+          })
+          .catch(error => console.log(error));
+      });
+    },
+
+    resetForm({ commit }) {
+      commit("resetNewGroup");
+      router.push("/groups");
     }
   },
 

@@ -725,7 +725,7 @@ export default {
       return dates;
     }
   },
-
+  // TODO fix the events overwrite bug
   beforeUpdate() {
     this.$store.commit("groups/newGroupLessons", this.lessons);
   },
