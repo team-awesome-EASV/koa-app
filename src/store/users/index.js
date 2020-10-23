@@ -14,16 +14,10 @@ export default {
       state.allUsers = payload;
     },
     
-    selectUser(user) {
-      state.selectedUser = user
-  }
   },
 
-  getters: {
-    userDetails: state => state.allUsers
-  },
+  actions: { 
 
-  actions: {
     getAllUsers: context => {
       let allUsersTemp = [];
 
@@ -45,6 +39,19 @@ export default {
         context.commit("committAllUsers", allUsersTemp);
         allUsersTemp = [];
       });
-    }
+    },
+
+    selectUser(state, user) {
+      state.selectedUser = user;
+      console.log("pizda wzieta z vuex")
+  },
+
+    deleteUser() {
+      console.log("pizdeczka sprawdza")
+    },
+  },
+
+  getters: {
+    userDetails: state => state.allUsers,
   }
 };

@@ -15,7 +15,7 @@ import usersDisplay from "../components/users/usersDisplay.vue"
 export default {
     components: {
         pageHeading: pageHeading,
-        usersDisplay: usersDisplay
+        usersDisplay: usersDisplay,
     },
 }
 </script>

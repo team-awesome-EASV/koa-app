@@ -85,7 +85,7 @@
             <h3>Select user from list</h3>
             <h6>To display detailed information</h6>
         </div>
-        <div v-if="detailsShow">
+        <div v-show="detailsShow">
             <q-img
                 class="user-wrapper-bg"
                 src="https://cdn.quasar.dev/img/parallax2.jpg">
@@ -128,13 +128,33 @@
                     </q-chip>
                 </div>
                 <div class="right-wrapper">
-                    <q-card>
+                    <q-card class="q-mr-md">
                         <h4>User details</h4>
                         <ul>
                             <li>email: {{selectedUser.email}}</li>
-                            <li>phone number: +48 872-982-192</li>
-                            <li>password: lubie-placki</li>
-                            <li>address: Antkiewicza 37/9 Warszawa</li>
+                            <li>
+                                phone number:
+                                <q-btn
+                                    class="q-ml-sm"
+                                    icon="add"
+                                    label="update">
+                                </q-btn>
+                            </li>
+                            <li>
+                                address:
+                                <q-btn
+                                    class="q-ml-sm"
+                                    icon="add"
+                                    label="update">
+                                </q-btn>
+                            </li>
+                            <li>
+                                avatar:
+                                <q-btn
+                                    class="q-ml-sm"
+                                    icon="add"
+                                    label="update"> </q-btn>
+                            </li>
                         </ul>
                     </q-card>
                 </div>
@@ -144,35 +164,104 @@
                     class="q-ma-md"
                     icon="email"
                     label="Email user"
-                    color="primary">
+                    color="primary"
+                    style="min-height:40px">
                 </q-btn>
                 <q-btn
                     class="q-ma-md"
                     icon="edit"
+                    @click="editUser = true"
                     label="Edit user"
-                    color="primary">
+                    color="primary"
+                    style="min-height:40px">
                 </q-btn>
                 <q-btn
                     class="q-ma-md"
                     icon="upgrade"
                     label="Change role"
-                    color="primary">
+                    color="primary"
+                    style="min-height:40px">
                 </q-btn>
                 <q-btn
                     class="q-ma-md"
                     icon="delete_forever"
                     label="Delete user"
-                    color="negative">
+                    @click="deleteUser"
+                    color="negative"
+                    style="min-height:40px">
                 </q-btn>
             </div>
         </div>
     </q-card>
+
+    <div class="q-pa-md q-gutter-sm">
+
+        <q-dialog
+            v-model="editUser"
+            persistent
+            transition-show="scale"
+            transition-hide="scale">
+            <q-card style="width: 450px">
+                <q-toolbar class="bg-primary text-white">
+                    <q-toolbar-title> Edit User Information </q-toolbar-title>
+                    <q-btn
+                        flat
+                        round
+                        color="white"
+                        icon="close"
+                        v-close-popup>
+                    </q-btn>
+                </q-toolbar>
+
+                <q-card-section class="q-ma-sm">
+                    <q-input
+                        class="q-ma-md"
+                        style="max-width:80%"
+                        label="email"
+                        v-model="selectedUser.email"
+                        autofocus />
+                    <q-input
+                        class="q-ma-md"
+                        style="max-width:80%"
+                        label="phone number"
+                        autofocus />
+                    <q-input
+                        class="q-ma-md"
+                        style="max-width:80%"
+                        label="address"
+                        autofocus />
+
+                    <div class="q-mt-xl">
+                        <q-uploader
+                            style="width: 80%"
+                            class="q-ma-md"
+                            url="http://localhost:4444/upload"
+                            label="Upload avatar (png only)"
+                            :filter="checkFileType"
+                            @rejected="onRejected" />
+                    </div>
+
+                </q-card-section>
+
+                <q-card-actions align="right">
+                    <q-btn
+                        label="close"
+                        color="negative"
+                        class="q-ma-sm"
+                        v-close-popup />
+                    <q-btn
+                        label="update"
+                        color="primary"
+                        class="q-ma-sm"
+                        v-close-popup />
+                </q-card-actions>
+            </q-card>
+        </q-dialog>
+    </div>
 </div>
 </template>
 
 <script>
-// import userList from "../components/users/userList.vue"
-// import userDetails from "../components/users/userDetails.vue"
 import {
     users
 } from "src/boot/firebase.js";
@@ -183,15 +272,12 @@ import {
 } from "vuex";
 
 export default {
-    components: {
-        // userList: userList,
-        // userDetails: userDetails
-    },
     data() {
         return {
             showInfo: true,
             detailsShow: false,
-            selectedUser: 0,
+            editUser: false,
+            // selectedUser: 0,
             lorem: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
         };
     },
@@ -205,8 +291,31 @@ export default {
     },
 
     methods: {
-        selectUser(user) {
-            this.selectedUser = user
+        ...mapActions("users", {
+            deleteUser: "deleteUser",
+            selectUser: "selectUser"
+        }),
+
+        // selectUser(user) {
+        //     this.selectedUser = user;
+        // },
+
+        // Avatar loader component logic!
+        checkFileSize(files) {
+            return files.filter(file => file.size < 2048)
+        },
+
+        checkFileType(files) {
+            return files.filter(file => file.type === 'image/png')
+        },
+
+        onRejected(rejectedEntries) {
+            // Notify plugin needs to be installed
+            // https://quasar.dev/quasar-plugins/notify#Installation
+            this.$q.notify({
+                type: 'negative',
+                message: `${rejectedEntries.length} file(s) did not pass validation constraints`
+            })
         }
     }
 }
@@ -234,7 +343,7 @@ export default {
 .user_details_wrapper {
     position: -webkit-sticky;
     position: sticky;
-    top: 11%;
+    top: 14%;
 }
 
 .info_box {
@@ -269,7 +378,7 @@ export default {
 
 .user_details {
     display: flex;
-    justify-content: space-around;
+    justify-content: space-between;
     align-items: flex-start;
 }
 
@@ -283,7 +392,7 @@ h4 {
 
 .right-wrapper {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: flex-start;
     justify-content: center;
 }
