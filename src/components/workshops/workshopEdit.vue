@@ -291,7 +291,7 @@
                     />
 
                     <q-editor
-                      class="editor-full-width q-my-md"
+                      class="editor-full-width q-my-md bg-green-1"
                       ref="editor_ref_module"
                       @paste.native="evt => pasteCaptureModule(evt)"
                       v-model="
