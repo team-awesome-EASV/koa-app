@@ -6,6 +6,7 @@ import auth from "./auth";
 import groups from "./groups";
 import users from "./users";
 import calendar from "./calendar";
+import participants from "./participants";
 
 Vue.use(Vuex);
 
@@ -15,7 +16,8 @@ const store = new Vuex.Store({
     auth,
     users,
     groups,
-    calendar
+    calendar,
+    participants
   }
 });
 

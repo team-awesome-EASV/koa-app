@@ -5,17 +5,16 @@ export default {
 
   state: {
     allUsers: [],
-    selectedUser: {},
+    selectedUser: {},  
   },
 
   mutations: {
-    committAllUsers: (state, payload) => {
-      console.log("is this even happening?", payload);
+    commitAllUsers: (state, payload) => {
       state.allUsers = payload;
     },
-    committSelectedUser: (state, payload) => {
+    commitSelectedUser: (state, payload) => {
       state.selectedUser = payload;
-    }
+    },
   },
 
   actions: {
@@ -36,24 +35,25 @@ export default {
           });
         });
 
-        console.log("i am inside snapshot", allUsersTemp);
-        context.commit("committAllUsers", allUsersTemp);
+        // console.log("i am inside snapshot", allUsersTemp);
+        context.commit("commitAllUsers", allUsersTemp);
         allUsersTemp = [];
       });
     },
 
     selectUser({commit},user) {
-      commit("committSelectedUser", user)
-      console.log({user})
-  },
+      commit("commitSelectedUser", user)
+    },
 
     deleteUser() {
-      console.log("pizdeczka sprawdza");
-    }
+      console.log("user successfuly deleted");
+    },
+
+
   },
 
   getters: {
     allUsers: state => state.allUsers,
-    selectedUser: state => state.selectedUser
+    selectedUser: state => state.selectedUser,
   }
 };
