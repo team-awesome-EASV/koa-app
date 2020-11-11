@@ -11,9 +11,15 @@
       <div class="col-4" v-if="selectedGroup">
         <GroupCard :group="chosenGroup || allGroups[0]" />
         <div class="q-pa-md row justify-between">
-          <router-link :to="{ name: 'group', params: { id: selectedGroup } }">
-            <q-btn color="secondary" icon="create" label="Edit" stack />
-          </router-link>
+          <q-btn
+            color="secondary"
+            icon="create"
+            label="Edit"
+            stack
+            @click="assignSelectedGroup(selectedGroup)"
+            :to="{ name: 'group', params: { groupId: selectedGroup } }"
+          />
+
           <q-btn
             color="accent"
             icon="delete_forever"
@@ -89,7 +95,7 @@ export default {
   },
 
   methods: {
-    ...mapActions("groups", ["deleteGroup"]),
+    ...mapActions("groups", ["deleteGroup", "assignSelectedGroup"]),
     handleSelect(payload) {
       this.selectedGroup = payload;
     }

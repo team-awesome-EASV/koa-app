@@ -19,7 +19,7 @@ const i18n = new VueI18n({
 // };
 
 export { i18n };
-//TODO fix the login bug router guard fired before listener, therefore always starts with null.
+
 export default ({ app }) => {
   app.i18n = i18n;
 };

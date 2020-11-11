@@ -170,7 +170,6 @@
         <!--        </q-stepper-navigation>-->
       </q-step>
 
-      <!--TODO try this https://quasar.dev/vue-components/tabs#Example--Dynamic-tabs with vertical tabs and stuff inside the tab for each day-->
       <q-step
         :name="2"
         title="Set dates and time"
@@ -234,6 +233,7 @@
                 :rules="[
                   val => val > 0 || 'Group cannot be shorter then a week'
                 ]"
+                @input="updateLessons"
               >
                 <template v-slot:append>
                   <q-icon name="update"></q-icon>
@@ -260,6 +260,7 @@
                   @input="
                     () => {
                       tab = day.day;
+                      updateLessons();
                     }
                   "
                 />
@@ -314,7 +315,11 @@
                               transition-show="scale"
                               transition-hide="scale"
                             >
-                              <q-time format24h v-model="day.time">
+                              <q-time
+                                format24h
+                                v-model="day.time"
+                                @input="updateLessons"
+                              >
                                 <div class="row items-center justify-end">
                                   <q-btn
                                     v-close-popup
@@ -334,68 +339,13 @@
                         dense
                         :min="0"
                         label="Lesson duration in minutes"
+                        @input="updateLessons"
                       />
                     </div>
                   </q-tab-panel>
                 </q-tab-panels>
               </q-card>
             </q-slide-transition>
-            <!--            <q-list
-                separator
-                padding>-->
-            <!--              <q-item-->
-            <!--                v-for="(day, index) in groupSchedule"-->
-            <!--                :key="index"-->
-            <!--                dense-->
-            <!--                class="row justify-evenly items-baseline"-->
-            <!--              >-->
-            <!--                <div class="">-->
-            <!--                  <q-checkbox-->
-            <!--                    left-label-->
-            <!--                    dense-->
-            <!--                    v-model="day.meetingDay"-->
-            <!--                    :label="day.short"-->
-            <!--                  />-->
-            <!--                </div>-->
-            <!--                <q-input-->
-            <!--                  dense-->
-            <!--                  label="Lesson starts at:"-->
-            <!--                  v-model="day.time"-->
-            <!--                  mask="time"-->
-            <!--                  :rules="['time']"-->
-            <!--                >-->
-            <!--                  <template v-slot:append>-->
-            <!--                    <q-icon
-                        name="access_time"
-                        class="cursor-pointer">-->
-            <!--                      <q-popup-proxy-->
-            <!--                        transition-show="scale"-->
-            <!--                        transition-hide="scale"-->
-            <!--                      >-->
-            <!--                        <q-time
-                            format24h
-                            v-model="day.time">-->
-            <!--                          <div class="row items-center justify-end">-->
-            <!--                            <q-btn-->
-            <!--                              v-close-popup-->
-            <!--                              label="Close"-->
-            <!--                              color="primary"-->
-            <!--                              flat-->
-            <!--                            />-->
-            <!--                          </div>-->
-            <!--                        </q-time>-->
-            <!--                      </q-popup-proxy>-->
-            <!--                    </q-icon>-->
-            <!--                  </template>-->
-            <!--                </q-input>-->
-            <!--                <q-input-->
-            <!--                  v-model.number="day.duration"-->
-            <!--                  type="number"-->
-            <!--                  dense-->
-            <!--                  label="Lesson duration"-->
-            <!--                />-->
-            <!--              </q-item>-->
-            <!--            </q-list>-->
           </q-form>
           <calendar-layout
             class="col-12 col-md-5"
@@ -403,27 +353,6 @@
             :events="lessons"
           />
         </div>
-
-        <!--        <q-stepper-navigation>-->
-        <!--          <q-btn-->
-        <!--            flat-->
-        <!--            @click="step = 1"-->
-        <!--            color="primary"-->
-        <!--            label="Back"-->
-        <!--            class="q-ml-sm"-->
-        <!--          />-->
-
-        <!--          <q-btn-->
-        <!--            @click="-->
-        <!--              () => {-->
-        <!--                done2 = true;-->
-        <!--                step = 3;-->
-        <!--              }-->
-        <!--            "-->
-        <!--            color="primary"-->
-        <!--            label="Continue"-->
-        <!--          />-->
-        <!--        </q-stepper-navigation>-->
       </q-step>
 
       <q-step
@@ -445,19 +374,6 @@
             <GroupCard :group="newGroup" />
           </div>
         </div>
-        <!--        <q-stepper-navigation>-->
-        <!--          <q-btn-->
-        <!--            flat-->
-        <!--            @click="step = 2"-->
-        <!--            color="primary"-->
-        <!--            label="Back"-->
-        <!--            class="q-ml-sm"-->
-        <!--          />-->
-        <!--          <q-btn
-              color="primary"
-              @click="done3 = true"
-              label="Finish" />-->
-        <!--        </q-stepper-navigation>-->
       </q-step>
 
       <template v-slot:navigation>
@@ -741,10 +657,8 @@ export default {
       return dates;
     }
   },
-  // TODO fix the events overwrite bug
-  beforeUpdate() {
-    this.$store.commit("groups/newGroupLessons", this.lessons);
-  },
+  // TODO fix the events overwrite bug - partially done
+  beforeUpdate() {},
 
   watch: {
     startDate: function(newValue, oldValue) {
@@ -763,6 +677,10 @@ export default {
   methods: {
     ...mapActions("groups", ["registerGroup"]),
 
+    updateLessons() {
+      this.$store.commit("groups/newGroupLessons", this.lessons);
+    },
+
     handleNext() {
       if (this.step === 1) {
         this.$refs.step1.validate().then(outcome => {
@@ -778,6 +696,7 @@ export default {
           if (outcome) {
             this.$refs.stepper.next();
             this.done2 = true;
+            this.$store.commit("groups/newGroupLessons", this.lessons);
           }
         });
       } else if (this.step === 2 && this.newGroup.lessons.length === 0) {
@@ -810,6 +729,7 @@ export default {
       );
 
       this.groupSchedule[index].meetingDay = true;
+      this.updateLessons();
     },
     deltaDays(dow1, dow2) {
       return dow1 - dow2;

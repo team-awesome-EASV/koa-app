@@ -22,11 +22,32 @@ export default {
       lessons: [],
       participants: []
     },
+    selectedGroup: {
+      name: "",
+      workshop: "",
+      module: "",
+      teacher: "",
+      totalSpots: 0,
+      location: "",
+      color: "#019A9D",
+      icon: "fas fa-lightbulb",
+      isActive: false,
+      acceptsParticipants: true,
+      startDate: "",
+      timespan: 1,
+      lessons: [],
+      participants: []
+    },
     allGroups: [],
     eventTest: []
   },
 
   mutations: {
+    selectGroup: (state, payload) => {
+      console.log(payload);
+      state.selectedGroup = payload;
+    },
+
     newGroupLessons: (state, payload) => {
       state.newGroup.lessons = payload;
       console.log("all lessons overwritten");
@@ -255,6 +276,11 @@ export default {
               console.log("group gone");
             });
         });
+    },
+
+    assignSelectedGroup({ commit, getters }, payload) {
+      let selected = getters.findGroup(payload);
+      commit("selectGroup", selected);
     }
   },
 
