@@ -1,36 +1,53 @@
 <template>
   <div
-    class="full-width row wrap justify-start items-start content-start text-primary"
+    class=" full-width row wrap justify-start items-start content-start text-primary"
   >
     <div
-      class="full-width row wrap justify-center items-start content-start text-primary q-gutter-md "
+      class=" row fit justify-center full-width row wrap items-start content-start text-primary q-gutter-md "
     >
       <div
-        style="overflow: none; width: 300px"
+        style="overflow: none;"
         v-for="item in allWorkshops"
         :key="item.id"
-        class="col-xs-12 col-sm-4 col-lg-3 "
+        class="col-xs-10 col-sm-5 col-lg-3 "
       >
         <div>
           <q-card class="my-card ">
             <img :src="item.image" />
 
             <q-card-section>
-              <div class="text-h6">{{ item.name }}</div>
+              <div class="text-h3 q-mt-sm q-mb-xs">{{ item.name }}</div>
               <div class="text-caption text-right q-mb-lg">
                 teacher {{ item.teacher.label }}
               </div>
               <div class="text-body2 text-left q-mb-lg">
                 {{ item.introduction }}
               </div>
-              <div class="full-width row">
-                <div class="text-caption q-mr-sm">
-                  modules: {{ item.modulesNo }}
+              <q-card-section class="q-mb-lg q-px-none">
+                <p class="text-body1">Duration:</p>
+                <div class="row justify-between items-baseline">
+                  <div class="column items-start justify-start">
+                    <span class="text-body1"></span>
+                    <q-chip square size="lg" class="q-ma-none">
+                      <q-avatar
+                        color="secondary"
+                        text-color="white"
+                        icon="view_module"
+                      />
+                      {{ item.modulesNo }} modules
+                    </q-chip>
+                  </div>
+
+                  <div class="column items-start justify-start">
+                    <span class="text-body1"> </span>
+                    <q-chip square size="lg" class="q-ma-none">
+                      <q-avatar color="info" text-color="dark" icon="event">
+                      </q-avatar>
+                      {{ item.duration }} weeks
+                    </q-chip>
+                  </div>
                 </div>
-                <div class="text-caption q-mr-sm">
-                  weeks: {{ item.duration }}
-                </div>
-              </div>
+              </q-card-section>
             </q-card-section>
 
             <q-card-section class="q-pt-none"> </q-card-section>
