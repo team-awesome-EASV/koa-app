@@ -130,8 +130,8 @@ export default {
         startDate: state.newGroup.startDate,
         timespan: state.newGroup.timespan,
         teacher: state.newGroup.teacher,
-        workshop: workshops.doc(groupWorkshop.value),
-        module: db.doc(groupModule.value),
+        workshop: state.newGroup.workshop.value,
+        module: state.newGroup.module.id,
         participants: []
       };
       let lessons = { array: state.newGroup.lessons, id: "" };
@@ -187,13 +187,24 @@ export default {
       router.push("/groups");
     },
 
-    fetchAllGroups({ commit }) {
+    fetchAllGroups({ commit, rootGetters }) {
       let allGroupsTemp = [];
 
       groups.onSnapshot(snapshotGropups => {
         snapshotGropups.forEach(doc => {
           const groupData = doc.data();
           let lessons = [];
+          // const workshop = rootGetters["workshops/workshopsSelect"].find(
+          //   el => el.value === groupData.workshop
+          // );
+          // // console.log(workshop);
+          //
+          // const module = rootGetters["workshops/allWorkshops"];
+          //
+          // console.log(JSON.parse(JSON.stringify(module)));
+          // console.log(module[0].id);
+          //
+          // setTimeout(() => console.log(module[0].moduleList.length), 0);
 
           const lessonsData = groups
             .doc(doc.id)
@@ -222,6 +233,9 @@ export default {
   getters: {
     newGroup: state => state.newGroup,
     newGroupLessons: state => state.newGroup.lessons,
-    allGroups: state => state.allGroups
+    allGroups: state => state.allGroups,
+    findGroup: (state, getters) => id => {
+      return getters.allGroups.find(el => el.groupId === id);
+    }
   }
 };

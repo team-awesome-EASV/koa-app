@@ -169,9 +169,9 @@ export default {
   },
 
   beforeMount() {
+    this.getAllUsers();
     this.setWorkshopsA();
     this.setModules();
-    this.getAllUsers();
     this.fetchAllGroups();
   }
 };

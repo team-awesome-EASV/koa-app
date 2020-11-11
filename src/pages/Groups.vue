@@ -1,16 +1,15 @@
 <template>
   <div>
-    <pageHeading icon="group" title="Here you can manage groups"> </pageHeading>
-    <div class="row fit justify-start wrap">
+    <div class="row fit justify-start wrap q-pa-md">
       <!--      <div class="col-8 q-pa-lg">-->
       <!--        <CalendarLayout />-->
       <!--      </div>-->
-      <div
-        class="col-4 q-pa-lg"
-        v-for="(group, index) in allGroups"
-        :key="index"
-      >
-        <GroupCard :group="group" />
+      <div class="col-8">
+        <GroupTable :table-data="allGroups" @groupSelected="handleSelect" />
+      </div>
+
+      <div class="col-4">
+        <GroupCard :group="chosenGroup || allGroups[0]" />
       </div>
     </div>
   </div>
@@ -20,22 +19,32 @@
 import pageHeading from "../components/pageHeading.vue";
 import CalendarLayout from "layouts/CalendarLayout";
 import GroupCard from "components/groups/GroupCard";
+import GroupTable from "components/groups/GroupTable";
 import { mapGetters } from "vuex";
 
 export default {
   components: {
-    pageHeading: pageHeading,
-
+    GroupTable,
     GroupCard
   },
   data() {
-    return {};
+    return {
+      selectedGroup: ""
+    };
   },
 
   computed: {
-    ...mapGetters("groups", ["allGroups"]),
-    group() {
-      return this.$store.getters["groups/newGroup"];
+    ...mapGetters("groups", ["allGroups", "findGroup"]),
+
+    chosenGroup() {
+      if (this.selectedGroup) return this.findGroup(this.selectedGroup);
+      else return null;
+    }
+  },
+
+  methods: {
+    handleSelect(payload) {
+      this.selectedGroup = payload;
     }
   }
 };
