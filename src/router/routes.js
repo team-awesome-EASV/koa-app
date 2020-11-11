@@ -6,6 +6,11 @@ const routes = [
     children: [
       { path: "", component: () => import("../pages/Home.vue") },
       { path: "/groups", component: () => import("../pages/Groups.vue") },
+      {
+        path: "/group/:groupId",
+        name: "group",
+        component: () => import("../pages/GroupView")
+      },
       { path: "/workshops", component: () => import("../pages/Workshops.vue") },
       {
         path: "/participants",

@@ -8,11 +8,12 @@
         <GroupTable :table-data="allGroups" @groupSelected="handleSelect" />
       </div>
 
-      <div class="col-4">
+      <div class="col-4" v-if="selectedGroup">
         <GroupCard :group="chosenGroup || allGroups[0]" />
         <div class="q-pa-md row justify-between">
-          <q-btn color="secondary" icon="create" label="Edit" stack />
-
+          <router-link :to="{ name: 'group', params: { id: selectedGroup } }">
+            <q-btn color="secondary" icon="create" label="Edit" stack />
+          </router-link>
           <q-btn
             color="accent"
             icon="delete_forever"
@@ -20,6 +21,11 @@
             stack
             @click="confirm = true"
           />
+        </div>
+      </div>
+      <div class="col-4" v-else>
+        <div class="row fit justify-center items-center">
+          Select group from the table
         </div>
       </div>
     </div>

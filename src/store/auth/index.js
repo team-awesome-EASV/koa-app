@@ -146,8 +146,7 @@ export default {
     getUserData({ commit }, uid) {
       db.collection("Users")
         .doc(uid)
-        .get()
-        .then(doc => {
+        .onSnapshot(doc => {
           console.log("getuserdata action", doc.data());
           commit("userStatus", doc.data());
         });
