@@ -8,6 +8,7 @@ export default {
     newParticipant: {
       participantName: "",
       participantBirthday: "",
+      userId: "",
     },
     allParticipants: [],
   },
@@ -37,6 +38,7 @@ export default {
     registerParticipant({commit, state}){
 
       let participantDoc = {
+        
         name: state.newParticipant.participantName,
         birthday: state.newParticipant.participantBirthday,
       };

@@ -4,20 +4,34 @@ export default {
   namespaced: true,
 
   state: {
+    userTabVisible: false,
     allUsers: [],
     selectedUser: {},  
+    selectedUserId: " "
   },
 
   mutations: {
+
+    showUserTab(state, componentName) {
+      state.userTabVisible = true;
+    },
+   
     commitAllUsers: (state, payload) => {
       state.allUsers = payload;
     },
+
     commitSelectedUser: (state, payload) => {
       state.selectedUser = payload;
     },
+
+    commitSelectedUserId: (state, payload) => {
+      state.selectedUserId = payload;
+    }
+
   },
 
   actions: {
+
     getAllUsers: context => {
       let allUsersTemp = [];
 
@@ -32,10 +46,9 @@ export default {
               .split(" ")
               .map(word => word.toUpperCase().charAt(0))
               .join("")
-          });
+          })
         });
 
-        // console.log("i am inside snapshot", allUsersTemp);
         context.commit("commitAllUsers", allUsersTemp);
         allUsersTemp = [];
       });
@@ -43,17 +56,16 @@ export default {
 
     selectUser({commit},user) {
       commit("commitSelectedUser", user)
-    },
-
-    deleteUser() {
-      console.log("user successfuly deleted");
+      commit("users/commitSelectedUserId", user.id, {root:true})
     },
 
 
   },
 
   getters: {
+    userTabVisible: state => { return state.userTabVisible },
     allUsers: state => state.allUsers,
     selectedUser: state => state.selectedUser,
+    selectedUserId: state => state.selectedUserId,
   }
 };
