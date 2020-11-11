@@ -3,7 +3,7 @@
     <q-card>
         <div class="q-pa-md">
             <q-toolbar class="bg-primary text-white shadow-2">
-                <q-toolbar-title>Contacts</q-toolbar-title>
+                <q-toolbar-title>Users</q-toolbar-title>
             </q-toolbar>
             <q-list @click="showUserTab">
                 <q-item
@@ -38,8 +38,11 @@
                     <q-item-section class="q-ma-sm">
                         <q-item-label>Kids</q-item-label>
                         <div class="kids_container">
-                            <h6 class="q-ma-xs">cipa</h6>
-                            <h6 class="q-ma-xs">birthday</h6>
+                            <div
+                                v-for="participant in findParticipantsOfUser(user.id)"
+                                :key="participant.id">
+                                <h6 class="q-ma-xs">{{ participant.name }}</h6>
+                            </div>
                         </div>
                     </q-item-section>
 
@@ -55,12 +58,10 @@
             </q-list>
         </div>
     </q-card>
-    <div>{{selectedUserId}}</div>
 </div>
 </template>
 
 <script>
-
 import {
     mapGetters,
     mapActions,
@@ -70,28 +71,42 @@ import {
 export default {
     data() {
         return {
-            
-        
+
         };
     },
 
+    created() {
+        this.$store.dispatch("participants/getAllParticipants");
+    },
+
     computed: {
+
         ...mapGetters("users", {
             allUsers: "allUsers",
             selectedUser: "selectedUser",
             selectedUserId: "selectedUserId",
             userTabVisible: "userTabVisible"
         }),
+
+        ...mapGetters("participants", {
+            allParticipants: "allParticipants",
+        }),
     },
 
     methods: {
+
         ...mapActions("users", {
             selectUser: "selectUser",
         }),
 
         ...mapMutations("users", {
-            showUserTab:"showUserTab"
+            showUserTab: "showUserTab"
         }),
+
+        findParticipantsOfUser(userId) {
+            return this.allParticipants.filter(participant => participant.userId === userId);
+        }
+
     }
 };
 </script>
@@ -112,8 +127,4 @@ export default {
         margin: 0.2rem;
     }
 }
-
 </style>
-
-
-

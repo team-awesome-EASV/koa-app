@@ -1,12 +1,12 @@
 <template>
 <div>
     <q-card class="user_details_wrapper">
-        <div
+        <!-- <div
             class="info_box"
-            v-if="(showInfo = !userTabVisible)">
+            v-if="showInfo = !userTabVisible">
             <h3>Select user from list</h3>
             <h6>To display detailed information</h6>
-        </div>
+        </div>-->
         <div v-if="userTabVisible">
             <q-img
                 class="user-wrapper-bg"
@@ -31,8 +31,17 @@
                 <div class="left-wrapper">
                     <h4>Kids</h4>
                     <div>
-                      <h6 v-show="noParticipants" class="q-ma-sm text-weight-light">There are no participants assigned to this account</h6>
+                        <h6
+                            v-show="noParticipants"
+                            class="q-ma-sm text-weight-light">There are no participants assigned to this account</h6>
                     </div>
+                    <ul
+                        v-for="participant in findParticipantsOfUser(selectedUser.id)"
+                        :key="participant.id">
+                        <li>
+                            {{ participant.name }}
+                        </li>
+                    </ul>
                     <q-btn
                         label=" Add participants"
                         color="primary"
@@ -46,27 +55,41 @@
                     <q-card class="q-ml-md">
                         <h4>User details</h4>
                         <ul>
-                            <li> <q-icon name="mail" size="3.7vh" class="q-mr-sm"/>{{ selectedUser.email }}</li>
                             <li>
-                                <q-icon name="phone" size="3.7vh" class="q-mr-sm"/>
+                                <q-icon
+                                    name="mail"
+                                    size="3.7vh"
+                                    class="q-mr-sm" />{{ selectedUser.email }}
+                            </li>
+                            <li>
+                                <q-icon
+                                    name="phone"
+                                    size="3.7vh"
+                                    class="q-mr-sm" />
                                 <q-btn
-                                     @click="editUser = true"
+                                    @click="editUser = true"
                                     class="q-ml-sm"
                                     icon="add"
                                     label="update"> </q-btn>
                             </li>
                             <li>
-                                <q-icon name="account_circle" size="3.7vh" class="q-mr-sm"/>
+                                <q-icon
+                                    name="account_circle"
+                                    size="3.7vh"
+                                    class="q-mr-sm" />
                                 <q-btn
-                                     @click="editUser = true"
+                                    @click="editUser = true"
                                     class="q-ml-sm"
                                     icon="add"
                                     label="update"> </q-btn>
                             </li>
                             <li>
-                                <q-icon name="image" size="3.7vh" class="q-mr-sm"/>
+                                <q-icon
+                                    name="image"
+                                    size="3.7vh"
+                                    class="q-mr-sm" />
                                 <q-btn
-                                     @click="editUser = true"
+                                    @click="editUser = true"
                                     class="q-ml-sm"
                                     icon="add"
                                     label="update"> </q-btn>
@@ -198,7 +221,7 @@
                         round
                         color="white"
                         icon="close"
-                        v-close-popup> 
+                        v-close-popup>
                     </q-btn>
                 </q-toolbar>
 
@@ -212,7 +235,7 @@
                         v-model="participantName"
                         autofocus />
                     <q-input
-                    class="q-ma-md"
+                        class="q-ma-md"
                         label="Participant birthday"
                         filled
                         style="max-width:90%"
@@ -263,7 +286,7 @@
                         v-close-popup />
                     <q-btn
                         label="add"
-                        @click="registerParticipant"
+                        @click="registerParticipantCaller"
                         color="primary"
                         class="q-ma-sm"
                         v-close-popup />
@@ -275,7 +298,6 @@
 </template>
 
 <script>
-
 import {
     mapGetters,
     mapActions,
@@ -299,6 +321,9 @@ export default {
             selectedUser: "selectedUser"
         }),
 
+        ...mapGetters("participants", {
+            allParticipants: "allParticipants",
+        }),
 
         participantName: {
             get() {
@@ -327,12 +352,14 @@ export default {
             deleteUser: "deleteUser"
         }),
 
-        ...mapActions("participants", {
-            registerParticipant: "registerParticipant",
-        }),
+        registerParticipantCaller() {
+            this.$store.dispatch("participants/registerParticipant", this.selectedUser.id)
+        },
 
-        
-    
+        findParticipantsOfUser(userId) {
+            return this.allParticipants.filter(participant => participant.userId === userId);
+        },
+
         checkFileSize(files) {
             return files.filter(file => file.size < 2048);
         },
@@ -353,16 +380,14 @@ export default {
 };
 </script>
 
-
 <style lang="scss" scoped>
-
 // User details wrapper styles
 
 .user_details_wrapper {
     position: -webkit-sticky;
     position: sticky;
     top: 14%;
-    font-size:2px;
+    font-size: 2px;
 }
 
 .info_box {
@@ -384,7 +409,7 @@ export default {
 }
 
 .user-wrapper-bg {
-    max-height: 35vh;
+    max-height: 29vh;
 }
 
 .absolute-bottom {
@@ -405,9 +430,7 @@ h4 {
     margin: 0.5rem;
 }
 
-.left-wrapper {
-   
-}
+.left-wrapper {}
 
 .right-wrapper {
     display: flex;
