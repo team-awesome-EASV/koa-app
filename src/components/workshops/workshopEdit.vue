@@ -200,7 +200,7 @@
                   >
                     <q-file
                       class="col-auto col-xs-12 col-md-8 q-my-md"
-                      v-model="moduleFile"
+                      v-model="workshopFile"
                       bottom-slots
                       rounded
                       outlined
@@ -213,7 +213,8 @@
                         button
                       </template>
                       <template v-slot:after>
-                        <q-btn push color="primary" label="upload" />
+                        <q-btn push color="primary" label="upload" @click="addImageToDb"/>
+
                       </template>
                     </q-file>
                     <q-img
@@ -396,13 +397,14 @@
                       label="add image"
                       accept=".jpg, .png, image/*"
                       @rejected="onRejected"
+                      
                     >
                       <template v-slot:hint>
                         Chose an image to upload and then click the upload
                         button
                       </template>
                       <template v-slot:after>
-                        <q-btn push color="primary" label="upload" />
+                        <q-btn push color="primary" label="upload" @click="addModuleImageToDb"/>
                       </template>
                     </q-file>
                     <q-img
@@ -453,45 +455,17 @@ export default {
       activeModuleIndex: 0,
       workshopFile: null,
       moduleFile: null,
-      // disableBtn: this.disableBtnFx,
-      // disableModuleBtn: false,
-      // btnDisable: this.imageURL,
+ 
       //   end of layout behaviour
       //   step one modals and info
-      // workshopInfo: {
-      //   name: "",
-      //   teacher: "",
-      //   introduction: "",
-      //   description: "",
-      //   conclusion: "",
-      //   active: false,
-      //   modulesNo: 2,
-      //   duration: 2,
-      //   keyWordsArray: [],
-      //   image: ""
-      // },
+      
       keyWords: "",
 
       // step two modals and info
       moduleKeyWordsInput: {},
-      // modules: [],
-      // moduleElement: null,
-      // moduleTemp: {},
+      
 
-      // moduleInfo: {
-      //   moduleTeacher: "",
-      //   moduleName: "",
-      //   moduleIntroduction: "",
-      //   moduleDescription: "",
-      //   moduleConclusion: "",
-      //   moduleDuration: 1,
-      //   moduleKeyWordsArray: [],
-      //   moduleImage: "",
-      //   workshopId: "",
-      //   workshopPath: ""
-      // },
-
-      // commune info for all steps
+      // commone info for all steps
       selectOptions: [
         {
           label: "Teacher Name One",
@@ -511,16 +485,38 @@ export default {
       editWorkshopData: "editWorkshopData",
       editModuleListData: "editModuleListData"
     })
-    // editWorkshopData() {
-    //   return this.editWorkshopData;
-    // }
+    
   },
+  
 
   methods: {
     ...mapActions("workshops", [
       "sendUpdateWorkshopDataToDb",
+       "addImageToDatabase",
+       "addModuleImageToDatabase",
       "sendUpdateModuleDataToDb"
     ]),
+
+      addImageToDb() {
+      console.log("this is the file", this.workshopFile);
+      this.addImageToDatabase(this.workshopFile);
+      setTimeout( this.populateImageSrc(), 2000);
+      },
+    
+    
+      populateImageSrc() {
+      this.editWorkshopData.image = this.imageURL;
+    },
+
+   addModuleImageToDb() {
+      this.addModuleImageToDatabase(this.moduleFile).then(() => { 
+          this.populateModuleImageSrc();
+      });
+    },
+    populateModuleImageSrc() {
+      this.editModuleListData[this.activeModuleIndex].moduleImage = this.moduleImageURL;
+
+    },
 
     updateWorkshop(data, id) {
       this.sendUpdateWorkshopDataToDb({
@@ -610,7 +606,11 @@ export default {
     this.newKeyWords();
     this.newModuleKeyWords();
   },
-  updated() {}
+  updated() {
+       
+   
+   
+  }
 };
 </script>
 

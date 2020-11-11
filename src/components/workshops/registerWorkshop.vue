@@ -424,7 +424,7 @@
                                 <div v-html="workshopInfo.description"></div>
 
                                 <p>
-                                  Workshop Conclution:
+                                  Workshop Conclusion:
                                   {{ workshopInfo.conclusion }}
                                 </p>
                               </div>
@@ -505,7 +505,7 @@
                                 <q-img
                                   :src="modules[activeModuleIndex].moduleImage"
                                   :ratio="1"
-                                  alt="representative image for workshop"
+                                  alt="representative image for this module"
                                 />
                               </div>
                             </div>
@@ -696,7 +696,7 @@ export default {
       "addNewWorkshopToDatabase",
       "addNewModuleToWorkshop",
       "addTempModuleToState",
-      "addImageToDatabase",
+     
       "addModuleImageToDatabase"
     ]),
     updateImageURL() {

@@ -73,7 +73,7 @@ export default {
 
           if (exists) {
             Notify.create(
-              "an image with the same name already exists please chenge the name"
+              "an image with the same name already exists please change the name"
             );
           } else {
             result = true;
@@ -91,7 +91,7 @@ export default {
                 console.log("the image ", snapshot);
               },
               error => {
-                Notify.create("an error has accured, please try again");
+                Notify.create("an error has ocurred, please try again");
                 console.log(error);
               },
               () => {
@@ -153,29 +153,60 @@ export default {
     },
 
     addModuleImageToDatabase({ commit }, payload) {
-      console.log("this is the image", payload);
-      var storage = firebaseApp.storage();
+       var storage = firebaseApp.storage();
       var storageRef = storage.ref("Images/" + payload.name);
 
-      let uploadTask = storageRef.put(payload);
+      var listRef = storage.ref("Images/");
+      var uploadTask;
+      var result = false;
+      var locations = [];
+      console.log(result);
 
-      uploadTask.on(
-        "state_changed",
-        snapshot => {
-          console.log("the image ", snapshot);
-        },
-        error => {
-          Notify.create("an error has accured, please try again");
-          console.log(error);
-        },
-        () => {
-          uploadTask.snapshot.ref.getDownloadURL().then(downloadURL => {
-            console.log("file is at", downloadURL);
-            var content = downloadURL;
-            commit("updateModuleImageURL", content);
+      listRef
+        .listAll()
+        .then(images => {
+          images.items.forEach(item => {
+            locations.push(item.location.path);
           });
-        }
-      );
+          var exists = locations.find(
+            element => element === storageRef.location.path
+          );
+
+          if (exists) {
+            Notify.create(
+              "an image with the same name already exists please change the name"
+            );
+          } else {
+            result = true;
+          }
+          console.log(exists);
+        })
+        .then(() => {
+          console.log(result);
+
+          if (result) {
+            uploadTask = storageRef.put(payload);
+            uploadTask.on(
+              "state_changed",
+              snapshot => {
+                console.log("the image ", snapshot);
+              },
+              error => {
+                Notify.create("an error has ocurred, please try again");
+                console.log(error);
+              },
+              () => {
+                uploadTask.snapshot.ref.getDownloadURL().then(downloadURL => {
+                  console.log("file is at", downloadURL);
+                  var content = downloadURL;
+                  commit("updateModuleImageURL", content);
+                });
+              }
+            );
+          }
+        });
+
+      console.log(result);
     },
 
     addNewModuleToWorkshop({}, { info, id }) {
@@ -207,7 +238,7 @@ export default {
     },
     sendUpdateWorkshopDataToDb({ dispatch}, { data, id }) {
       workshops.doc(id).update({ ...data }).then(()=> {
-        Notify.create("workshop succesfuly updated");
+        Notify.create("workshop successfully updated");
         dispatch('setWorkshops')
       })
 
@@ -215,8 +246,8 @@ export default {
 
     sendUpdateModuleDataToDb({ dispatch }, { data, moduleId, workshopId }) {
       workshops.doc(workshopId).collection("Modules").doc(moduleId).update({ ...data }).then(() => {
-        Notify.create("The Module was succsfully updated");
-        // dispatch("setModulesToWorkshops")
+        Notify.create("The Module was successfully updated");
+        dispatch("setModulesToWorkshops");
       })
     },
 
