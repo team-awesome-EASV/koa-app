@@ -227,6 +227,34 @@ export default {
         commit("setAllGroups", allGroupsTemp);
         allGroupsTemp = [];
       });
+    },
+
+    deleteGroup({}, payload) {
+      console.log(payload);
+      groups
+        .doc(payload)
+        .collection("lessons")
+        .get()
+        .then(res => {
+          res.forEach(element => {
+            element.ref.delete().then(() => {
+              console.log("lesson gone");
+            });
+          });
+        })
+        .then(() => {
+          console.log("subcollection gone");
+          groups
+            .doc(payload)
+            .delete()
+            .then(() => {
+              Notify.create({
+                type: "positive",
+                message: "Group deleted"
+              });
+              console.log("group gone");
+            });
+        });
     }
   },
 

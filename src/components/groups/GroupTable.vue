@@ -1,7 +1,7 @@
 <template>
   <div class="q-pa-md">
     <q-table
-      class="my-sticky-header-table"
+      class="my-sticky-header-column-table"
       title="Groups"
       :data="tableData"
       :columns="columns"
@@ -9,16 +9,17 @@
       selection="single"
       :selected.sync="selected"
       :filter="filter"
-      flat
       bordered
       :visible-columns="visibleCol"
       @update:selected="handleSelect"
     >
       <template v-slot:top>
+        <span class="text-h6">Groups</span>
         <q-space />
         <q-input
-          borderless
+          rounded
           dense
+          standout="bg-white text-dark"
           debounce="300"
           color="primary"
           v-model="filter"
@@ -84,7 +85,7 @@ export default {
       visibleCol: [
         "name",
         "workshop",
-
+        "participants",
         "totalSpots",
         "startDate",
         "timespan",
@@ -120,11 +121,19 @@ export default {
         { name: "module", label: "Module", field: "module", sortable: true },
 
         {
+          name: "participants",
+          label: "Participants",
+          field: "participants",
+          format: val => val.length.toString()
+        },
+
+        {
           name: "totalSpots",
           label: "Total Spots",
           field: "totalSpots",
           sortable: true
         },
+
         {
           name: "startDate",
           label: "Start date",
@@ -134,7 +143,7 @@ export default {
         },
         {
           name: "timespan",
-          label: "Lenght",
+          label: "Weeeks",
           field: "timespan",
           sortable: true,
           sort: (a, b) => parseInt(a, 10) - parseInt(b, 10)
@@ -176,25 +185,42 @@ export default {
 </script>
 
 <style lang="sass">
-.my-sticky-header-table
+.my-sticky-header-column-table
   /* height or max-height is important */
   max-height: 100vh
 
-  .q-table__top,
-  .q-table__bottom,
-  thead tr:first-child th
-    /* bg color is important for th; just specify one */
-    background-color: scale-color($primary,$alpha: -40%)
+  /* specifying max-width so the example can
+    highlight the sticky column on any browser window */
+  //max-width: 600px
 
+  td:first-child
+    /* bg color is important for td; just specify one */
+    background-color: $accent !important
 
-  thead tr th
+  tr th
     position: sticky
-    z-index: 1
-  thead tr:first-child th
-    top: 0
+    /* higher than z-index for td below */
+    z-index: 2
+    /* bg color is important; just specify one */
+    background: $primary
 
-  /* this is when the loading indicator appears */
-  &.q-table--loading thead tr:last-child th
+  /* this will be the loading indicator */
+  thead tr:last-child th
     /* height of all previous header rows */
     top: 48px
+    /* highest z-index */
+    z-index: 3
+  thead tr:first-child th
+    top: 0
+    z-index: 1
+  tr:first-child th:first-child
+    /* highest z-index */
+    z-index: 3
+
+  td:first-child
+    z-index: 1
+
+  td:first-child, th:first-child
+    position: sticky
+    left: 0
 </style>
