@@ -7,7 +7,12 @@
         site</span
       >
       <q-btn-group class="q-ma-lg">
-        <q-btn push label="Save" icon="save" color="positive"/>
+        <q-btn
+          push
+          label="Save"
+          icon="save"
+          color="positive"
+          @click="updateSelectedGroup"/>
         <q-btn push label="Cancel" icon="cancel" color="secondary"/>
         <q-btn push label="Delete" icon="delete_forever" color="negative"
       /></q-btn-group>
@@ -50,7 +55,7 @@ import CalendarLayout from "layouts/CalendarLayout";
 import LessonGenerator from "components/groups/LessonGenerator";
 import GroupEdit from "components/groups/GroupEdit";
 import GroupParticipants from "components/groups/GroupParticipants";
-import { mapGetters } from "vuex";
+import { mapGetters, mapActions } from "vuex";
 export default {
   name: "GroupView",
   components: { CalendarLayout, LessonGenerator, GroupEdit, GroupParticipants },
@@ -66,6 +71,10 @@ export default {
     group() {
       return this.findGroup(this.selectedGroup.groupId);
     }
+  },
+
+  methods: {
+    ...mapActions("groups", ["updateSelectedGroup"])
   },
 
   mounted() {

@@ -1,6 +1,7 @@
-import { groups } from "boot/firebase";
+import { groups, participants, db } from "boot/firebase";
 import { Notify } from "quasar";
 import router from "../../router/index";
+import * as firebase from "firebase";
 
 export default {
   namespaced: true,
@@ -174,6 +175,25 @@ export default {
       };
     },
 
+    resetSelectedGroup: state => {
+      state.selectedGroup = {
+        name: "",
+        workshop: "",
+        module: "",
+        teacher: "",
+        totalSpots: 0,
+        location: "",
+        color: "#019A9D",
+        icon: "fas fa-lightbulb",
+        isActive: false,
+        acceptsParticipants: true,
+        startDate: "",
+        timespan: 1,
+        lessons: [],
+        participants: []
+      };
+    },
+
     setAllGroups: (state, payload) => {
       state.allGroups = payload;
     }
@@ -303,6 +323,30 @@ export default {
               });
               console.log("group gone");
             });
+        });
+    },
+
+    updateSelectedGroup({ state, commit, dispatch }) {
+      const { participants, lessons, teacher, ...rest } = state.selectedGroup;
+      let lessonsToUpdate = { array: lessons, id: state.selectedGroup.groupId };
+
+      groups
+        .doc(state.selectedGroup.groupId)
+        .update({ ...rest })
+        .then(() => {
+          dispatch("addLessons", lessonsToUpdate);
+          participants.forEach(el => {
+            groups
+              .doc(state.selectedGroup.groupId)
+              .update({
+                participants: firebase.firestore.FieldValue.arrayUnion(el)
+              });
+          });
+        })
+        .then(() => {
+          commit("resetSelectedGroup");
+          router.push({ path: "/groups" });
+          console.log("group updated");
         });
     },
 
