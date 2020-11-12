@@ -8,16 +8,15 @@ export default {
   state: {
     userTabVisible: false,
     allUsers: [],
-    selectedUser: {},  
+    selectedUser: {},
     selectedUserId: " "
   },
 
   mutations: {
-
     showUserTab(state) {
       state.userTabVisible = true;
     },
-   
+
     commitAllUsers: (state, payload) => {
       state.allUsers = payload;
     },
@@ -33,11 +32,9 @@ export default {
     commitSelectedUserId: (state, payload) => {
       state.selectedUserId = payload;
     }
-
   },
 
   actions: {
-
     getAllUsers: context => {
       let allUsersTemp = [];
 
@@ -53,13 +50,14 @@ export default {
               .split(" ")
               .map(word => word.toUpperCase().charAt(0))
               .join("")
-          })
+          });
         });
 
         context.commit("commitAllUsers", allUsersTemp);
         allUsersTemp = [];
       });
     },
+
 
     selectUser({commit},user) {
       commit("commitSelectedUser", user)
@@ -134,12 +132,23 @@ export default {
       console.log(result);
     }
 
+
+    selectUser({ commit }, user) {
+      commit("commitSelectedUser", user);
+      commit("users/commitSelectedUserId", user.id, { root: true });
+    }
+
   },
 
   getters: {
-    userTabVisible: state => { return state.userTabVisible },
+    userTabVisible: state => {
+      return state.userTabVisible;
+    },
     allUsers: state => state.allUsers,
     selectedUser: state => state.selectedUser,
     selectedUserId: state => state.selectedUserId,
+    findUser: (state, getters) => id => {
+      return getters.allUsers.find(el => el.id === id);
+    }
   }
 };

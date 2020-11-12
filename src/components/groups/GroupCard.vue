@@ -125,13 +125,12 @@
             />
           </template>
 
-          <template v-slot:body-cell-calcium="props">
+          <template v-slot:body-cell-contact="props">
             <q-td :props="props">
               <div>
                 <q-btn round size="xs" color="accent"
                   ><q-icon name="mail" color="white"></q-icon
                 ></q-btn>
-                <!--                  <q-badge color="purple" :label="props.value" />-->
               </div>
             </q-td>
           </template>
@@ -151,23 +150,8 @@
         label="Calendar"
         header-class="text-weight-light text-h6"
       >
-        <CalendarLayout />
+        <CalendarLayout :group="lessons" />
       </q-expansion-item>
-
-      <!--    <q-slide-transition>-->
-      <!--      <div v-show="expandedCalendar">-->
-      <!--        <q-separator />-->
-      <!--        <q-card-section class="text-subitle2">-->
-      <!--         -->
-      <!--        </q-card-section>-->
-      <!--      </div>-->
-      <!--    </q-slide-transition>-->
-      <!--    <q-slide-transition>-->
-      <!--      <div v-show="expandedParticipants">-->
-      <!--        <q-separator />-->
-      <!--        <q-card-section class="text-subitle2"> </q-card-section>-->
-      <!--      </div>-->
-      <!--    </q-slide-transition>-->
     </q-card>
   </div>
 </template>
@@ -271,16 +255,9 @@ export default {
         },
 
         {
-          name: "calcium",
+          name: "contact",
           label: "Contact",
-          field: "calcium",
-          sortable: true,
-          sort: (a, b) => parseInt(a, 10) - parseInt(b, 10)
-        },
-        {
-          name: "iron",
-          label: "Iron (%)",
-          field: "iron",
+          field: "contact",
           sortable: true,
           sort: (a, b) => parseInt(a, 10) - parseInt(b, 10)
         }
@@ -302,6 +279,11 @@ export default {
         return this.findModule(this.group.workshop, this.group.module)
           .moduleName;
       else return this.group.module.label;
+    },
+
+    lessons() {
+      if (typeof this.group.module === "string") return this.group.groupId;
+      else return "new";
     }
   }
 };

@@ -48,6 +48,43 @@ export default {
       state.selectedGroup = payload;
     },
 
+    selectedGroupStartDate: (state, payload) => {
+      state.selectedGroup.startDate = payload;
+    },
+
+    selectedGroupLessons: (state, payload) => {
+      state.selectedGroup.lessons = payload;
+      console.log("all lessons overwritten");
+    },
+
+    selectedGroupTimespan: (state, payload) => {
+      state.selectedGroup.timespan = payload;
+    },
+
+    selectedGroupName: (state, payload) => {
+      state.selectedGroup.name = payload;
+    },
+
+    selectedGroupIsActive: (state, payload) => {
+      state.selectedGroup.isActive = payload;
+    },
+
+    selectedGroupAcceptsParticipants: (state, payload) => {
+      state.selectedGroup.acceptsParticipants = payload;
+    },
+
+    selectedGroupColor: (state, payload) => {
+      state.selectedGroup.color = payload;
+    },
+
+    selectedGroupIcon: (state, payload) => {
+      state.selectedGroup.icon = payload;
+    },
+
+    selectedGroupTotalSpots: (state, payload) => {
+      state.selectedGroup.totalSpots = payload;
+    },
+
     newGroupLessons: (state, payload) => {
       state.newGroup.lessons = payload;
       console.log("all lessons overwritten");
@@ -215,18 +252,6 @@ export default {
         snapshotGropups.forEach(doc => {
           const groupData = doc.data();
           let lessons = [];
-          // const workshop = rootGetters["workshops/workshopsSelect"].find(
-          //   el => el.value === groupData.workshop
-          // );
-          // // console.log(workshop);
-          //
-          // const module = rootGetters["workshops/allWorkshops"];
-          //
-          // console.log(JSON.parse(JSON.stringify(module)));
-          // console.log(module[0].id);
-          //
-          // setTimeout(() => console.log(module[0].moduleList.length), 0);
-
           const lessonsData = groups
             .doc(doc.id)
             .collection("lessons")
@@ -287,9 +312,14 @@ export default {
   getters: {
     newGroup: state => state.newGroup,
     newGroupLessons: state => state.newGroup.lessons,
+    selectedGroup: state => state.selectedGroup,
+    selectedGroupLessons: state => state.selectedGroup.lessons,
     allGroups: state => state.allGroups,
     findGroup: (state, getters) => id => {
       return getters.allGroups.find(el => el.groupId === id);
+    },
+    findGroupLessons: (state, getters) => id => {
+      return getters.findGroup(id).lessons;
     }
   }
 };

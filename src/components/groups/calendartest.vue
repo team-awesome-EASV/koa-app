@@ -425,11 +425,9 @@
 <script>
 import { mapGetters } from "vuex";
 import { isCssColor } from "src/util/color";
-// import events from "src/util/events";
 import { padTime } from "src/util/time";
 import { colors, date, Platform } from "quasar";
 import { prevent, stop, stopAndPrevent } from "quasar/src/utils/event";
-// normally you would not import "all" of QCalendar, but is needed for this example to work with UMD (codepen)
 import {
   addToDate,
   getDate,
@@ -456,7 +454,7 @@ const formDefault = {
 
 export default {
   name: "PageIndex",
-  props: { eventList: Array, animated: Boolean },
+  props: { eventList: Array, animated: Boolean, group: String },
 
   data() {
     return {
@@ -526,11 +524,18 @@ export default {
       enableTheme: "calendar/enableTheme",
       theme: "calendar/theme",
       weekdays: "calendar/weekdays",
-      events: "groups/newGroupLessons"
+      newGroupLessons: "groups/newGroupLessons",
+      groupLessons: "groups/findGroupLessons"
     }),
     intervalStart() {
       return this.intervalRange.min * (1 / this.intervalRangeStep);
     },
+
+    events() {
+      if (this.group === "new") return this.newGroupLessons;
+      else return this.groupLessons(this.group);
+    },
+
     intervalCount() {
       return (
         (this.intervalRange.max - this.intervalRange.min) *
@@ -933,6 +938,8 @@ export default {
     },
 
     onReset() {},
+
+    //TODO update saveEvent() function so it pushes lessons to correct group and updates them in the db
 
     saveEvent() {
       const self = this;
