@@ -58,22 +58,23 @@ export default {
       });
     },
 
-    selectUser({ commit }, user) {
-      commit("commitSelectedUser", user);
-      commit("users/commitSelectedUserId", user.id, { root: true });
+
+    selectUser({commit},user) {
+      commit("commitSelectedUser", user)
+      commit("users/commitSelectedUserId", user.id, {root:true})
     },
 
     sendEditedUserInfo({ dispatch, state }) {
       users
-        .doc(state.selectedUser.id)
-        .update({ ...state.selectedUser })
-        .then(() => {
-          Notify.create("User information edited successfully!");
-          dispatch("getAllUsers");
-        });
+      .doc(state.selectedUser.id)
+      .update({...state.selectedUser})
+      .then( ()=> {
+        Notify.create("User information edited successfully!");
+        dispatch("getAllUsers");
+      })
     },
 
-    addUserImageToDatabase({ commit, state }, payload) {
+     addUserImageToDatabase({ commit, state }, payload) {
       var storage = firebaseApp.storage();
       var storageRef = storage.ref("Users/" + payload.name);
 
@@ -81,7 +82,7 @@ export default {
       var uploadTask;
       var result = false;
       var locations = [];
-
+      
       console.log(payload);
 
       listRef
@@ -129,7 +130,14 @@ export default {
         });
 
       console.log(result);
+    },
+
+
+    selectUser({ commit }, user) {
+      commit("commitSelectedUser", user);
+      commit("users/commitSelectedUserId", user.id, { root: true });
     }
+
   },
 
   getters: {

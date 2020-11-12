@@ -29,6 +29,10 @@
                                 caption
                                 lines="1">{{ user.email }}
                             </q-item-label>
+                            <q-item-label
+                                caption
+                                lines="1">{{ user.phone }}
+                            </q-item-label>
                         </q-item-section>
                     </div>
                     <q-separator
@@ -41,7 +45,12 @@
                             <div
                                 v-for="participant in findParticipantsOfUser(user.id)"
                                 :key="participant.id">
-                                <h6 class="q-ma-xs">{{ participant.name }}</h6>
+                                <q-chip
+                                    color="secondary"
+                                    text-color="white"
+                                    icon="child_care">
+                                    {{ participant.name}}
+                                </q-chip>
                             </div>
                         </div>
                     </q-item-section>
@@ -121,6 +130,8 @@ export default {
 
 .kids_container {
     display: flex;
+    flex-wrap: wrap;
+    width: 100%;
 
     .kid-holder {
         padding: 0;

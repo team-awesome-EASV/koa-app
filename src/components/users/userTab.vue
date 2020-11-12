@@ -30,13 +30,23 @@
             <q-card-section class="user_details">
                 <div class="left-wrapper">
                     <h4>Kids</h4>
+                    <div class="kids_container">
                         <ul
                             v-for="participant in findParticipantsOfUser(selectedUser.id)"
                             :key="participant.id">
                             <li>
-                                {{ participant.name }}
+                                <q-chip
+                                    color="secondary"
+                                    removable=""
+                                    text-color="white"
+                                    size="md"
+                                    icon="child_care">
+
+                                    {{ participant.name}}
+                                </q-chip>
                             </li>
                         </ul>
+                    </div>
                     <q-btn
                         label=" Add participants"
                         color="primary"
@@ -48,39 +58,41 @@
                 </div>
                 <div class="right-wrapper">
                     <q-card class="q-ml-md">
-                        <h4>User details</h4>
-                        <ul>
-                            <li class="q-mt-md">
-                                <q-icon
-                                    name="mail"
-                                    size="3.7vh"
-                                    class="q-mr-sm" />{{ selectedUser.email }}
-                            </li>
-                            <li class="q-mt-md">
-                                <q-icon
-                                    name="phone"
-                                    size="3.7vh"
-                                    class="q-mr-sm" />
+                        <div class="q-ma-md">
+                            <h4>User details</h4>
+                            <ul>
+                                <li class="q-mt-md">
+                                    <q-icon
+                                        name="mail"
+                                        size="3.7vh"
+                                        class="q-mr-sm" />{{ selectedUser.email }}
+                                </li>
+                                <li class="q-mt-md">
+                                    <q-icon
+                                        name="phone"
+                                        size="3.7vh"
+                                        class="q-mr-sm" />
                                     {{ selectedUser.phone }}
-                                <q-btn
-                                    @click="editUser = true"
-                                    v-show="!selectedUser.phone"
-                                    class="q-ml-sm"
-                                    icon="add"
-                                    label="update"> </q-btn>
-                            </li>
-                            <li class="q-mb-mt">
-                                <q-icon
-                                    name="account_circle"
-                                    size="3.7vh"
-                                    class="q-mr-sm" />
-                                <q-btn
-                                    @click="editUser = true"
-                                    class="q-ml-sm"
-                                    icon="add"
-                                    label="update"> </q-btn>
-                            </li>
-                        </ul>
+                                    <q-btn
+                                        @click="editUser = true"
+                                        v-show="!selectedUser.phone"
+                                        class="q-ml-sm"
+                                        icon="add"
+                                        label="update"> </q-btn>
+                                </li>
+                                <li class="q-mb-mt">
+                                    <q-icon
+                                        name="account_circle"
+                                        size="3.7vh"
+                                        class="q-mr-sm" />
+                                    <q-btn
+                                        @click="editUser = true"
+                                        class="q-ml-sm"
+                                        icon="add"
+                                        label="update"> </q-btn>
+                                </li>
+                            </ul>
+                        </div>
                     </q-card>
                 </div>
             </q-card-section>
@@ -142,6 +154,7 @@
                         style="max-width:80%"
                         label="name"
                         filled
+                        :rules="[val => !!val || 'Field is required']"
                         v-model="selectedUser.name"
                         autofocus />
                     <q-input
@@ -149,6 +162,7 @@
                         style="max-width:80%"
                         label="email"
                         filled
+                        :rules="[val => !!val || 'Field is required']"
                         v-model="selectedUser.email"
                         autofocus />
                     <q-input
@@ -160,20 +174,23 @@
                         autofocus />
 
                     <div class="q-mt-xl">
-                            <q-file
-                                v-model="photoField"
-                                label="Picture"
-                                class="q-ma-md"
-                                filled
-                                style="width: 80%"
-                                counter
-                                max-files="3"
-                                multiple
-                            >
+                        <q-file
+                            v-model="photoField"
+                            label="Picture"
+                            class="q-ma-md"
+                            filled
+                            style="width: 80%"
+                            counter
+                            max-files="3"
+                            multiple>
 
-                                <q-btn dense flat icon="add" @click="addImage" ></q-btn>
-                             
-                            </q-file> 
+                            <q-btn
+                                dense
+                                flat
+                                icon="add"
+                                @click="addImage"></q-btn>
+
+                        </q-file>
                     </div>
                 </q-card-section>
 
@@ -334,7 +351,7 @@ export default {
         hasKids() {
             return !this.findParticipantsOfUser(this.selectedUser.id);
         }
-        
+
     },
 
     methods: {
@@ -347,12 +364,10 @@ export default {
         ...mapMutations("participants", {
             hideNoParticipantsInfo: "hideNoParticipantsInfo"
         }),
-        
 
         addImage() {
             this.addUserImageToDatabase(this.photoField);
         },
-
 
         registerParticipantCaller() {
             this.$store.dispatch("participants/registerParticipant", this.selectedUser.id)
@@ -418,7 +433,7 @@ export default {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-start;
+    justify-content: flex-end;
     height: 60%;
 }
 
@@ -433,6 +448,11 @@ h4 {
 }
 
 .left-wrapper {}
+
+.kids_container {
+    display: flex;
+    flex-wrap: wrap;
+}
 
 .right-wrapper {
     display: flex;
