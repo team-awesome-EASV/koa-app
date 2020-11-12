@@ -68,11 +68,16 @@
     >
       <q-card class="q-ma-none">
         <q-card-section class="q-pa-none">
-          <AddParticipants />
+          <AddParticipants @participant-selected="collectParticipants" />
         </q-card-section>
 
         <q-card-actions align="right">
-          <q-btn flat label="OK" v-close-popup />
+          <q-btn
+            flat
+            label="OK"
+            v-close-popup
+            @click="addParticipantsToGroup"
+          />
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -81,6 +86,7 @@
 
 <script>
 import AddParticipants from "components/groups/AddParticipants";
+import { mapMutations } from "vuex";
 export default {
   name: "GroupParticipants",
   props: {
@@ -123,13 +129,33 @@ export default {
           label: "Remove",
           field: "remove"
         }
-      ]
+      ],
+      participantsToAdd: []
     };
   },
 
   computed: {
     hasParticipants() {
       return this.group.participants.length <= 0;
+    },
+
+    participantsData() {
+      let participantsTemp = [];
+
+      this.group.participants.forEach(id => {});
+
+      return participantsTemp;
+    }
+  },
+
+  methods: {
+    ...mapMutations("groups", ["selectedGroupParticipants"]),
+    collectParticipants(payload) {
+      this.participantsToAdd = payload;
+    },
+
+    addParticipantsToGroup() {
+      this.selectedGroupParticipants(this.participantsToAdd);
     }
   }
 };

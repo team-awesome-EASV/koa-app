@@ -85,6 +85,11 @@ export default {
       state.selectedGroup.totalSpots = payload;
     },
 
+    selectedGroupParticipants: (state, payload) => {
+      console.log(payload);
+      state.selectedGroup.participants = payload;
+    },
+
     newGroupLessons: (state, payload) => {
       state.newGroup.lessons = payload;
       console.log("all lessons overwritten");

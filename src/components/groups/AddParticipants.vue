@@ -2,7 +2,7 @@
   <div class="q-pa-md">
     <q-table
       class="my-sticky-header-column-table"
-      title="Groups"
+      title="Participants"
       :data="allParticipants"
       :columns="columns"
       row-key="id"
@@ -30,45 +30,6 @@
           </template>
         </q-input>
       </template>
-
-      <template v-slot:body-cell-isActive="props">
-        <q-td :props="props">
-          <q-avatar
-            v-if="props.row.isActive"
-            size="sm"
-            color="positive"
-            text-color="white"
-            icon="done"
-          />
-          <q-avatar
-            v-else
-            size="sm"
-            color="negative"
-            text-color="white"
-            icon="close"
-          />
-        </q-td>
-      </template>
-      <template v-slot:body-cell-acceptsParticipants="props">
-        <q-td :props="props">
-          <div>
-            <q-avatar
-              v-if="props.row.acceptsParticipants"
-              size="sm"
-              color="positive"
-              text-color="white"
-              icon="done"
-            />
-            <q-avatar
-              v-else
-              size="sm"
-              color="negative"
-              text-color="white"
-              icon="close"
-            />
-          </div>
-        </q-td>
-      </template>
     </q-table>
   </div>
 </template>
@@ -76,11 +37,6 @@
 <script>
 import { mapGetters } from "vuex";
 export default {
-  props: {
-    tableData: {
-      type: Array
-    }
-  },
   data() {
     return {
       visibleCol: ["name", "birthday", "userId"],
@@ -105,7 +61,11 @@ export default {
           name: "userId",
           align: "center",
           label: "Parent",
-          field: "userId"
+          field: "userId",
+          sortable: true,
+          format: val => {
+            this.parent(val);
+          }
         },
 
         {
@@ -122,18 +82,19 @@ export default {
   computed: {
     ...mapGetters("workshops", ["findWorkshop", "findModule"]),
     ...mapGetters("participants", ["allParticipants"]),
-    ...mapGetters("users", ["findUser"])
+    ...mapGetters("users", ["findUser"]),
+
+    selectedParticipantsIds() {
+      return this.selected.map(el => el.id);
+    }
   },
   methods: {
-    handleSelect(newSelected) {
-      this.$emit("groupSelected", newSelected[0].groupId);
+    handleSelect() {
+      this.$emit("participant-selected", this.selectedParticipantsIds);
     },
 
-    workshop(id) {
-      return this.findWorkshop(id).name;
-    },
-    module(id1, id2) {
-      return this.findModule(id1, id2).moduleName;
+    parent(id) {
+      return this.findUser(id);
     }
   }
 };
