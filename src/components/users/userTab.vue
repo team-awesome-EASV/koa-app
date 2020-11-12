@@ -32,8 +32,10 @@
                     <h4>Kids</h4>
                     <div>
                         <h6
-                            v-show="noParticipants"
-                            class="q-ma-sm text-weight-light">There are no participants assigned to this account</h6>
+                            v-if="noParticipantsInfo"
+                            class="q-ma-sm text-weight-light">
+                            There are no participants assigned to this account
+                        </h6>
                     </div>
                     <ul
                         v-for="participant in findParticipantsOfUser(selectedUser.id)"
@@ -309,7 +311,6 @@ export default {
         return {
             editUser: false,
             addParticipant: false,
-            noParticipants: true,
             lorem: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
         };
     },
@@ -323,6 +324,7 @@ export default {
 
         ...mapGetters("participants", {
             allParticipants: "allParticipants",
+            noParticipantsInfo: "noParticipantsInfo"
         }),
 
         participantName: {
@@ -350,6 +352,10 @@ export default {
     methods: {
         ...mapActions("users", {
             deleteUser: "deleteUser"
+        }),
+
+        ...mapMutations("participants", {
+            hideNoParticipantsInfo: "hideNoParticipantsInfo"
         }),
 
         registerParticipantCaller() {

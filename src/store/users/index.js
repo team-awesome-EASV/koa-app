@@ -12,7 +12,7 @@ export default {
 
   mutations: {
 
-    showUserTab(state, componentName) {
+    showUserTab(state) {
       state.userTabVisible = true;
     },
    

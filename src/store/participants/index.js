@@ -5,6 +5,7 @@ export default {
   namespaced: true,
 
   state: {
+    noParticipantsInfo: true,
     newParticipant: {
       participantName: "",
       participantBirthday: "",
@@ -14,6 +15,10 @@ export default {
   },
 
   mutations: {
+
+    hideNoParticipantsInfo:(state) => {
+      state.noParticipantsInfo = true;
+    },
 
     commitNewParticipant: (state, payload) => {
       state.newParticipant = payload;
@@ -58,7 +63,13 @@ export default {
       participants.onSnapshot(snapshotItems => {
         snapshotItems.forEach(doc => {
           let participantDetailsData = doc.data();
-          allParticipantsTemp.push({...participantDetailsData, id: doc.id});
+          allParticipantsTemp.push({
+            ...participantDetailsData,
+            id: doc.id,
+            initial: participantDetailsData.name
+              .split(" ")
+              .map(word => word.toUpperCase().charAt(0))
+              .join("")});
         });
         console.log("i am inside snapshot", allParticipantsTemp);
         context.commit("commitAllParticipants", allParticipantsTemp);
@@ -68,6 +79,7 @@ export default {
   },
 
   getters: {
-    allParticipants: state => state.allParticipants
+    allParticipants: state => state.allParticipants,
+    noParticipantsInfo: state => state.noParticipantsInfo
   }
 };
