@@ -4,7 +4,7 @@
         icon="account_circle"
         title="Here you can manage users">
     </pageHeading>
-    <div class="q-ma-lg col-12 col-md-5"> 
+    <div class="q-ma-lg col-12 col-md-5">
         <usersDisplay></usersDisplay>
     </div>
     <div class="q-ma-lg col-12 col-md-6">
@@ -22,7 +22,7 @@ export default {
     components: {
         pageHeading: pageHeading,
         usersDisplay: usersDisplay,
-        userTab:userTab
+        userTab: userTab
     },
 }
 </script>

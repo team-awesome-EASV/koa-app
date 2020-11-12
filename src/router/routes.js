@@ -4,7 +4,6 @@ const routes = [
     path: "/",
     component: () => import("../layouts/AdminLayout.vue"),
     children: [
-      { path: "", component: () => import("../pages/Home.vue") },
       { path: "/groups", component: () => import("../pages/Groups.vue") },
       {
         path: "/group/:groupId",
