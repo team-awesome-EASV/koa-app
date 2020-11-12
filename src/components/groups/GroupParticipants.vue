@@ -36,6 +36,7 @@
               rounded
               icon="plus"
               label="Add participant"
+              @click="persistent = true"
             />
           </q-btn-group>
         </template>
@@ -59,18 +60,39 @@
         </template>
       </q-table>
     </q-card>
+    <q-dialog
+      v-model="persistent"
+      persistent
+      transition-show="scale"
+      transition-hide="scale"
+    >
+      <q-card class="q-ma-none">
+        <q-card-section class="q-pa-none">
+          <AddParticipants />
+        </q-card-section>
+
+        <q-card-actions align="right">
+          <q-btn flat label="OK" v-close-popup />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
   </div>
 </template>
 
 <script>
+import AddParticipants from "components/groups/AddParticipants";
 export default {
   name: "GroupParticipants",
   props: {
     group: { type: Object }
   },
+  components: {
+    AddParticipants
+  },
   data() {
     return {
       filter: "",
+      persistent: false,
       columns: [
         {
           name: "name",

@@ -165,7 +165,8 @@ export default {
       setModules: "setModulesToWorkshops"
     }),
     ...mapActions("users", ["getAllUsers"]),
-    ...mapActions("groups", ["fetchAllGroups"])
+    ...mapActions("groups", ["fetchAllGroups"]),
+    ...mapActions("participants", ["getAllParticipants"])
   },
 
   beforeMount() {
@@ -173,6 +174,7 @@ export default {
     this.setWorkshopsA();
     this.setModules();
     this.fetchAllGroups();
+    this.getAllParticipants();
   }
 };
 </script>
