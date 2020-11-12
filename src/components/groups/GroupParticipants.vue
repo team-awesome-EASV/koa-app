@@ -3,7 +3,7 @@
     <q-card class="my-card" bordered>
       <q-table
         class="my-sticky-header-table full-width"
-        :data="group.participants"
+        :data="participantsData"
         :columns="columns"
         row-key="name"
         flat
@@ -86,7 +86,7 @@
 
 <script>
 import AddParticipants from "components/groups/AddParticipants";
-import { mapMutations } from "vuex";
+import { mapMutations, mapGetters } from "vuex";
 export default {
   name: "GroupParticipants",
   props: {
@@ -120,9 +120,7 @@ export default {
         {
           name: "contact",
           label: "Contact",
-          field: "contact",
-          sortable: true,
-          sort: (a, b) => parseInt(a, 10) - parseInt(b, 10)
+          field: "contact"
         },
         {
           name: "remove",
@@ -135,6 +133,7 @@ export default {
   },
 
   computed: {
+    ...mapGetters("participants", ["allParticipants", "findParticipant"]),
     hasParticipants() {
       return this.group.participants.length <= 0;
     },
@@ -142,7 +141,10 @@ export default {
     participantsData() {
       let participantsTemp = [];
 
-      this.group.participants.forEach(id => {});
+      this.group.participants.forEach(id => {
+        let participantToPush = this.allParticipants.find(el => el.id === id);
+        participantsTemp.push(participantToPush);
+      });
 
       return participantsTemp;
     }
