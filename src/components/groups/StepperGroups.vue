@@ -178,7 +178,6 @@
         :done="done2"
         class=""
       >
-        <!--                <p>{{ lessons }}</p>-->
         <div class="row fit justify-around">
           <q-form
             @submit="onSubmit"
@@ -350,7 +349,7 @@
           <calendar-layout
             class="col-12 col-md-5"
             :key="lessonUpdate"
-            :events="lessons"
+            group="new"
           />
         </div>
       </q-step>

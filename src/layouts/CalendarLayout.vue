@@ -35,7 +35,7 @@
       ></q-select>
     </q-toolbar>
 
-    <calendartest />
+    <calendartest :group="group" />
   </div>
 </template>
 
@@ -52,8 +52,8 @@ export default {
     calendartest
   },
   props: {
-    events: {
-      type: Array
+    group: {
+      type: String
     }
   },
   data() {
