@@ -10,14 +10,13 @@ export default {
     newParticipant: {
       participantName: "",
       participantBirthday: "",
-      selectedUserId: "",
+      selectedUserId: ""
     },
-    allParticipants: [],
+    allParticipants: []
   },
 
   mutations: {
-
-    hideNoParticipantsInfo:(state) => {
+    hideNoParticipantsInfo: state => {
       state.noParticipantsInfo = true;
     },
 
@@ -37,15 +36,13 @@ export default {
       state.newParticipant.participantBirthday = payload;
     },
 
-    resetNewParticipant: (state) => {
-      state.newParticipant = {participantName:"", participantBirthday:""};
-    },
-    
+    resetNewParticipant: state => {
+      state.newParticipant = { participantName: "", participantBirthday: "" };
+    }
   },
 
   actions: {
-    
-    registerParticipant({commit, state}, payload){
+    registerParticipant({ commit, state }, payload) {
       let participantDoc = {
         name: state.newParticipant.participantName,
         birthday: state.newParticipant.participantBirthday,
@@ -53,13 +50,13 @@ export default {
       };
 
       participants
-      .add(participantDoc)
-      .then( () => commit("resetNewParticipant"))
-      .then( ()=> {
-        Notify.create("Participant added successfully!");
-        dispatch("getAllUsers");
-      })
-      .catch(error => console.log("Error adding document: ", error));
+        .add(participantDoc)
+        .then(() => commit("resetNewParticipant"))
+        .then(() => {
+          Notify.create("Participant added successfully!");
+          dispatch("getAllUsers");
+        })
+        .catch(error => console.log("Error adding document: ", error));
     },
 
     getAllParticipants: context => {
@@ -74,17 +71,21 @@ export default {
             initial: participantDetailsData.name
               .split(" ")
               .map(word => word.toUpperCase().charAt(0))
-              .join("")});
+              .join("")
+          });
         });
         console.log("i am inside snapshot", allParticipantsTemp);
         context.commit("commitAllParticipants", allParticipantsTemp);
         allParticipantsTemp = [];
       });
-    },
+    }
   },
 
   getters: {
     allParticipants: state => state.allParticipants,
-    noParticipantsInfo: state => state.noParticipantsInfo
+    noParticipantsInfo: state => state.noParticipantsInfo,
+    findParticipant: state => id => {
+      return state.allParticipants.find(el => el.id === id);
+    }
   }
 };

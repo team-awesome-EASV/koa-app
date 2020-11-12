@@ -1,4 +1,4 @@
-import { groups, workshops, db, users } from "boot/firebase";
+import { groups } from "boot/firebase";
 import { Notify } from "quasar";
 import router from "../../router/index";
 
@@ -181,8 +181,6 @@ export default {
 
   actions: {
     registerGroup({ state, dispatch }) {
-      let groupWorkshop = state.newGroup.workshop;
-      let groupModule = state.newGroup.module;
       let groupDoc = {
         name: state.newGroup.name,
         totalSpots: state.newGroup.totalSpots,
@@ -250,7 +248,7 @@ export default {
       router.push("/groups");
     },
 
-    fetchAllGroups({ commit, rootGetters }) {
+    fetchAllGroups({ commit }) {
       let allGroupsTemp = [];
 
       groups.onSnapshot(snapshotGropups => {
