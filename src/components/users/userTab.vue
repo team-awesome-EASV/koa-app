@@ -1,12 +1,12 @@
 <template>
 <div>
     <q-card class="user_details_wrapper">
-        <!-- <div
+        <div
             class="info_box"
-            v-if="showInfo = !userTabVisible">
+            v-show="!userTabVisible">
             <h3>Select user from list</h3>
             <h6>To display detailed information</h6>
-        </div>-->
+        </div>
         <div v-if="userTabVisible">
             <q-img
                 class="user-wrapper-bg"
@@ -30,20 +30,13 @@
             <q-card-section class="user_details">
                 <div class="left-wrapper">
                     <h4>Kids</h4>
-                    <div>
-                        <h6
-                            v-if="noParticipantsInfo"
-                            class="q-ma-sm text-weight-light">
-                            There are no participants assigned to this account
-                        </h6>
-                    </div>
-                    <ul
-                        v-for="participant in findParticipantsOfUser(selectedUser.id)"
-                        :key="participant.id">
-                        <li>
-                            {{ participant.name }}
-                        </li>
-                    </ul>
+                        <ul
+                            v-for="participant in findParticipantsOfUser(selectedUser.id)"
+                            :key="participant.id">
+                            <li>
+                                {{ participant.name }}
+                            </li>
+                        </ul>
                     <q-btn
                         label=" Add participants"
                         color="primary"
@@ -57,37 +50,28 @@
                     <q-card class="q-ml-md">
                         <h4>User details</h4>
                         <ul>
-                            <li>
+                            <li class="q-mt-md">
                                 <q-icon
                                     name="mail"
                                     size="3.7vh"
                                     class="q-mr-sm" />{{ selectedUser.email }}
                             </li>
-                            <li>
+                            <li class="q-mt-md">
                                 <q-icon
                                     name="phone"
                                     size="3.7vh"
                                     class="q-mr-sm" />
+                                    {{ selectedUser.phone }}
                                 <q-btn
                                     @click="editUser = true"
+                                    v-show="!selectedUser.phone"
                                     class="q-ml-sm"
                                     icon="add"
                                     label="update"> </q-btn>
                             </li>
-                            <li>
+                            <li class="q-mb-mt">
                                 <q-icon
                                     name="account_circle"
-                                    size="3.7vh"
-                                    class="q-mr-sm" />
-                                <q-btn
-                                    @click="editUser = true"
-                                    class="q-ml-sm"
-                                    icon="add"
-                                    label="update"> </q-btn>
-                            </li>
-                            <li>
-                                <q-icon
-                                    name="image"
                                     size="3.7vh"
                                     class="q-mr-sm" />
                                 <q-btn
@@ -171,27 +155,25 @@
                         class="q-ma-md"
                         style="max-width:80%"
                         filled
+                        v-model="selectedUser.phone"
                         label="phone number"
                         autofocus />
 
                     <div class="q-mt-xl">
-                        <q-uploader
-                            style="width: 80%"
-                            class="q-ma-md"
-                            url="http://localhost:4444/upload"
-                            label="Upload avatar (png only)"
-                            :filter="checkFileType"
-                            @rejected="onRejected" />
-                    </div>
+                            <q-file
+                                v-model="photoField"
+                                label="Picture"
+                                class="q-ma-md"
+                                filled
+                                style="width: 80%"
+                                counter
+                                max-files="3"
+                                multiple
+                            >
 
-                    <div class="q-mt-xl">
-                        <q-uploader
-                            style="width: 80%"
-                            class="q-ma-md"
-                            url="http://localhost:4444/upload"
-                            label="Upload background image (png only)"
-                            :filter="checkFileType"
-                            @rejected="onRejected" />
+                                <q-btn dense flat icon="add" @click="addImage" ></q-btn>
+                             
+                            </q-file> 
                     </div>
                 </q-card-section>
 
@@ -205,6 +187,7 @@
                         label="update"
                         color="primary"
                         class="q-ma-sm"
+                        @click="sendEditedUserInfo"
                         v-close-popup />
                 </q-card-actions>
             </q-card>
@@ -311,7 +294,8 @@ export default {
         return {
             editUser: false,
             addParticipant: false,
-            lorem: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+            lorem: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+            photoField: null
         };
     },
 
@@ -347,16 +331,28 @@ export default {
             }
         },
 
+        hasKids() {
+            return !this.findParticipantsOfUser(this.selectedUser.id);
+        }
+        
     },
 
     methods: {
         ...mapActions("users", {
-            deleteUser: "deleteUser"
+            deleteUser: "deleteUser",
+            sendEditedUserInfo: "sendEditedUserInfo",
+            addUserImageToDatabase: "addUserImageToDatabase"
         }),
 
         ...mapMutations("participants", {
             hideNoParticipantsInfo: "hideNoParticipantsInfo"
         }),
+        
+
+        addImage() {
+            this.addUserImageToDatabase(this.photoField);
+        },
+
 
         registerParticipantCaller() {
             this.$store.dispatch("participants/registerParticipant", this.selectedUser.id)
@@ -415,7 +411,7 @@ export default {
 }
 
 .user-wrapper-bg {
-    max-height: 29vh;
+    max-height: 32vh;
 }
 
 .absolute-bottom {

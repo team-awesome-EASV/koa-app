@@ -1,5 +1,6 @@
 import { users } from "src/boot/firebase.js";
 import { participants } from "src/boot/firebase.js";
+import { Notify } from "quasar";
 
 export default {
   namespaced: true,
@@ -53,7 +54,11 @@ export default {
 
       participants
       .add(participantDoc)
-      .then(() => commit("resetNewParticipant"))
+      .then( () => commit("resetNewParticipant"))
+      .then( ()=> {
+        Notify.create("Participant added successfully!");
+        dispatch("getAllUsers");
+      })
       .catch(error => console.log("Error adding document: ", error));
     },
 
