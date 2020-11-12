@@ -1,15 +1,25 @@
 <template>
   <div>
-    <h4>
-      hello, soon you will be able to edit group with id
-      {{ selectedGroup.groupId }}
-      <br />
-
-      3. if possible write universal action for editing fields, it should have
-      tiny object with one key/value pair <br />
-      4. here you should be able to add and remove participants
-    </h4>
-    <GroupEdit :group="group" />
+    <div class="column fit justify-center items-center q-pa-md">
+      <span
+        >Group ID: {{ selectedGroup.groupId }}. To change name and free spots
+        click on the values on the card. Save your changes before leaving this
+        site</span
+      >
+      <q-btn-group class="q-ma-lg">
+        <q-btn push label="Save" icon="save" color="positive"/>
+        <q-btn push label="Cancel" icon="cancel" color="secondary"/>
+        <q-btn push label="Delete" icon="delete_forever" color="negative"
+      /></q-btn-group>
+    </div>
+    <div class="row fit justify-between ">
+      <div class="col-12 col-md-6">
+        <GroupEdit :group="group" />
+      </div>
+      <div class="col-12 col-md-6">
+        <GroupParticipants :group="group" />
+      </div>
+    </div>
     <q-card class="q-ma-md q-pa-md">
       <q-card-section class=" row justify-center">
         <span class="text-h6 text-center">Set up lessons</span>
@@ -39,10 +49,11 @@
 import CalendarLayout from "layouts/CalendarLayout";
 import LessonGenerator from "components/groups/LessonGenerator";
 import GroupEdit from "components/groups/GroupEdit";
+import GroupParticipants from "components/groups/GroupParticipants";
 import { mapGetters } from "vuex";
 export default {
   name: "GroupView",
-  components: { CalendarLayout, LessonGenerator, GroupEdit },
+  components: { CalendarLayout, LessonGenerator, GroupEdit, GroupParticipants },
   data() {
     return {
       selectedGroup: null

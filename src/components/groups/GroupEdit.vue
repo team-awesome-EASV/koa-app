@@ -451,6 +451,5 @@ export default {
 <style scoped lang="scss">
 .my-card {
   width: 100%;
-  max-width: 600px;
 }
 </style>
