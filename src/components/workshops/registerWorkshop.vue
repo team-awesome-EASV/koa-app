@@ -697,7 +697,6 @@ export default {
       "addNewModuleToWorkshop",
       "addTempModuleToState",
       "addImageToDatabase",
-     
       "addModuleImageToDatabase"
     ]),
     updateImageURL() {

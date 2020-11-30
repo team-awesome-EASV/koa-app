@@ -153,7 +153,7 @@ export default {
     },
 
     addModuleImageToDatabase({ commit }, payload) {
-       var storage = firebaseApp.storage();
+      var storage = firebaseApp.storage();
       var storageRef = storage.ref("Images/" + payload.name);
 
       var listRef = storage.ref("Images/");
