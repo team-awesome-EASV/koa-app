@@ -17,7 +17,7 @@ body {
 }
 body.body--dark {
   background-color: darken($dark, 6);
-  color: whitesmoke;
+  color: #f5f5f5;
 }
 
 body.body--light {
