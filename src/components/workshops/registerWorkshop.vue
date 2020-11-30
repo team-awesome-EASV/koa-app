@@ -696,6 +696,7 @@ export default {
       "addNewWorkshopToDatabase",
       "addNewModuleToWorkshop",
       "addTempModuleToState",
+      "addImageToDatabase",
      
       "addModuleImageToDatabase"
     ]),
