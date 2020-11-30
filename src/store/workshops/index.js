@@ -13,9 +13,9 @@ export default {
     tempModules: [],
     imageURL: "",
     moduleImageURL: "",
-
     editWorkshopData: {},
-    editModuleListData: null
+    editModuleListData: null,
+
   },
 
   getters: {
@@ -26,7 +26,6 @@ export default {
 
     workshopsSelect: state =>
       state.allWorkshops.map(el => ({ label: el.name, value: el.id })),
-
     moduleSelect: state => id => {
       return state.allWorkshops
         .find(workshop => workshop.id === id)
@@ -36,17 +35,6 @@ export default {
           id: el.moduleId
         }));
     },
-
-    findWorkshop: (state, getters) => id => {
-      return getters.allWorkshops.find(el => el.id === id);
-    },
-
-    findModule: (state, getters) => (id, moduleid) => {
-      return getters.allWorkshops
-        .find(el => el.id === id)
-        .moduleList.find(el => el.moduleId === moduleid);
-    },
-
     moduleTeacher: state => (id, moduleId) => {
       return state.allWorkshops
         .find(workshop => workshop.id === id)
@@ -110,6 +98,7 @@ export default {
                   console.log("file is at", downloadURL);
                   var content = downloadURL;
                   commit("updateImageURL", content);
+                  
                 });
               }
             );
@@ -164,7 +153,7 @@ export default {
     },
 
     addModuleImageToDatabase({ commit }, payload) {
-      var storage = firebaseApp.storage();
+       var storage = firebaseApp.storage();
       var storageRef = storage.ref("Images/" + payload.name);
 
       var listRef = storage.ref("Images/");
@@ -247,50 +236,41 @@ export default {
           console.error("Error writing document: ", error);
         });
     },
-    sendUpdateWorkshopDataToDb({ dispatch }, { data, id }) {
-      workshops
-        .doc(id)
-        .update({ ...data })
-        .then(() => {
-          Notify.create("workshop successfully updated");
-          dispatch("setWorkshops");
-        });
+    sendUpdateWorkshopDataToDb({ dispatch}, { data, id }) {
+      workshops.doc(id).update({ ...data }).then(()=> {
+        Notify.create("workshop successfully updated");
+        dispatch('setWorkshops')
+      })
+
     },
 
     sendUpdateModuleDataToDb({ dispatch }, { data, moduleId, workshopId }) {
-      workshops
-        .doc(workshopId)
-        .collection("Modules")
-        .doc(moduleId)
-        .update({ ...data })
-        .then(() => {
-          Notify.create("The Module was successfully updated");
-          dispatch("setModulesToWorkshops");
-        });
+      workshops.doc(workshopId).collection("Modules").doc(moduleId).update({ ...data }).then(() => {
+        Notify.create("The Module was successfully updated");
+        dispatch("setModulesToWorkshops");
+      })
     },
 
-    grabEditWorkshopFromDb({ commit, dispatch }, info) {
-      console.log("this is the info", info);
+    grabEditWorkshopFromDb({ commit, dispatch}, info) {
+      console.log('this is the info', info)
       workshops.doc(info).onSnapshot(workshopItem => {
         var content = workshopItem.data();
         commit("setEditWorkshopData", content);
-        dispatch("grabEditModulesFromDb", info);
-      });
+        dispatch('grabEditModulesFromDb', info);
+      })
     },
 
     grabEditModulesFromDb({ commit }, info) {
       var editModuleList = [];
-      workshops
-        .doc(info)
-        .collection("Modules")
-        .onSnapshot(moduleItems => {
-          moduleItems.forEach(doc => {
-            let moduleData = doc.data();
-            console.log("this is module data", moduleData);
-            editModuleList.push(moduleData);
-          });
-          commit("setEditModuleList", editModuleList);
+      workshops.doc(info).collection("Modules").onSnapshot(moduleItems => {
+        moduleItems.forEach(doc => {
+          let moduleData = doc.data();
+          console.log('this is module data', moduleData)
+          editModuleList.push(moduleData);
         });
+        commit("setEditModuleList", editModuleList)
+
+      })
     },
 
     async setWorkshops(state) {
@@ -315,7 +295,7 @@ export default {
       });
     },
 
-    setModulesToWorkshops({ commit, dispatch }) {
+    setModulesToWorkshops({ commit }) {
       var moduleList = [];
       workshops.onSnapshot(item => {
         item.forEach(doc => {
@@ -329,7 +309,6 @@ export default {
                 // console.log("module list", moduleList);
               });
               commit("setModules", moduleList);
-              //dispatch("groups/fetchAllGroups", null, { root: true });
               moduleList = [];
             });
         });
@@ -374,7 +353,9 @@ export default {
             });
           });
       }
-    }
+    },
+
+
   },
 
   mutations: {
@@ -385,8 +366,9 @@ export default {
     setEditModuleList(state, content) {
       // console.log('this is the module content', content);
       state.editModuleListData = content;
-      Router.replace({ path: "/workshop-edit" });
+       Router.replace({path: '/workshop-edit'});
     },
+
 
     updateImageURL(state, content) {
       state.imageURL = content;
