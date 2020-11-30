@@ -33,11 +33,7 @@ const routes = [
         props: true,
         component: () => import("../pages/GroupFinder.vue")
       },
-      {
-        path: "/workshops-overview",
-        props: true,
-        component: () => import("../pages/WorkshopsOverview.vue")
-      },
+      
       {
         path: "/workshop-edit",
         props: true,
