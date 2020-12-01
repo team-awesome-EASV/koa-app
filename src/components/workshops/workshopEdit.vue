@@ -1,6 +1,6 @@
 <template>
   <div class="q-pa-md bg-green-1" style="max-width: 100%">
-    <q-card class="bg-green-3">
+    <q-card colorWorkWeekPast>
       <q-tabs
         v-model="tab"
         dense
@@ -14,7 +14,7 @@
 
       <q-separator />
 
-      <q-tab-panels v-model="tab" animated class="bg-green-2">
+      <q-tab-panels v-model="tab" animated >
         <q-tab-panel name="workshop" class="q-pa-none">
           <q-splitter v-model="splitterModel" style="height: auto">
             <template v-slot:before>
@@ -43,7 +43,7 @@
                 animated
                 transition-prev="slide-down"
                 transition-next="slide-up"
-                class="bg-green-1"
+                
               >
                 <q-tab-panel name="innerWorkshop">
                   <div class="text-h4 q-mb-md">
@@ -93,7 +93,7 @@
                     />
 
                     <q-editor
-                      class="editor-full-width bg-green-1 q-my-md"
+                      class="editor-full-width q-my-md"
                       ref="editor_ref"
                       @paste.native="evt => pasteCapture(evt)"
                       v-model="editWorkshopData.description"
@@ -292,7 +292,7 @@
                     />
 
                     <q-editor
-                      class="editor-full-width q-my-md bg-green-1"
+                      class="editor-full-width q-my-md"
                       ref="editor_ref_module"
                       @paste.native="evt => pasteCaptureModule(evt)"
                       v-model="
