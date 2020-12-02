@@ -31,7 +31,7 @@ export default {
 
     commitSelectedUserId: (state, payload) => {
       state.selectedUserId = payload;
-    }
+    } //not used
   },
 
   actions: {

@@ -17,12 +17,12 @@ export default {
 
   mutations: {
     hideNoParticipantsInfo: state => {
-      state.noParticipantsInfo = true;
+      state.noParticipantsInfo = true; 
     },
 
     commitNewParticipant: (state, payload) => {
       state.newParticipant = payload;
-    },
+    },  //not used
 
     commitAllParticipants: (state, payload) => {
       state.allParticipants = payload;
